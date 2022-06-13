@@ -1,6 +1,6 @@
 # Description: Simple microbial decomposition and dissolution to DOM network
 # Rate constants estimated to show different processes
-
+# This is the master branch
 SIMULATION
   SIMULATION_TYPE SUBSURFACE
   PROCESS_MODELS
