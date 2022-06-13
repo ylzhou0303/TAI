@@ -20,10 +20,10 @@ SUBSURFACE
 #=========================== useful transport parameters =======================
 SPECIFIED_VELOCITY
   UNIFORM? YES
-  DATASET 0.d0 0.d0 0.d0
+  DATASET 0.d0 0.d0 0.d0   #trasnport only, no flow
 END
 
-REFERENCE_LIQUID_DENSITY 1.d3
+REFERENCE_LIQUID_DENSITY 1.d3    #1e3 double precision
 
 
 #=========================== chemistry ========================================
@@ -77,7 +77,7 @@ MINERAL_KINETICS
   /
   #### NOTE: End of auto-inserted secondary species ####
 /
-IMMOBILE_SPECIES
+IMMOBILE_SPECIES  #usually organic matter or microbial biomass
   #### NOTE: Beginning of auto-inserted immobile species ####
   cellulose
   HRimm
@@ -89,7 +89,7 @@ PASSIVE_GAS_SPECIES
   O2(g)
   #### NOTE: End of auto-inserted gas species ####
 /
-#### NOTE: Beginning of auto-inserted reactions ####
+#### NOTE: Beginning of auto-inserted reactions ####  user-defined
   # DOM aerobic respiration
   MICROBIAL_REACTION
     REACTION 1.0e+00 DOM1  + 1.0e+00 O2(aq)  -> 1.0e+00 HCO3-  + 1.0e+00 H+  + 1.0e+00 Tracer 
