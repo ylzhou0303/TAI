@@ -133,7 +133,7 @@ PASSIVE_GAS_SPECIES
       /
     # Fermentation hydrolysis
     REACTION
-      UPSTREAM_POOL       cellulose   #comment
+      UPSTREAM_POOL       cellulose   #comment is comment
       DOWNSTREAM_POOL     DOM1                6.7e-01
       TURNOVER_TIME       1.0e-01 y
       INHIBITION
