@@ -39,6 +39,7 @@ PRIMARY_SPECIES
   NH4+
   Tracer
   CH4(aq)
+  Acetate-
   #### NOTE: End of auto-inserted primary species ####
 /
 DECOUPLED_EQUILIBRIUM_REACTIONS
@@ -52,6 +53,7 @@ DECOUPLED_EQUILIBRIUM_REACTIONS
   NH4+
   Tracer
   CH4(aq)
+  Acetate-
   #### NOTE: End of auto-inserted primary species ####
 /
 SECONDARY_SPECIES
@@ -59,6 +61,7 @@ SECONDARY_SPECIES
   CO2(aq)    #why CO2 is sec species
   OH-
   FeCO3+
+  CO3--
   #### NOTE: End of auto-inserted secondary species ####
 /
 MINERALS
@@ -87,6 +90,7 @@ PASSIVE_GAS_SPECIES
   #### NOTE: Beginning of auto-inserted gas species ####
   CO2(g)
   O2(g)
+  H2O(g)
   #### NOTE: End of auto-inserted gas species ####
 /
 #### NOTE: Beginning of auto-inserted reactions ####  user-defined
@@ -125,6 +129,24 @@ PASSIVE_GAS_SPECIES
       INHIBITION_CONSTANT 6.2e-08
     /
   /
+
+#CH4 production
+MICROBIAL_REACTION
+  REACTION Acetate- + H2O -> HCO3- + CH4(aq)
+  RATE_CONSTANT    2.0E-03
+  MONOD
+    SPECIES_NAME         Acetate-
+    HALF_SATURATION_CONSTANT    2.0e-03
+    THRESHOLD_CONCENTRATION    1.0e-15
+  /
+
+  INHIBITION     
+    SPECIES_NAME     O2(aq)
+    TYPE MONOD
+    INHIBITION_CONSTANT 6.2e-08
+  /
+/
+
   REACTION_SANDBOX
     SOMDECOMP
       POOLS
@@ -159,7 +181,8 @@ PASSIVE_GAS_SPECIES
 
   OUTPUT
     PH
-    #TOTAL
+    TOTAL
+      CH4(aq)
     #FREE_ION
     #PRIMARY_SPECIES
     #SECONDARY_SPECIES
@@ -189,6 +212,7 @@ CONSTRAINT initial
     NH4+                1.0e-15
     Tracer              1.0e-15
     CH4(aq)             1.0e-15
+    Acetate-            1.0e-1
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -219,6 +243,7 @@ CONSTRAINT bc
     NH4+                1.0e-20
     Tracer              1.0e-20
     CH4(aq)             1.0e-20
+    Acetate-            1.0e-01
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -304,7 +329,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 36 d
+  FINAL_TIME 10 d
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h

@@ -4,20 +4,25 @@
      Mean:   2.5000000000000E-01
         1:   2.5000000000000E-01
 -- GENERIC: pH --
-      Max:   1.1345827307760E+01
-      Min:   1.1345827307760E+01
-     Mean:   1.1345827307760E+01
-        1:   1.1345827307760E+01
+      Max:   8.5140059156474E+00
+      Min:   8.5140059156474E+00
+     Mean:   8.5140059156474E+00
+        1:   8.5140059156474E+00
+-- CONCENTRATION: Total CH4(aq) --
+      Max:   1.0000000000008E-01
+      Min:   1.0000000000008E-01
+     Mean:   1.0000000000008E-01
+        1:   1.0000000000008E-01
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Transport --
-   Time (seconds):   1.2623953819275E-01
-   Time Steps:          227
-   Newton Iterations:         2428
-   Linear Solver Iterations:         4392
-   Time Step Cuts:           17
-   Solution 2-Norm:   9.9793886902676E+02
-   Residual 2-Norm:   1.1877784675921E-06
+   Time (seconds):   1.1166834831238E-01
+   Time Steps:          105
+   Newton Iterations:          625
+   Linear Solver Iterations:         1380
+   Time Step Cuts:            9
+   Solution 2-Norm:   9.9900285156770E+02
+   Residual 2-Norm:   2.3021772367752E-06
