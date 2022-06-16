@@ -28,7 +28,7 @@ REFERENCE_LIQUID_DENSITY 1.d3    #1e3 double precision
 
 #=========================== chemistry ========================================
 CHEMISTRY
-PRIMARY_SPECIES
+  PRIMARY_SPECIES
   #### NOTE: Beginning of auto-inserted primary species ####
   DOM1
   H+
@@ -40,9 +40,11 @@ PRIMARY_SPECIES
   Tracer
   CH4(aq)
   Acetate-
+  SO4--
+  HS-
   #### NOTE: End of auto-inserted primary species ####
-/
-DECOUPLED_EQUILIBRIUM_REACTIONS
+  /
+  DECOUPLED_EQUILIBRIUM_REACTIONS   #it means except the reactions defined, don't simulate other possible reactions for these species
   #### NOTE: Beginning of auto-inserted primary species ####
   DOM1
   H+
@@ -54,23 +56,25 @@ DECOUPLED_EQUILIBRIUM_REACTIONS
   Tracer
   CH4(aq)
   Acetate-
+  SO4--
+  HS-
   #### NOTE: End of auto-inserted primary species ####
-/
-SECONDARY_SPECIES
+  /
+  SECONDARY_SPECIES
   #### NOTE: Beginning of auto-inserted secondary species ####
-  CO2(aq)    #why CO2 is sec species
+  CO2(aq)    
   OH-
   FeCO3+
   CO3--
   #### NOTE: End of auto-inserted secondary species ####
-/
-MINERALS
+  /
+  MINERALS
   #### NOTE: Beginning of auto-inserted secondary species ####
   Fe(OH)3
   FeO
   #### NOTE: End of auto-inserted secondary species ####
-/
-MINERAL_KINETICS
+  /
+  MINERAL_KINETICS
   #### NOTE: Beginning of auto-inserted secondary species ####
   Fe(OH)3
     RATE_CONSTANT  1.d-7 mol/m^2-sec
@@ -79,21 +83,21 @@ MINERAL_KINETICS
     RATE_CONSTANT  1.d-7 mol/m^2-sec
   /
   #### NOTE: End of auto-inserted secondary species ####
-/
-IMMOBILE_SPECIES  #usually organic matter or microbial biomass
+  /
+  IMMOBILE_SPECIES  #usually organic matter or microbial biomass
   #### NOTE: Beginning of auto-inserted immobile species ####
   cellulose
   HRimm
   #### NOTE: End of auto-inserted immobile species ####
-/
-PASSIVE_GAS_SPECIES
+  /
+  PASSIVE_GAS_SPECIES
   #### NOTE: Beginning of auto-inserted gas species ####
   CO2(g)
-  O2(g)
+  #O2(g)
   H2O(g)
   #### NOTE: End of auto-inserted gas species ####
-/
-#### NOTE: Beginning of auto-inserted reactions ####  user-defined
+  /
+  #### NOTE: Beginning of auto-inserted reactions ####  user-defined
   # DOM aerobic respiration
   MICROBIAL_REACTION
     REACTION 1.0e+00 DOM1  + 1.0e+00 O2(aq)  -> 1.0e+00 HCO3-  + 1.0e+00 H+  + 1.0e+00 Tracer 
@@ -130,24 +134,67 @@ PASSIVE_GAS_SPECIES
     /
   /
 
-#CH4 production
-MICROBIAL_REACTION
-  REACTION Acetate- + H2O -> HCO3- + CH4(aq)
-  RATE_CONSTANT    2.0E-03
-  MONOD
-    SPECIES_NAME         Acetate-
-    HALF_SATURATION_CONSTANT    2.0e-03
-    THRESHOLD_CONCENTRATION    1.0e-15
+  skip
+  #CH4 production from acetate
+  MICROBIAL_REACTION
+    REACTION Acetate- + H2O -> HCO3- + CH4(aq)
+    RATE_CONSTANT    2.0E-03
+    MONOD
+      SPECIES_NAME         Acetate-
+      HALF_SATURATION_CONSTANT    2.0e-03
+      THRESHOLD_CONCENTRATION    1.0e-15
+    /
+
+    INHIBITION     
+      SPECIES_NAME     O2(aq)
+      TYPE MONOD
+      INHIBITION_CONSTANT 6.2e0
+    /
+  /
+  noskip
+
+
+  #CH4 production from DOM
+  MICROBIAL_REACTION
+    REACTION Acetate- + H2O -> HCO3- + CH4(aq)
+    RATE_CONSTANT    2.0E-03
+    MONOD
+      SPECIES_NAME         Acetate-
+      HALF_SATURATION_CONSTANT    2.0e-03
+      THRESHOLD_CONCENTRATION    1.0e-15
+    /
+
+    INHIBITION     
+      SPECIES_NAME     O2(aq)
+      TYPE MONOD
+      INHIBITION_CONSTANT 6.2e0
+    /
   /
 
-  INHIBITION     
-    SPECIES_NAME     O2(aq)
-    TYPE MONOD
-    INHIBITION_CONSTANT 6.2e-08
-  /
-/
 
-  REACTION_SANDBOX
+  #sulfate reduction
+  MICROBIAL_REACTION
+    REACTION Acetate- + SO4-- -> HS- + 2 HCO3-
+    RATE_CONSTANT    2.0e-02
+    MONOD
+      SPECIES_NAME     Acetate-
+      HALF_SATURATION_CONSTANT    2.0e-03
+      THRESHOLD_CONCENTRATION    1.0e-15
+    /
+
+    INHIBITION     
+      SPECIES_NAME     O2(aq)
+      TYPE MONOD
+      INHIBITION_CONSTANT 6.2e0
+    /
+  /
+       
+
+
+
+
+
+  REACTION_SANDBOX  #define any reactions not aqueous
     SOMDECOMP
       POOLS
         cellulose           50.0
@@ -156,8 +203,8 @@ MICROBIAL_REACTION
     # Fermentation hydrolysis
     REACTION
       UPSTREAM_POOL       cellulose   #comment is comment
-      DOWNSTREAM_POOL     DOM1                6.7e-01
-      TURNOVER_TIME       1.0e-01 y
+      DOWNSTREAM_POOL     DOM1                6.7e-01  #fraction of cellulose decomposed to DOM1
+      TURNOVER_TIME       1.0 y
       INHIBITION
         SPECIES_NAME        DOM1
         TYPE MONOD
@@ -170,6 +217,7 @@ MICROBIAL_REACTION
       
     /
   /
+
   #### NOTE: End of auto-inserted reactions ####
 
 
@@ -183,13 +231,19 @@ MICROBIAL_REACTION
     PH
     TOTAL
       CH4(aq)
+      O2(aq)
+      DOM1
+      #SO4--
+      #HS-
+      #HCO3-
+      #CO2(aq)
+      #CO3--
     #FREE_ION
     #PRIMARY_SPECIES
     #SECONDARY_SPECIES
     #GASES
     #MINERALS
     #IMMOBILE
-
   /
 END
 
@@ -197,22 +251,24 @@ END
 CONSTRAINT initial
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
-    cellulose            1.0e+03
+    cellulose            1.0e-03
     HRimm                1.0e-20
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-03
-    H+                  5.9 P
-    O2(aq)              1.0e-12
+    H+                  10.0 P
+    O2(aq)              1.0e-01
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
     NH4+                1.0e-15
     Tracer              1.0e-15
     CH4(aq)             1.0e-15
-    Acetate-            1.0e-1
+    Acetate-            1.0e-2
+    SO4--               1.0e-1
+    HS-                 1.0e-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -225,6 +281,41 @@ CONSTRAINT initial
   
 END
 
+
+CONSTRAINT initial_bottom                        #define the initial constraint for bottom region
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e-03
+    HRimm                1.0e-20
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-03
+    H+                  10.0 P
+    O2(aq)              1.0e-10
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-15
+    Tracer              1.0e-15
+    CH4(aq)             1.0e-15
+    Acetate-            1.0e-2
+    SO4--               1.0e-1
+    HS-                 1.0e-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /
+
+  
+END
+
+
 CONSTRAINT bc
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
@@ -236,14 +327,16 @@ CONSTRAINT bc
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  1.0e-20
-    O2(aq)              1.0e-20
+    O2(aq)              1.0e-01
     HCO3-               1.0e-20
     Fe+++               1.0e-20
     Fe++                1.0e-20
     NH4+                1.0e-20
     Tracer              1.0e-20
     CH4(aq)             1.0e-20
-    Acetate-            1.0e-01
+    Acetate-            1.0e-02
+    SO4--               1.0e-01
+    HS-                 1.0e-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -281,11 +374,18 @@ GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
   NXYZ 1 1 2
+  skip
   DXYZ
     1.d0
     1.d0
     10.d0\
     20.d0
+  /
+  noskip
+
+  BOUNDS
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 20.d0
   /
 END
 
@@ -333,7 +433,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 10 d
+  FINAL_TIME 100 d
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -348,15 +448,24 @@ REGION all
 END
 
 REGION obs_pt
-  COORDINATE 
+  COORDINATES
     0.5 0.5 5.0
     0.5 0.5 15.0
+  /
 END
 
 REGION top
 COORDINATES
-  0.d0 0.d0 0.d0
+  0.d0 0.d0 10.d0
   1.d0 1.d0 20.d0
+  /
+  FACE TOP
+END
+
+REGION bottom
+COORDINATES
+  0.d0 0.d0 0.d0
+  1.d0 1.d0 10.d0
   /
   FACE TOP
 END
@@ -374,6 +483,13 @@ TRANSPORT_CONDITION initial
   /
 END
 
+TRANSPORT_CONDITION initial_bottom
+  TYPE DIRICHLET
+  CONSTRAINT_LIST
+    0.d0 initial_bottom
+  /
+END
+
 TRANSPORT_CONDITION bc_transport
   TYPE DIRICHLET_ZERO_GRADIENT
   CONSTRAINT_LIST
@@ -385,7 +501,12 @@ END
 # initial condition
 INITIAL_CONDITION
   TRANSPORT_CONDITION initial
-  REGION all
+  REGION top
+/
+
+INITIAL_CONDITION
+  TRANSPORT_CONDITION initial_bottom
+  REGION bottom
 END
 
 skip
@@ -397,7 +518,7 @@ noskip
 #=========================== stratigraphy couplers ============================
 STRATA
   REGION all
-  MATERIAL soil1
+  MATERIAL soil1            # to modify the soil property
 END
 
 #=========================== regression =======================================
