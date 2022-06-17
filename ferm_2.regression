@@ -1,0 +1,23 @@
+-- GENERIC: Porosity --
+      Max:   2.5000000000000E-01
+      Min:   2.5000000000000E-01
+     Mean:   2.5000000000000E-01
+        1:   2.5000000000000E-01
+-- CONCENTRATION: Total DOM1 --
+      Max:   2.7959703224108E-02
+      Min:   2.7959702721067E-02
+     Mean:   2.7959702888747E-02
+        1:   2.7959702721067E-02
+-- DISCRETE: Material ID --
+      Max:         1
+      Min:         1
+     Mean:   1.0000000000000E+00
+        1:         1
+-- SOLUTION: Transport --
+   Time (seconds):   4.4537246227264E+00
+   Time Steps:         4154
+   Newton Iterations:        24917
+   Linear Solver Iterations:        82121
+   Time Step Cuts:           10
+   Solution 2-Norm:   2.4319739303691E+03
+   Residual 2-Norm:   3.6416816162105E-07
