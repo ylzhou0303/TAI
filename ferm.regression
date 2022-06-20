@@ -4,35 +4,35 @@
      Mean:   2.5000000000000E-01
         1:   2.5000000000000E-01
 -- GENERIC: pH --
-      Max:   9.8573779275750E+00
-      Min:   9.8573779174838E+00
-     Mean:   9.8573779225294E+00
-        1:   9.8573779275747E+00
+      Max:   9.8832292632758E+00
+      Min:   9.8832292614002E+00
+     Mean:   9.8832292626506E+00
+        1:   9.8832292632758E+00
 -- CONCENTRATION: Total DOM1 --
-      Max:   1.0064756859695E-14
-      Min:   1.0064634988383E-14
-     Mean:   1.0064695924039E-14
-        1:   1.0064756859695E-14
+      Max:   2.9800060096361E-03
+      Min:   2.9800052993686E-03
+     Mean:   2.9800055361244E-03
+        1:   2.9800052993686E-03
 -- CONCENTRATION: Total O2(aq) --
-      Max:   5.7946616453179E-02
-      Min:   4.0051489524365E-02
-     Mean:   4.8999052988772E-02
-        1:   4.0051489524365E-02
+      Max:   9.9999997619684E-02
+      Min:   9.9999997269850E-02
+     Mean:   9.9999997503072E-02
+        1:   9.9999997619684E-02
 -- CONCENTRATION: Total CH4(aq) --
-      Max:   9.0909090909187E-04
-      Min:   9.0909090909186E-04
-     Mean:   9.0909090909187E-04
-        1:   9.0909090909186E-04
+      Max:   9.0909090909328E-04
+      Min:   9.0909090909328E-04
+     Mean:   9.0909090909328E-04
+        1:   9.0909090909328E-04
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Transport --
-   Time (seconds):   1.2060284614563E-01
-   Time Steps:          212
-   Newton Iterations:          517
-   Linear Solver Iterations:         2283
+   Time (seconds):   9.8807096481323E-02
+   Time Steps:          210
+   Newton Iterations:          273
+   Linear Solver Iterations:         1827
    Time Step Cuts:            0
-   Solution 2-Norm:   2.6558432733340E-01
-   Residual 2-Norm:   2.0525384310575E-15
+   Solution 2-Norm:   1.4142134872131E+03
+   Residual 2-Norm:   1.4949325607903E-15
