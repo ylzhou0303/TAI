@@ -9,8 +9,11 @@ SIMULATION
       OPTIONS
       /
     /
-  /
 
+    SUBSURFACE_FLOW flow
+      MODE GENERAL
+    /
+  /
 END
 
 
@@ -18,10 +21,12 @@ END
 SUBSURFACE
 
 #=========================== useful transport parameters =======================
+skip
 SPECIFIED_VELOCITY
   UNIFORM? YES
   DATASET 0.d0 0.d0 0.d0   #trasnport only, no flow
 END
+noskip
 
 REFERENCE_LIQUID_DENSITY 1.d3    #1e3 double precision
 
@@ -108,10 +113,10 @@ CHEMISTRY
   /
 
 
-  PASSIVE_GAS_SPECIES
+  PASSIVE_GAS_SPECIES   # gas species not reacting/interacting with anything
   #### NOTE: Beginning of auto-inserted gas species ####
   CO2(g)
-  #O2(g)
+  O2(g)
   H2O(g)
   #### NOTE: End of auto-inserted gas species ####
   /
@@ -251,11 +256,11 @@ CHEMISTRY
   DATABASE ./hanford.dat
 
   OUTPUT
-    PH
+    !PH
     TOTAL
-      CH4(aq)
+      !CH4(aq)
       O2(aq)
-      DOM1
+      !DOIMMOBILEM1
       #SO4--
       #HS-
       #HCO3-
@@ -282,8 +287,8 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-03
     H+                  10.0 P
-    O2(aq)              1.0e-01
-    HCO3-               400e-6 G CO2(g)
+    O2(aq)              1.0e-10
+    HCO3-               400e-6 G CO2(g)    # specify the concentration of HCO3- when it is in equilibrium with atm CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
     NH4+                1.0e-15
@@ -316,7 +321,7 @@ CONSTRAINT dom_enrich     #define the initial condition for a "dom_enriched laye
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-1
     H+                  10.0 P
-    O2(aq)              1.0e-1
+    O2(aq)              1.0e-10
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -347,7 +352,7 @@ CONSTRAINT bc
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  1.0e-20
-    O2(aq)              1.0e-01
+    O2(aq)              1.0e-01 G O2(g)
     HCO3-               1.0e-20
     Fe+++               1.0e-20
     Fe++                1.0e-20
@@ -395,43 +400,68 @@ GRID
   ORIGIN 0.d0 0.d0 0.d0
   NXYZ 2 1 3   #two colums, three layers, O2 injection in the middle
   DXYZ   #spacing
-    1.d0\
-    1.d0
+    2@1
 
-    1.d0
+    1@1
 
-    4.9\ 
-    0.2\
-    4.9
+    1@4.9 1@0.2 1@4.9 
+    
   /
 
 skip
   BOUNDS
     0.d0 0.d0 0.d0
     1.d0 1.d0 10.d0   #divide the axis evenly between the bounds
-noskip
-
+  /
+noskip 
 END
 
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 1.d-9
+  DIFFUSION_COEFFICIENT 1.d-20
 END
 
 FLUID_PROPERTY
   PHASE gas
-  DIFFUSION_COEFFICIENT 1.000d-05
+  DIFFUSION_COEFFICIENT 1.000d-5
 END
 
+#=========================== CHARACTERISTIC_CURVES ==============================
+CHARACTERISTIC_CURVES cc1
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    M 0.5d0
+    ALPHA 1.d-4
+    MAX_CAPILLARY_PRESSURE 1.d6
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    M 0.5d0
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_GAS
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    GAS_RESIDUAL_SATURATION 1.d-40
+    M 0.5d0
+  /
+/
 #=========================== material properties ==============================
 MATERIAL_PROPERTY soil1
   ID 1
   POROSITY 0.25d0
   TORTUOSITY 1.d0
-  SATURATION_FUNCTION default
+ ! SATURATION_FUNCTION default
+  CHARACTERISTIC_CURVES cc1
+  HEAT_CAPACITY 800.
+  THERMAL_CONDUCTIVITY_DRY 0.5
+  THERMAL_CONDUCTIVITY_WET 2.
+  ROCK_DENSITY 2560.d0
+  PERMEABILITY
+    PERM_ISO 1.d-17
+  /
 END
 
+skip
 # == saturation / permeability functions ======================================
 SATURATION_FUNCTION HD
 SATURATION_FUNCTION_TYPE VAN_GENUCHTEN
@@ -439,31 +469,38 @@ RESIDUAL_SATURATION 0.115
 LAMBDA 0.286
 ALPHA 1.9401d-4
 /
+noskip
 
 #=========================== output options ===================================
 OUTPUT
   #PERIODIC_OBSERVATION TIMESTEP 1
-  PERIODIC_OBSERVATION TIME 100 day  #print output every 100 day
+  PERIODIC_OBSERVATION TIME 6 hour  #print output every 100 day
   SCREEN PERIODIC 10
+  PERIODIC TIME 1 day
   #PERIODIC TIMESTEP 1
   #FORMAT HDF5
   VARIABLES
-    POROSITY
+    !POROSITY
     /
   FORMAT TECPLOT POINT
   MASS_BALANCE_FILE
     PERIODIC TIMESTEP 1
   /
-END
 
+
+OBSERVATION_FILE
+    TIMES day 1 3 5
+    NO_PRINT_FINAL
+  /
+
+END
 #=========================== times ============================================
 TIME
-  FINAL_TIME 100 d
+  FINAL_TIME 5 d
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
 END
-
 
 
 #=========================== regions ==========================================
@@ -493,19 +530,44 @@ END
 REGION top
   COORDINATES
     0.d0 0.d0 5.1
-    2.d0 1.d0 10.d0
+    2.d0 1.d0 9.9
   /
 END
 
-REGION obs_pt
-  COORDINATE 0.1 0.1 10
+REGION obs_pt_mid
+  COORDINATE 0.1 0.1 5.0  
 END
 
+REGION obs_pt_top
+  COORDINATE 0.1 0.1 7.0  
+END
 
+REGION obs_pt_bc
+  COORDINATE 0.1 0.1 9.95
+END
+
+REGION bc
+  COORDINATES
+  0.d0 0.d0 9.9
+  2.d0 1.d0 10.d0
+/
+  FACE TOP
+END
 
 #=========================== observation points ===============================
 OBSERVATION
-  REGION obs_pt
+  REGION obs_pt_top
+  AT_COORDINATE
+END
+
+OBSERVATION
+  REGION obs_pt_mid
+  AT_COORDINATE
+END
+
+OBSERVATION
+  REGION obs_pt_bc
+  AT_COORDINATE
 END
 
 #=========================== transport conditions =============================
@@ -530,13 +592,31 @@ TRANSPORT_CONDITION bc_transport
   /
 END
 
+
+FLOW_CONDITION fc
+ TYPE 
+  GAS_PRESSURE DIRICHLET
+  GAS_SATURATION DIRICHLET
+  TEMPERATURE DIRICHLET
+  
+ /
+ GAS_PRESSURE 100
+ GAS_SATURATION 0.25d0
+ TEMPERATURE 30
+
+END
+
+
+
 #=========================== condition couplers ===============================
 # initial condition
 INITIAL_CONDITION
   TRANSPORT_CONDITION initial
-  REGION top
+  FLOW_CONDITION fc
+  REGION all
 /
 
+skip
 INITIAL_CONDITION
   TRANSPORT_CONDITION initial
   REGION bottom
@@ -544,17 +624,18 @@ END
 
 INITIAL_CONDITION
   TRANSPORT_CONDITION dom_enrich
+  FLOW_CONDITION fc
   REGION dom_enrich
 END
+noskip
 
 
-
-skip
 BOUNDARY_CONDITION edge
   TRANSPORT_CONDITION bc_transport
-  REGION top
+  FLOW_CONDITION fc
+  REGION bc
 END
-noskip
+
 
 
 #=========================== stratigraphy couplers ============================

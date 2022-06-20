@@ -1,38 +1,18 @@
--- GENERIC: Porosity --
-      Max:   2.5000000000000E-01
-      Min:   2.5000000000000E-01
-     Mean:   2.5000000000000E-01
-        1:   2.5000000000000E-01
--- GENERIC: pH --
-      Max:   9.8832292632758E+00
-      Min:   9.8832292614002E+00
-     Mean:   9.8832292626506E+00
-        1:   9.8832292632758E+00
--- CONCENTRATION: Total DOM1 --
-      Max:   2.9800060096361E-03
-      Min:   2.9800052993686E-03
-     Mean:   2.9800055361244E-03
-        1:   2.9800052993686E-03
 -- CONCENTRATION: Total O2(aq) --
-      Max:   9.9999997619684E-02
-      Min:   9.9999997269850E-02
-     Mean:   9.9999997503072E-02
-        1:   9.9999997619684E-02
--- CONCENTRATION: Total CH4(aq) --
-      Max:   9.0909090909328E-04
-      Min:   9.0909090909328E-04
-     Mean:   9.0909090909328E-04
-        1:   9.0909090909328E-04
+      Max:   2.7546047770949E-02
+      Min:   2.2597572203359E-03
+     Mean:   1.4647102824208E-02
+        1:   2.2597572203359E-03
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Transport --
-   Time (seconds):   9.8807096481323E-02
-   Time Steps:          210
-   Newton Iterations:          273
-   Linear Solver Iterations:         1827
+   Time (seconds):   7.8304767608643E-02
+   Time Steps:           32
+   Newton Iterations:          135
+   Linear Solver Iterations:          832
    Time Step Cuts:            0
-   Solution 2-Norm:   1.4142134872131E+03
-   Residual 2-Norm:   1.4949325607903E-15
+   Solution 2-Norm:   2.8799396230409E-01
+   Residual 2-Norm:   1.4187082134279E-14

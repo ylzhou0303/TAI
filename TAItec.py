@@ -8,7 +8,7 @@ import os
 
 os.chdir('C:/Users/yz60069/TAI')
 
-with open("ferm-001.tec",'r') as inputFile:
+with open("ferm-002.tec",'r') as inputFile:
     read_lines = inputFile.readlines()    
     parameter_str = read_lines[1] #read in the 2nd line, getting variable names as strings
     parameter_list = parameter_str.replace('"','').replace('\n','').split(',')
@@ -31,9 +31,9 @@ with open("ferm-001.tec",'r') as inputFile:
             var_value1 = np.array(value, dtype=np.float32)
             print(var_value1)
          elif "Z [m]" in key: #read in depth to array
-            var_value2 = 20 - (np.array(value, dtype=np.float32))
+            var_value2 = 10 - (np.array(value, dtype=np.float32))
             print(var_value2)
-         elif "CH4(aq)" in key:
+         elif "O2(aq)" in key:
              var_value3 = np.array (value, dtype=np.float32)
              print(var_value3)
 
