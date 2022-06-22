@@ -373,6 +373,40 @@ CONSTRAINT bc
 
 END
 
+
+CONSTRAINT water
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e-20
+    HRimm                1.0e-20
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-20
+    H+                  10.0 P
+    O2(aq)              1.0e-20
+    HCO3-               400e-20 G CO2(g)    # specify the concentration of HCO3- when it is in equilibrium with atm CO2(g)
+    Fe+++               0.37e-20 M Fe(OH)3
+    Fe++                0.37e-20
+    NH4+                1.0e-20
+    Tracer              1.0e-20
+    CH4(aq)             1.0e-20
+    Acetate-            1.0e-20
+    SO4--               1.0e-20
+    HS-                 1.0e-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-20  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /
+
+  
+END
+
 #=========================== solver options ===================================
 NUMERICAL_METHODS TRANSPORT
   LINEAR_SOLVER
@@ -439,6 +473,7 @@ CHARACTERISTIC_CURVES cc1
     LIQUID_RESIDUAL_SATURATION 0.d0
     M 0.5d0
   /
+  
   PERMEABILITY_FUNCTION MUALEM_VG_GAS
     LIQUID_RESIDUAL_SATURATION 0.d0
     GAS_RESIDUAL_SATURATION 1.d-40
@@ -450,8 +485,8 @@ MATERIAL_PROPERTY soil1
   ID 1
   POROSITY 0.25d0
   TORTUOSITY 1.d0
- ! SATURATION_FUNCTION default
-  CHARACTERISTIC_CURVES cc1
+  SATURATION_FUNCTION cc1
+  !CHARACTERISTIC_CURVES cc1
   HEAT_CAPACITY 800.
   THERMAL_CONDUCTIVITY_DRY 0.5
   THERMAL_CONDUCTIVITY_WET 2.
@@ -461,15 +496,7 @@ MATERIAL_PROPERTY soil1
   /
 END
 
-skip
-# == saturation / permeability functions ======================================
-SATURATION_FUNCTION HD
-SATURATION_FUNCTION_TYPE VAN_GENUCHTEN
-RESIDUAL_SATURATION 0.115
-LAMBDA 0.286
-ALPHA 1.9401d-4
-/
-noskip
+
 
 #=========================== output options ===================================
 OUTPUT
@@ -593,6 +620,16 @@ TRANSPORT_CONDITION bc_transport
 END
 
 
+TRANSPORT_CONDITION water 
+  TYPE DIRICHLET
+  CONSTRAINT_LIST
+    0.d0 water
+  /
+END
+
+
+
+#=========================== flow conditions =============================
 FLOW_CONDITION fc
  TYPE 
   GAS_PRESSURE DIRICHLET
@@ -600,12 +637,29 @@ FLOW_CONDITION fc
   TEMPERATURE DIRICHLET
   
  /
- GAS_PRESSURE 100
- GAS_SATURATION 0.25d0
+ GAS_PRESSURE 1.d5
+ GAS_SATURATION 0.15d0
  TEMPERATURE 30
-
+ 
 END
 
+
+FLOW_CONDITION water
+  TYPE
+    RATE mass_rate  
+  /
+  ! liquid gas energy
+  !RATE 1.d-05 0.d0 0.d0 kg/s kg/s MW
+  RATE LIST
+    TIME_UNITS day
+    DATA_UNITS kg/s kg/s MW
+    0.d0 1.d-05 0.d0 0.d0
+    2.d0 1.d-04 0.d0 0.d0
+    4.d0 1.d-03 0.d0 0.d0
+  END 
+    
+  
+END
 
 
 #=========================== condition couplers ===============================
@@ -636,7 +690,11 @@ BOUNDARY_CONDITION edge
   REGION bc
 END
 
-
+SOURCE_SINK
+  FLOW_CONDITION water
+  TRANSPORT_CONDITION water
+  REGION bc
+/
 
 #=========================== stratigraphy couplers ============================
 STRATA

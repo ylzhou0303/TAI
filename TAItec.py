@@ -8,38 +8,48 @@ import os
 
 os.chdir('C:/Users/yz60069/TAI')
 
-with open("ferm-002.tec",'r') as inputFile:
-    read_lines = inputFile.readlines()    
-    parameter_str = read_lines[1] #read in the 2nd line, getting variable names as strings
-    parameter_list = parameter_str.replace('"','').replace('\n','').split(',')
-    result_list = [] #define a list 
-    dic = {} #define a dic conrresponding to result_list, each dic will have a list in result_list
-    for i in range(0,len(parameter_list)): #loop for reading in data line by line
-        dic = {parameter_list[i]:[]} #define a default format for each dic as variable_name:value_list
-        result_list.append(dic) #append value list from each line in the data file
-    for i in range(3, len(read_lines)): #start from the 4th line
-        data_list = read_lines[i].split('  ') #begin reading data, split with two splaces '  '
-        for j in range(0,len(result_list)): #loop for reading in data at each line
-            for key,value in result_list[j].items(): #key is the variable name, value is the data
-                value.append(data_list[j])            
-    var_value1 = []
-    var_value2 = []
-    var_value3 = []
-    for i in range(0,len(result_list)):
-       for key,value in result_list[i].items():
-         if "Total Tracer7" in key: #search for variable name and read in variable to array
-            var_value1 = np.array(value, dtype=np.float32)
-            print(var_value1)
-         elif "Z [m]" in key: #read in depth to array
-            var_value2 = 10 - (np.array(value, dtype=np.float32))
-            print(var_value2)
-         elif "O2(aq)" in key:
-             var_value3 = np.array (value, dtype=np.float32)
-             print(var_value3)
+for i in range(1,6):
+    file_name = "ferm-00" + str(i) + ".tec"
+    with open(file_name,'r') as inputFile:
+        read_lines = inputFile.readlines()    
+        parameter_str = read_lines[1] #read in the 2nd line, getting variable names as strings
+        parameter_list = parameter_str.replace('"','').replace('\n','').split(',')
+        result_list = [] #define a list 
+        dic = {} #define a dic conrresponding to result_list, each dic will have a list in result_list
+        for i in range(0,len(parameter_list)): #loop for reading in data line by line
+            dic = {parameter_list[i]:[]} #define a default format for each dic as variable_name:value_list
+            result_list.append(dic) #append value list from each line in the data file
+        for i in range(3, len(read_lines)): #start from the 4th line
+            data_list = read_lines[i].split('  ') #begin reading data, split with two splaces '  '
+            for j in range(0,len(result_list)): #loop for reading in data at each line
+                for key,value in result_list[j].items(): #key is the variable name, value is the data
+                    value.append(data_list[j])            
+        var_value1 = []
+        var_value2 = []
+        var_value3 = []
+        for i in range(0,len(result_list)):
+           for key,value in result_list[i].items():
+             if "Total Tracer7" in key: #search for variable name and read in variable to array
+                var_value1 = np.array(value, dtype=np.float32)
+                print(var_value1)
+             elif "Z [m]" in key: #read in depth to array
+                var_value2 = 10 - (np.array(value, dtype=np.float32))
+                print(var_value2)
+             elif "Liquid Saturation" in key:
+                 var_value3 = np.array (value, dtype=np.float32)
+                 print(var_value3)
+    
 
-plt.figure(1)
-plt.subplot(111)
-plt.plot(var_value3, var_value2)
+    plt.plot(var_value3, var_value2)
+
+ax = plt.gca()
+ax.set_xlim(0.6, 1)
+ax.set_ylim(8, 1)
+ax.set_xlabel('Water Saturation')
+ax.set_ylable('Depth (m)')
+"""
+    plt.figure(1)
+    plt.subplot(111)
 #plt.xscale('log')
 ax=plt.gca()
 #ax.set_ylim(30,-10)
@@ -48,7 +58,7 @@ ax=plt.gca()
 ax.set_xlabel('0')
 #plt.xscale('log')
 #ax.ticker.LogLocator(base=10.0, subs=(1.0,), numdecs=4, numticks=None)
-"""
+
 plt.subplot(192)
 with open("TAI_GENX-001.tec",'r') as inputFile:
     read_lines = inputFile.readlines()
