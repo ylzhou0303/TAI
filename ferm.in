@@ -384,7 +384,7 @@ CONSTRAINT water
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
-    H+                  10.0 P
+    H+                  7.0 P
     O2(aq)              1.0e-20
     HCO3-               400e-20 G CO2(g)    # specify the concentration of HCO3- when it is in equilibrium with atm CO2(g)
     Fe+++               0.37e-20 M Fe(OH)3
@@ -462,6 +462,7 @@ FLUID_PROPERTY
 END
 
 #=========================== CHARACTERISTIC_CURVES ==============================
+skip
 CHARACTERISTIC_CURVES cc1
   SATURATION_FUNCTION VAN_GENUCHTEN
     LIQUID_RESIDUAL_SATURATION 0.d0
@@ -480,12 +481,31 @@ CHARACTERISTIC_CURVES cc1
     M 0.5d0
   /
 /
+
+noskip
+CHARACTERISTIC_CURVES ln
+  SATURATION_FUNCTION LINEAR
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    ALPHA 1.d-4
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_LIQ
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    M 0.5d0
+  /
+  
+  PERMEABILITY_FUNCTION MUALEM_VG_GAS
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    GAS_RESIDUAL_SATURATION 1.d-40
+    M 0.5d0
+  /
+/
+noskip
 #=========================== material properties ==============================
 MATERIAL_PROPERTY soil1
   ID 1
   POROSITY 0.25d0
   TORTUOSITY 1.d0
-  SATURATION_FUNCTION cc1
+  SATURATION_FUNCTION ln
   !CHARACTERISTIC_CURVES cc1
   HEAT_CAPACITY 800.
   THERMAL_CONDUCTIVITY_DRY 0.5
@@ -616,6 +636,11 @@ TRANSPORT_CONDITION bc_transport
   TYPE DIRICHLET_ZERO_GRADIENT
   CONSTRAINT_LIST
     0.d0 bc
+    1.d0 bc
+    2.d0 bc
+    3.d0 bc
+    4.d0 bc
+    5.d0 bc
   /
 END
 
@@ -670,18 +695,13 @@ INITIAL_CONDITION
   REGION all
 /
 
-skip
-INITIAL_CONDITION
-  TRANSPORT_CONDITION initial
-  REGION bottom
-END
 
-INITIAL_CONDITION
+SOURCE_SINK
   TRANSPORT_CONDITION dom_enrich
-  FLOW_CONDITION fc
+  FLOW_CONDITION water
   REGION dom_enrich
 END
-noskip
+
 
 
 BOUNDARY_CONDITION edge

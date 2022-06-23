@@ -8,10 +8,11 @@ import os
 
 os.chdir('C:/Users/yz60069/TAI')
 
-for i in range(1,6):
-    file_name = "ferm-00" + str(i) + ".tec"
+for k in range(1,6):
+    file_name = "ferm-00" + str(k) + ".tec"
     with open(file_name,'r') as inputFile:
-        read_lines = inputFile.readlines()    
+        read_lines = inputFile.readlines()
+        read_lines = read_lines.replace(' -','  ')
         parameter_str = read_lines[1] #read in the 2nd line, getting variable names as strings
         parameter_list = parameter_str.replace('"','').replace('\n','').split(',')
         result_list = [] #define a list 
@@ -24,29 +25,26 @@ for i in range(1,6):
             for j in range(0,len(result_list)): #loop for reading in data at each line
                 for key,value in result_list[j].items(): #key is the variable name, value is the data
                     value.append(data_list[j])            
-        var_value1 = []
-        var_value2 = []
-        var_value3 = []
+        var_y = []
+        var_x = []
+        
         for i in range(0,len(result_list)):
            for key,value in result_list[i].items():
-             if "Total Tracer7" in key: #search for variable name and read in variable to array
-                var_value1 = np.array(value, dtype=np.float32)
-                print(var_value1)
-             elif "Z [m]" in key: #read in depth to array
-                var_value2 = 10 - (np.array(value, dtype=np.float32))
-                print(var_value2)
-             elif "Liquid Saturation" in key:
-                 var_value3 = np.array (value, dtype=np.float32)
-                 print(var_value3)
+             if "Z [m]" in key: #read in depth to array
+                var_y = 10 - (np.array(value, dtype=np.float32))
+                print(var_y)
+             if "Liquid Saturation" in key:
+                 var_x = np.array (value, dtype=np.float32)
+                 print(var_x)
     
 
-    plt.plot(var_value3, var_value2)
+    plt.plot(var_x, var_y)
 
 ax = plt.gca()
 ax.set_xlim(0.6, 1)
 ax.set_ylim(8, 1)
 ax.set_xlabel('Water Saturation')
-ax.set_ylable('Depth (m)')
+ax.set_ylabel('Depth (m)')
 """
     plt.figure(1)
     plt.subplot(111)
