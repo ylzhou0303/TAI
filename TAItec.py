@@ -12,7 +12,13 @@ for k in range(1,6):
     file_name = "ferm-00" + str(k) + ".tec"
     with open(file_name,'r') as inputFile:
         read_lines = inputFile.readlines()
-        read_lines = read_lines.replace(' -','  ')
+     
+        data = []
+        
+        for w in range(3, len(read_lines)):
+            data.append(read_lines[w].replace(' -', '  -')) #deal with the negative values
+            
+            
         parameter_str = read_lines[1] #read in the 2nd line, getting variable names as strings
         parameter_list = parameter_str.replace('"','').replace('\n','').split(',')
         result_list = [] #define a list 
@@ -21,7 +27,7 @@ for k in range(1,6):
             dic = {parameter_list[i]:[]} #define a default format for each dic as variable_name:value_list
             result_list.append(dic) #append value list from each line in the data file
         for i in range(3, len(read_lines)): #start from the 4th line
-            data_list = read_lines[i].split('  ') #begin reading data, split with two splaces '  '
+            data_list = data[i - 3].split('  ') #begin reading data, split with two splaces '  '
             for j in range(0,len(result_list)): #loop for reading in data at each line
                 for key,value in result_list[j].items(): #key is the variable name, value is the data
                     value.append(data_list[j])            
