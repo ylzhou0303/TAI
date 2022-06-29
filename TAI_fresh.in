@@ -11,8 +11,10 @@ SIMULATION
       /
     /
     SUBSURFACE_TRANSPORT transport
-      GLOBAL_IMPLICIT
-      NUMERICAL_JACOBIAN
+      MODE GIRT
+      OPTIONS
+        #NUMERICAL_JACOBIAN
+      /
     /
   /
 END
