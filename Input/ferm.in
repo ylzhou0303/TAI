@@ -425,8 +425,6 @@ NUMERICAL_METHODS TRANSPORT
   /
 END
 
-skip
-noskip
 
 #=========================== discretization ===================================
 GRID

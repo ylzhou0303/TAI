@@ -1,0 +1,1333 @@
+#Description: Redox ladder ation), with ELM CTC bgc sandboxes
+# Rate constants estimated to show different processes
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_FLOW flow
+      MODE GENERAL
+      OPTIONS
+        ARITHMETIC_GAS_DIFFUSIVE_DENSITY
+      /
+    /
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
+      OPTIONS
+      #NUMERICAL_JACOBIAN
+      /
+    /
+  /
+END
+
+SUBSURFACE
+
+#=========================== useful transport parameters =======================
+
+
+REFERENCE_LIQUID_DENSITY 1.d3
+
+
+#+++++++++++++++++++++++ I. DOMAINS +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+skip    ! if skipped, CLM grids will be enforced to replace PF-mesh defined below (discretization/region) 
+#======================= I-0. CLM <==> PFLOTRAN domain mapping files ==========
+MAPPING_FILES                   
+  !
+END
+noskip
+
+#======================= I-1. discretization ===================================
+# NOTE: the following ONLY provides required data initialization, and will be 
+#       over-riddn by CLM domains.
+GRID
+  TYPE structured
+  ORIGIN 0.d0 0.d0 0.d0
+  NXYZ 1 1 15
+  DXYZ 
+     1.0d1 
+     1.0d1 
+     13.851152141963599d0 \
+     11.126150294204420d0 \ 
+     6.7483512780057175d0 \ 
+     4.0930819526214002d0 \ 
+     2.4825796969813321d0 \     
+     1.5057607013992766d0 \
+     0.91329003158906108d0 \
+     0.55393840536868488d0 \
+     0.33598062644843263d0 \
+     0.20378255101043175d0 \
+     0.12360036510228053d0 \     
+     0.074967410986208557d0 \    
+     0.04047003324241320d0 \      
+     0.027578969259676251d0 \
+     0.022512817916255204d0
+  /
+END
+
+PROC 1 1 1
+
+#======================= I-2.regions ===========================================
+REGION top
+  COORDINATES
+    0.d0 0.d0 42.103197276099188d0
+    1.d0 1.d0 42.103197276099188d0
+  /
+  FACE TOP
+END
+
+REGION bottom
+  COORDINATES
+    0.d0 0.d0 0.0d0
+    1.d0 1.d0 0.0d0
+  /
+  FACE BOTTOM
+END
+
+REGION aerenchyma
+  COORDINATES
+    0.5d0 0.5d0 42.0d0
+    0.5d0 0.5d0 42.0d0
+  /
+  FACE BOTTOM
+END
+
+REGION aerenchyma2
+  COORDINATES
+    0.5d0 0.5d0 41.9d0
+    0.5d0 0.5d0 41.9d0
+  /
+  FACE BOTTOM
+END
+
+REGION aerenchyma3
+  COORDINATES
+    0.5d0 0.5d0 41.6d0
+    0.5d0 0.5d0 41.6d0
+  /
+  FACE BOTTOM
+END
+
+REGION all
+  COORDINATES
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 42.103197276099188d0
+  /
+  FACE TOP
+END
+
+
+
+#=========================== chemistry ========================================
+CHEMISTRY
+  PRIMARY_SPECIES
+    NH4+
+    NO3-
+    O2(aq)
+    N2(aq)
+    N2O(aq)
+    H+
+    DOM1
+    DOM2
+    HCO3-
+    CH4(aq)
+    SO4--
+    H2S(aq)
+    Na+
+    Cl-
+    Ca++
+    HS-
+    Fe(OH)3(aq)
+    Fe(OH)2(aq)
+    Tracer
+    Tracer1
+    Tracer2
+    Tracer3
+    Tracer4
+    Tracer5
+    Tracer6
+    Tracer7
+  /
+  SECONDARY_SPECIES
+    NH3(aq)
+    OH-
+    CO3--
+    NH4SO4-
+    Urea(aq)
+    HSO4-
+    H2SO4(aq)
+    HNO3(aq)    
+    NaNO3(aq)
+    NaCl(aq)
+    NaSO4-
+    NaCO3-
+    NaHCO3(aq)
+    HCl(aq)
+    CaCO3(aq)
+    CaCl+
+    CaCl2(aq)
+    CaHCO3+
+    CaSO4(aq)
+    CO(aq)
+    CO2(aq)
+    Acetic_acid(aq)
+    S--
+
+#Fe++
+    FeOH+
+    FeSO4(aq)
+    FeHCO3+
+    Fe++
+    Fe(OH)3-
+    Fe(OH)4--
+    FeCO3(aq)
+    FeCH3COO+
+    FeCl+  
+    FeCl4--  
+    FeCl2(aq)
+
+#Fe+++
+    FeNO3++
+    FeSO4+
+    FeCO3+ 
+    FeOH++   
+    Fe(OH)2+ 
+    Fe+++
+    Fe(OH)4- 
+    FeCl++
+    FeCl4-
+
+  /
+  DECOUPLED_EQUILIBRIUM_REACTIONS
+    NO3-
+    N2(aq)
+    CH4(aq)
+    H2S(aq)
+    HS-
+
+  /
+  MINERALS
+    Calcite
+    Halite     
+    Pyrite
+    Fe(OH)3
+    Fe
+    Fe(OH)2
+  /
+  
+  IMMOBILE_SPECIES
+    microbes
+
+    ! CTC-CN specific species ----------------------------------------------------------------------------------
+    SOIL1           ! SOM component 1, fixed C/N ratio
+    SOIL2           ! SOM component 2, fixed C/N ratio
+    SOIL3           ! SOM component 3, fixed C/N ratio
+    SOIL4           ! SOM component 4, fixed C/N ratio
+    LITR1C          ! LITTER component 1
+    LITR2C          ! LITTER component 2
+    LITR3C          ! LITTER component 3
+    LITR1N          ! 
+    LITR2N          ! 
+    LITR3N          ! Coarse Woody Debris
+    CWDC            ! 
+    CWDN            ! 
+    NH4sorb         ! NH4+ in absorbed state used in absorption sandbox
+    PlantN          ! total plant N pool
+    Plantndemand    ! accumulative plant uptake (for tracking)
+    Plantnh4uptake  ! accumulative plant uptake (for tracking)
+    Plantno3uptake  ! accumulative plant uptake (for tracking)
+    NGASmin         ! accumulative N gas emission from mineralization (for tracking)
+    NGASnitr        ! accumulative N gas emission from nitrification (for tracking)
+    NGASdeni        ! accumulative N gas emission from denitrification (for tracking)
+    HRimm           ! Total CO2 released (HR) during decomposition (for tracking)
+    Nmin            ! Total Gross Soil Inorg. N mineralized during decomposition (for tracking)
+    Nimp            ! Total Potential Soil Inorg. N immoblized during decomposition (for tracking)
+    Nimm            ! Total Actual Soil Inorg. N immoblized during decomposition (for tracking)
+    ! CTC-CN specific species ----------------------------------------------------------------------------------
+
+  /
+  
+  PASSIVE_GAS_SPECIES
+    CO2(g)
+    O2(g)
+    N2(g)*
+    N2O(g)
+    NH3(g)
+    CH4(g)
+  /
+  
+  MINERAL_KINETICS
+    Fe 
+      RATE_CONSTANT 1.d-20 mol/m^2-sec
+      /  
+    Fe(OH)2
+      RATE_CONSTANT 1.d-9 mol/m^2-sec
+      /
+    Fe(OH)3
+      RATE_CONSTANT 1.d-9
+      /
+    Calcite
+      RATE_CONSTANT 1.d-10
+      /
+    Pyrite
+      RATE_CONSTANT 1.d-18
+      /
+    Halite
+      RATE_CONSTANT 1.d-5
+      /
+    /
+
+
+  REACTION_SANDBOX
+    ! (Begin) ELM CTC-CN SOM decomposition sandboxes -------------------------------------------------------------------
+    SOMDECOMP
+      
+      POOLS   ! CN ratio if constant
+        SOIL1  12.d0 
+        SOIL2  12.d0
+        SOIL3  10.d0
+        SOIL4  10.d0
+        LITR1  
+        LITR2    
+        LITR3
+        CWD
+        DOM1   55.0d0
+        DOM2   50.0d0
+        microbes 10.d0
+      /
+   
+      REACTION
+        UPSTREAM_POOL CWD
+        DOWNSTREAM_POOL LITR2 0.76d0           ! sum of fractions to LITR2+LITR3 = 1. (NO hr!)
+        DOWNSTREAM_POOL LITR3 0.24d0
+        RATE_DECOMPOSITION 0.00010 1/d         ! CLM-CN fragmentation rate k:
+      /
+
+      REACTION
+        UPSTREAM_POOL LITR1
+        DOWNSTREAM_POOL SOIL1 0.61d0
+        RATE_DECOMPOSITION 1.204 1/d           ! CLM-CN dec. rate k:
+        !
+        MONOD
+          SPECIES_NAME  NH4+ 
+          HALF_SATURATION_CONSTANT 1.0d-5          ! unit: moles/m3 soil - much faster if <1.d-5 (~1.d-10 g/gsoil)
+        /
+        MONOD
+          SPECIES_NAME  NO3- 
+          HALF_SATURATION_CONSTANT 1.0d-5          ! unit: moles/m3 soil - much faster if <1.d-5 (~1.d-10 g/gsoil)
+        /
+      /
+
+      REACTION
+        UPSTREAM_POOL LITR2    
+        DOWNSTREAM_POOL SOIL2 0.45d0
+        RATE_DECOMPOSITION 0.0726 1/d          ! CLM-CN dec. rate k: 
+        !
+        MONOD
+          SPECIES_NAME  NH4+ 
+          HALF_SATURATION_CONSTANT 1.0d-5          ! unit: moles/m3 soil - much faster if <1.d-5 (~1.d-10 g/gsoil)
+        /
+        MONOD
+          SPECIES_NAME  NO3- 
+          HALF_SATURATION_CONSTANT 1.0d-7          ! unit: moles/m3 soil - much faster if <1.d-5 (~1.d-10 g/gsoil)
+        /
+      /
+
+      REACTION
+        UPSTREAM_POOL LITR3
+        DOWNSTREAM_POOL SOIL3 0.71d0
+        RATE_DECOMPOSITION 0.0141 1/d          ! CLM-CN dec. rate k: 
+        !
+        MONOD
+          SPECIES_NAME  NH4+ 
+          HALF_SATURATION_CONSTANT 1.0d-5          ! unit: moles/m3 soil - much faster if <1.d-5 (~1.d-10 g/gsoil)
+        /
+        MONOD
+          SPECIES_NAME  NO3- 
+          HALF_SATURATION_CONSTANT 1.0d-7          ! unit: moles/m3 soil - much faster if <1.d-5 (~1.d-10 g/gsoil)
+        /
+      /
+
+      REACTION
+        UPSTREAM_POOL SOIL1
+        DOWNSTREAM_POOL SOIL2 0.72d0
+        RATE_DECOMPOSITION 0.1726 1/d          ! CLM-CN dec. rate k: 
+      /
+      REACTION
+        UPSTREAM_POOL SOIL2
+        DOWNSTREAM_POOL SOIL3 0.54d0
+        RATE_DECOMPOSITION 0.0141 1/d          ! CLM-CN dec. rate k:
+      /
+      REACTION
+        UPSTREAM_POOL SOIL3
+        DOWNSTREAM_POOL SOIL4 0.45d0
+        RATE_DECOMPOSITION 0.00141 1/d         ! CLM-CN dec. rate k: 
+        RATE_AD_FACTOR 10.0d0                  ! Accelerated decomposition factor
+      /       
+      REACTION
+        UPSTREAM_POOL SOIL4
+        RATE_DECOMPOSITION 0.00010 1/d         ! CLM-CN dec. rate k: 
+        RATE_AD_FACTOR 100.0d0                 ! Accelerated decomposition factor
+      /
+
+      REACTION
+        UPSTREAM_POOL SOIL1
+        DOWNSTREAM_POOL DOM1 0.075d0
+        DOWNSTREAM_POOL DOM2 0.025d0
+        RATE_DECOMPOSITION 0.0726 1/d          ! CLM-CN dec. rate k: 
+      /
+
+      REACTION
+        UPSTREAM_POOL SOIL2
+        DOWNSTREAM_POOL DOM1 0.050d0
+        DOWNSTREAM_POOL DOM2 0.050d0
+        RATE_DECOMPOSITION 0.0526 1/d          ! CLM-CN dec. rate k: 
+      /
+      REACTION
+        UPSTREAM_POOL SOIL3
+        DOWNSTREAM_POOL DOM1 0.025d0
+        DOWNSTREAM_POOL DOM2 0.075d0
+        RATE_DECOMPOSITION 0.0226 1/d          ! CLM-CN dec. rate k: 
+      /
+      REACTION
+        UPSTREAM_POOL SOIL4
+        DOWNSTREAM_POOL DOM1 0.010d0
+        DOWNSTREAM_POOL DOM2 0.090d0
+        RATE_DECOMPOSITION 0.00726 1/d          ! CLM-CN dec. rate k: 
+      /
+      REACTION
+        UPSTREAM_POOL microbes
+        DOWNSTREAM_POOL SOIL1 0.090d0
+        RATE_DECOMPOSITION 0.01 1/d          ! CLM-CN dec. rate k: 
+      /
+
+      AMMONIUM_INHIBITION_NITRATE 10.0d0       ! ratio of NH4/NO3
+
+      N2O_FRAC_MINERALIZATION 0.02d0           ! max. fraction of net mineralization for gaseous emission          
+   
+    /
+    ! (End) ELM CTC-CN SOM decomposition sandboxes ---------------------------------------------------------------------
+
+    ! (Begin) ELM CTC-CN PLANT N uptake sandboxes ----------------------------------------------------------------------
+    PLANTN
+      AMMONIUM_HALF_SATURATION 1.0d-8
+      NITRATE_HALF_SATURATION 1.0d-2
+      AMMONIUM_INHIBITION_NITRATE 5.0d0
+    /
+
+  ! (End) ELM CTC-CN PLANT N uptake sandboxes ------------------------------------------------------------------------
+  / ! REACTION_SANDBOX
+
+
+  TRUNCATE_CONCENTRATION 1.d-15
+
+#DOM RESPIRATION
+ MICROBIAL_REACTION
+    REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
+    RATE_CONSTANT 5.0d0 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 4.d-2 #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME DOM1
+      HALF_SATURATION_CONSTANT 3.d-2 #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+#DOM RESPIRATION
+ MICROBIAL_REACTION
+    REACTION 2.0 DOM2 + 13.0 O2(aq) -> 12.0 HCO3- + 8.0 H+ + 1.d-1 NH4+
+    RATE_CONSTANT 4.0d-1 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 1.d-2 #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME DOM2
+      HALF_SATURATION_CONSTANT 1.d-2 #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+#NITRIFICATION
+  MICROBIAL_REACTION
+    REACTION 2.d0 NH4+ + 5.d0 O2(aq) -> 2.d0 NO3- + 4.d0 H2O
+    RATE_CONSTANT 2.0d-2 #Dettman 2001 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME NH4+ 
+      HALF_SATURATION_CONSTANT 1.0d-4 #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 5.0d-6 #Gao et al 2010
+    /
+  /
+
+
+#DENITRIFICATION DOM1
+  MICROBIAL_REACTION 
+    REACTION 5.d0 DOM1 + 8.d0 NO3- -> 10.d0 HCO3- + 4.d0 N2(aq) + 2.d0 H+ + 4.d0 H2O + 1.d-1 NH4+ + N2O(aq)
+    RATE_CONSTANT 9.0d-2 #Dettman 2001 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME NO3-
+      HALF_SATURATION_CONSTANT 7.3d-3 #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME DOM1
+      HALF_SATURATION_CONSTANT 3.d-2
+    /
+    INHIBITION
+      SPECIES_NAME O2(aq)
+      TYPE MONOD
+      INHIBITION_CONSTANT 6.25d-5   #using hypoxia as a requirement O2 must be < 2mg/L for DEN
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+#DENITRIFICATION DOM2
+  MICROBIAL_REACTION 
+    REACTION DOM2 + 4.8d0 NO3- + 86.8d0 H+ -> 6.d0 HCO3- + 2.4d0 N2(aq) + 45.4d0 H2O + 1.d-1 NH4+ + N2O(aq)
+    RATE_CONSTANT 1.d-2 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME NO3-
+      HALF_SATURATION_CONSTANT 5.3d-3  #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME DOM2
+      HALF_SATURATION_CONSTANT 7.d-2
+    /
+    INHIBITION
+      SPECIES_NAME O2(aq)
+      TYPE MONOD
+      INHIBITION_CONSTANT 6.25d-5   #using hypoxia as a requirement O2 must be < 2mg/L for DEN
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+ /
+
+
+#IRON OXIDATION
+  MICROBIAL_REACTION 
+    REACTION 2.d0 Fe(OH)2(aq) + O2(aq) + 2.d0 H+ -> 2.d0 Fe(OH)3(aq) 
+    RATE_CONSTANT 6.d-3 # mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME Fe(OH)2(aq)
+      HALF_SATURATION_CONSTANT 2.7d-1  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+#IRON REDUCTION DOM1
+  MICROBIAL_REACTION 
+    REACTION DOM1 + 8.d0 Fe(OH)3(aq) + H2O -> 8.d0 Fe(OH)2(aq) + 2.d0 HCO3- + 6.d0 H+ + 1.d-1 NH4+
+    RATE_CONSTANT 3.0d-2 #Furukawa et al 2004 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME Fe(OH)3(aq)
+      HALF_SATURATION_CONSTANT 2.7d-1  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+#IRON REDUCTION DOM2
+  MICROBIAL_REACTION 
+    REACTION DOM2 + 24.d0 Fe(OH)3(aq) + 13.d0 H2O -> 24.d0 Fe(OH)2(aq) + 6.d0 HCO3- + 30.d0 H+ + 1.d-1 NH4+
+    RATE_CONSTANT 1.56d-2 #Furukawa et al 2004 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME Fe(OH)3(aq)
+      HALF_SATURATION_CONSTANT 2.7d-1  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+#Sulfate reduction DOM1
+  MICROBIAL_REACTION 
+    REACTION DOM1 + SO4-- -> 2.d0 HCO3- + H2S(aq) + 1.d-1 NH4+
+    RATE_CONSTANT 4.52d-3 #Furukawa et al 2004 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME SO4--
+      HALF_SATURATION_CONSTANT 1.0d-3  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+#Sulfate reduction DOM2
+  MICROBIAL_REACTION 
+    REACTION DOM2 + 3.d0 SO4-- + H2O -> 6.d0 HCO3- + 3.d0 H2S(aq) + 1.d-1 NH4+
+    RATE_CONSTANT 2.53d-3 #Furukawa et al 2004 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME SO4--
+      HALF_SATURATION_CONSTANT 1.d-3  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+#H2S Oxidation
+  MICROBIAL_REACTION 
+    REACTION H2S(aq) + 2.d0 O2(aq) -> SO4-- + 2.d0 H+ 
+    RATE_CONSTANT 1.67d-5 #mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME H2S(aq)
+      HALF_SATURATION_CONSTANT 1.d0  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+#Methane oxidation - O2
+  MICROBIAL_REACTION 
+    REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
+    RATE_CONSTANT 1.16d-7 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 3.6d0  #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME CH4(aq)
+      HALF_SATURATION_CONSTANT 3.6d0  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+#Methane oxidation - NO3-
+  MICROBIAL_REACTION 
+    REACTION 5.d0 CH4(aq) + 8.d0 NO3- -> 5.d0 HCO3- + 4.d0 N2(aq) + Tracer1
+    RATE_CONSTANT 1.16d-7 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME NO3-
+      HALF_SATURATION_CONSTANT 6.6d0  #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME CH4(aq)
+      HALF_SATURATION_CONSTANT 6.6d0  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+#Methane oxidation - Fe+++
+  MICROBIAL_REACTION 
+    REACTION CH4(aq) + 8.d0 Fe(OH)3(aq) + 3.d0 H2O -> HCO3- + 9.d0 H+ + 8.d0 Fe(OH)2(aq) + Tracer2
+    RATE_CONSTANT 0.56d-7 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME Fe(OH)3(aq)
+      HALF_SATURATION_CONSTANT 1.6d1  #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME CH4(aq)
+      HALF_SATURATION_CONSTANT 1.6d1 #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+#Methane oxidation - SO4--
+  MICROBIAL_REACTION 
+    REACTION CH4(aq) + SO4-- + H+ -> HCO3- + H2O + H2S(aq) + 300.d0 Tracer3
+    RATE_CONSTANT 3.26d-8 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME SO4--
+      HALF_SATURATION_CONSTANT 6.3d1  #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME CH4(aq)
+      HALF_SATURATION_CONSTANT 6.3d1  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+#Methanogenesis HCO3-
+  MICROBIAL_REACTION 
+    REACTION HCO3- + 7.d0 H+ -> 1.d0 CH4(aq) + 2.d0 H2O + Tracer4
+    RATE_CONSTANT 3.1d-4 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME HCO3-
+      HALF_SATURATION_CONSTANT 8.d0  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+#Methanogenesis DOM1
+  MICROBIAL_REACTION 
+    REACTION DOM1 + H2O -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+ + Tracer5
+    RATE_CONSTANT 0.8d-3 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME DOM1
+      HALF_SATURATION_CONSTANT 7.d0  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+#Methanogenesis DOM2
+  MICROBIAL_REACTION 
+    REACTION DOM2 + 6.d0 H+ + H2O -> 4.d0 CH4(aq) + 2.d0 HCO3- + 1.d-1 NH4+ + Tracer6
+    RATE_CONSTANT 0.8d-4 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME DOM2
+      HALF_SATURATION_CONSTANT 7.3d0  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+
+
+ # LOG_FORMULATION
+  DATABASE ./hanford.dat
+
+  OUTPUT
+    PH
+    TOTAL !FREE_ION
+      O2(aq)
+      SO4--
+      H2S(aq)
+      CH4(aq)
+      DOM1
+      DOM2
+      NO3-
+      NH4+
+      HCO3-
+      Tracer
+      Tracer1
+      Tracer2
+      Tracer3
+      Tracer4
+      Tracer5
+      Tracer6
+      Tracer7
+      Fe(OH)2(aq)
+      Fe(OH)3(aq)
+    
+    !TOTAL
+    !  Fe(OH)2(aq)
+    !  Fe(OH)3(aq)
+    !  HS-
+    !  H2S(aq)
+    !  HCO3-
+
+    !PRIMARY_SPECIES
+    !SECONDARY_SPECIES
+    !IMMOBILE
+    !GASES
+    !MINERALS
+  /
+END
+
+#=========================== transport constraints ============================
+CONSTRAINT initial
+  CONCENTRATIONS
+    NH4+        4.d-9      T NH3(g) #GCReW Data
+    NO3-        3.5d-5	   T #Steinmuller paper
+    O2(aq)      2.5d-4     G O2(g) 
+    N2(aq)      4.65d-6    G N2(g)* 
+    N2O(aq)     4.65d-15   G N2O(g)
+    H+          6.7d0      P 
+    DOM1        5.d-4      T #Steinmuller paper
+    DOM2        1.d-2      T #Steinmuller paper
+    HCO3-       5.5d-4      G CO2(g) 
+    CH4(aq)     1.d-6      T #GCReW Data
+    SO4--       3.d-3      T
+    H2S(aq)     9.d-4	     T
+    Na+         1.03d-2    T #GCReW Data
+    Cl-         1.03d-2    T #GCReW Data
+    Ca++        1.0d-4     M Calcite
+    HS-         1.d-15     T
+    Fe(OH)2(aq)       8.0d-10    M Fe(OH)2
+    Fe(OH)3(aq)       8.0d-10    M Fe(OH)3
+    Tracer      1.d-15     T
+    Tracer1     1.d-15     T
+    Tracer2     1.d-15     T
+    Tracer3     1.d-15     T
+    Tracer4     1.d-15     T
+    Tracer5     1.d-15     T
+    Tracer6     1.d-15     T
+    Tracer7     1.d-1      T
+    /
+  IMMOBILE     # [mol/m^3 bulk]
+    microbes       6.d-7
+    SOIL1          1.d-10      ! [moles C/m^3 bulk]
+    SOIL2          1.d-10
+    SOIL3          1.d-10
+    SOIL4          1.d-10
+    CWDC           1.d-10
+    LITR1C         0.1852d-3
+    LITR2C         0.4578d-3
+    LITR3C         0.2662d-3
+    LITR1N         0.00508954d-3
+    LITR2N         0.01258096d-3
+    LITR3N         0.00731553d-3
+    CWDN           0.2d-22
+    NH4sorb        1.d-20
+    PlantN         1.d-20
+    Plantndemand   1.d-20     ! 0-resetting its value at end of a CLM time-step, when coupled
+    Plantnh4uptake 1.d-20     ! 0-resetting its value at end of a CLM time-step, when coupled
+    Plantno3uptake 1.d-20     ! 0-resetting its value at end of a CLM time-step, when coupled
+    NGASmin        1.d-20     ! 0-resetting its value at end of a CLM time-step, when coupled
+    NGASnitr       1.d-20     ! 0-resetting its value at end of a CLM time-step, when coupled
+    NGASdeni       1.d-20     ! 0-resetting its value at end of a CLM time-step, when coupled
+    HRimm          1.d-20  
+    Nmin           1.d-20  
+    Nimm           1.d-20  
+    Nimp           1.d-20  
+    /
+       
+  MINERALS
+    Calcite       1.d-20    1. cm^2/cm^3
+    Halite        1.d-10    1. cm^2/cm^3
+    Pyrite        1.d-25    1. cm^2/cm^3
+    Fe(OH)3       1.d-25    1. cm^2/cm^3
+    Fe            1.d-25    1. cm^2/cm^3
+    Fe(OH)2       1.75d-25  1. cm^2/cm^3
+    /
+END
+
+CONSTRAINT sed_air_interface
+  CONCENTRATIONS
+    NH4+        4.d-9      G NH3(g) #GCReW Data
+    NO3-        9.6d-6	   T #Steinmuller paper
+    O2(aq)      2.5d-4    G O2(g)
+    N2(aq)      4.65d-4    G N2(g)*
+    N2O(aq)     4.65d-15   G N2O(g) 
+    H+          6.6d0      P 
+    DOM1        2.5d-4      T #Steinmuller paper
+    DOM2        1.d-2      T #Steinmuller paper
+    HCO3-       7.0d-6     G CO2(g)
+    CH4(aq)     1.d-4      G CH4(g) 
+    SO4--       4.d-3     T
+    H2S(aq)     1.d-4	     T
+    Na+         1.03d-2    T #GCReW Data
+    Cl-         1.03d-2    T #GCReW Data
+    Ca++        1.0d-4     M Calcite
+    HS-         1.d-15     T
+    Fe(OH)2(aq)       8.0d-10    M Fe(OH)2
+    Fe(OH)3(aq)       8.5d-9    M Fe(OH)3
+    Tracer      1.d-15     T
+    Tracer1     1.d-15     T
+    Tracer2     1.d-15     T
+    Tracer3     1.d-15     T
+    Tracer4     1.d-15     T
+    Tracer5     1.d-15     T
+    Tracer6     1.d-15     T
+    Tracer7     1.d-1     T
+  /
+END
+
+
+CONSTRAINT tide
+  CONCENTRATIONS
+    NH4+        3.d-6      T
+    NO3-        4.5d-8	   T
+    O2(aq)      2.43d-6    T #G O2(g)
+    N2(aq)      4.65d-4    T #G N2(g)*
+    N2O(aq)     4.65d-15   T #G N2O(g) 
+    H+          8.5d0      P
+    DOM1        1.d-2      T
+    DOM2        1.d-2      T
+    HCO3-       6.6d-5     T #G CO2(g)
+    CH4(aq)     1.d-15     T #G CH4(g)
+    SO4--       2.8e-3     T
+    H2S(aq)     1.d-8	     T
+    Na+         1.03d-6    T              #1.03d-2    T #GCReW Data4.69d-2    T
+    Cl-         1.03d-6    T              #1.03d-2    T #GCReW Data5.46d-2    T
+    Ca++        1.0d-1     T 
+    HS-         1.d-15     T
+    Fe(OH)2(aq)       3.0d-20    M Fe(OH)2
+    Fe(OH)3(aq)       3.5d-20    M Fe(OH)3
+    Tracer      1.d-15     T
+    Tracer1     1.d-15     T
+    Tracer2     1.d-15     T
+    Tracer3     1.d-15     T
+    Tracer4     1.d-15     T
+    Tracer5     1.d-15     T
+    Tracer6     1.d-15     T
+    Tracer7     1.d-15     T
+  /
+END
+
+CONSTRAINT evap
+  CONCENTRATIONS
+    NH4+        5.d-20      T
+    NO3-        4.5d-20	   T
+    O2(aq)      2.43d-20    T #G O2(g)
+    N2(aq)      4.65d-20   T #G N2(g)*
+    N2O(aq)     4.65d-20   T #G N2O(g) 
+    H+          7.0d0      P
+    DOM1        1.d-20      T
+    DOM2        1.d-20      T
+    HCO3-       6.6d-20     T G CO2(g)
+    CH4(aq)     2.d-3       G CH4(g)
+    SO4--       2.8e-20     T
+    H2S(aq)     1.d-20	     T
+    Na+         4.69d-20    T
+    Cl-         5.46d-20   T
+    Ca++        1.0d-20     T 
+    HS-         1.d-20     T
+    Fe(OH)2(aq)       3.0d-20    M Fe(OH)2
+    Fe(OH)3(aq)       3.5d-20    M Fe(OH)3
+    Tracer      1.d-15     T
+    Tracer1     1.d-15     T
+    Tracer2     1.d-15     T
+    Tracer3     1.d-15     T
+    Tracer4     1.d-15     T
+    Tracer5     1.d-15     T
+    Tracer6     1.d-15     T
+    Tracer7     1.d-4      T
+  /
+END
+
+
+
+CONSTRAINT aerenchyma
+  CONCENTRATIONS
+    NH4+        3.d-20      T
+    NO3-        4.5d-20	   T
+    O2(aq)      2.5d-4    G O2(g)
+    N2(aq)      4.65d-20   T #G N2(g)*
+    N2O(aq)     4.65d-20   T #G N2O(g) 
+    H+          7.0d0      P
+    DOM1        1.d-20      T
+    DOM2        1.d-20      T
+    HCO3-       6.6d-20     T G CO2(g)
+    CH4(aq)     1.d-20      T G CH4(g)
+    SO4--       2.8e-20     T
+    H2S(aq)     1.d-20	     T
+    Na+         4.69d-20    T
+    Cl-         5.46d-20   T
+    Ca++        1.0d-20     T 
+    HS-         1.d-20     T
+    Fe(OH)2(aq)       3.0d-20    M Fe(OH)2
+    Fe(OH)3(aq)       3.5d-20    M Fe(OH)3
+    Tracer      1.d-15     T
+    Tracer1     1.d-15     T
+    Tracer2     1.d-15     T
+    Tracer3     1.d-15     T
+    Tracer4     1.d-15     T
+    Tracer5     1.d-15     T
+    Tracer6     1.d-15     T
+    Tracer7     1.d-15     T
+  /
+END
+
+
+#=========================== solver options ===================================
+NUMERICAL_METHODS TRANSPORT
+LINEAR_SOLVER TRANSPORT
+  !SOLVER DIRECT
+  SOLVER ITERATIVE     ! default: ITERATIVE or KRYLOV: KSP_TYPE of BCGS and PC_TYPE of BJACOBI, if not modified below
+  PC_TYPE JACOBI       ! default (iterative): BJACOBI. 
+  KSP_TYPE fgmres      ! default: BCGS. NOT much difference 
+END
+
+NEWTON_SOLVER TRANSPORT
+  ATOL 1.d-20
+  RTOL 1.d-15
+  STOL 1.d-10
+  ITOL 1.d-10
+END
+
+END
+#=========================== fluid properties =================================
+FLUID_PROPERTY
+  PHASE LIQUID
+  DIFFUSION_COEFFICIENT 1.d-6
+END
+
+FLUID_PROPERTY
+  PHASE gas
+  DIFFUSION_COEFFICIENT 6.d-04
+END
+
+#=========================== material properties ==============================
+
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY 0.25d0
+  SOIL_COMPRESSIBILITY_FUNCTION DEFAULT     ! BRAGFLO compressed porosity has mathematical issue at high pressure
+  ! 1d-7~1d-8 equivalent to ice expansion of volume, upon 'default' or 'BRAGFLO'
+  ! beyond this range may cause tiny-time stepping
+  SOIL_COMPRESSIBILITY 1.d-07               ! 1d-7~1d-8 is a critical value for freezing expansion in soil;
+  SOIL_REFERENCE_PRESSURE 201325.d0
+  ROCK_DENSITY 2650.0d0
+  SPECIFIC_HEAT 830.0d0
+  THERMAL_CONDUCTIVITY_DRY 0.12037926674717922d0
+  THERMAL_CONDUCTIVITY_WET 1.6082691464310437d0
+  THERMAL_COND_EXPONENT 0.45d0
+  THERMAL_CONDUCTIVITY_FROZEN 2.29d+00
+  THERMAL_COND_EXPONENT_FROZEN 0.95d0
+  CHARACTERISTIC_CURVES sf01
+  PERMEABILITY
+    PERM_X 6.5870260083342112E-013
+    PERM_Y 6.5870260083342112E-013
+    PERM_Z 6.5870260083342112E-013
+  /
+/
+#=========================== characteristic curves ============================
+CHARACTERISTIC_CURVES sf01
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    ALPHA 1.d-4
+    M 0.5d0
+    MAX_CAPILLARY_PRESSURE 1.d6
+  /
+  PERMEABILITY_FUNCTION MUALEM
+    PHASE LIQUID
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    M 0.5d0
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_GAS
+    PHASE GAS
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    GAS_RESIDUAL_SATURATION 1.d-40
+    M 0.5d0
+  /
+END
+#=========================== output options ===================================
+OUTPUT
+  !PERIODIC_OBSERVATION TIMESTEP 1
+  SCREEN PERIODIC 100
+!  PERIODIC TIMESTEP 1
+  FORMAT TECPLOT POINT
+  PERIODIC TIME 0.25d0 d
+  VARIABLES
+    TEMPERATURE
+  /
+END
+
+#=========================== times ============================================
+TIME
+  FINAL_TIME 3.d0 d
+  INITIAL_TIMESTEP_SIZE 0.5d0 h
+  MAXIMUM_TIMESTEP_SIZE 12.d0 h
+END
+
+#=========================== regions ==========================================
+REGION obs_pt
+  COORDINATE 0.5 0.5 1.9
+END
+
+#=========================== observation points ===============================
+OBSERVATION
+  REGION obs_pt
+END
+
+#=========================== transport conditions =============================
+TRANSPORT_CONDITION initial
+  TYPE dirichlet
+  CONSTRAINT_LIST
+    0.d0 initial
+  /
+END
+
+TRANSPORT_CONDITION sed_air_interface
+  TYPE dirichlet
+  CONSTRAINT_LIST
+   0.d0 sed_air_interface
+  /
+END
+
+FLOW_CONDITION initial
+  TYPE
+    LIQUID_PRESSURE dirichlet
+    MOLE_FRACTION dirichlet
+    TEMPERATURE dirichlet
+  /
+  LIQUID_PRESSURE 200159.412d0
+  MOLE_FRACTION 1.d-10
+  TEMPERATURE 20.d0
+/
+
+FLOW_CONDITION sed_air_interface
+  TYPE
+    LIQUID_PRESSURE dirichlet
+    MOLE_FRACTION dirichlet
+    TEMPERATURE dirichlet
+
+  /
+  LIQUID_PRESSURE 200159.412d0
+  MOLE_FRACTION 1.d-8
+  TEMPERATURE 20.d0
+/
+
+
+TRANSPORT_CONDITION aerenchyma
+  TYPE dirichlet
+  CONSTRAINT_LIST
+   0.d0 aerenchyma
+  /
+END
+
+FLOW_CONDITION aerenchyma
+  TYPE
+    RATE mass_rate
+  /
+RATE LIST
+  TIME_UNITS hr
+  DATA_UNITS kg/s
+    0.    0.d0      0.d0        0.d0
+    1.    0.d0      0.d0        0.d0 
+    2.    0.d0      0.d0        0.d0 
+    3.    0.d0      0.d0        0.d0 
+    4.    0.d0      0.d0        0.d0 
+    5.    0.d0      0.d0        0.d0 
+    6.    1.5d0     1.d-3       0.d0
+    7.    1.5d0     1.d-3       0.d0
+    8.    1.5d0     1.d-3       0.d0
+    9.    1.5d0     1.d-3       0.d0
+    10.   1.5d0     1.d-3       0.d0
+    11.   1.5d0     1.d-3       0.d0
+    12.   1.5d0     1.d-3       0.d0
+    13.   1.5d0     1.d-3       0.d0
+    14.   1.5d0     1.d-3       0.d0 
+    15.   1.5d0     1.d-3       0.d0 
+    16.   1.5d0     1.d-3       0.d0 
+    17.   1.5d0     1.d-3       0.d0 
+    18.   1.5d0     1.d-3       0.d0 
+    19.   1.5d0     1.d-3       0.d0
+    20.   1.5d0     1.d-3       0.d0
+    21.   0.d0      0.d0        0.d0
+    22.   0.d0      0.d0        0.d0
+    23.   0.d0     0.d0         0.d0 
+    24.   0.d0      0.d0        0.d0
+    25.    0.d0      0.d0        0.d0
+    26.    0.d0      0.d0        0.d0 
+    27.    0.d0      0.d0        0.d0 
+    28.    0.d0      0.d0        0.d0 
+    29.    0.d0      0.d0        0.d0 
+    30.    0.d0      0.d0        0.d0 
+    31.    1.5d0     1.d-3       0.d0
+    32.    1.5d0     1.d-3       0.d0
+    33.    1.5d0     1.d-3       0.d0
+    34.    1.5d0     1.d-3       0.d0
+    35.   1.5d0     1.d-3       0.d0
+    36.   1.5d0     1.d-3       0.d0
+    37.   1.5d0     1.d-3       0.d0
+    38.   1.5d0     1.d-3       0.d0
+    39.   1.5d0     1.d-3       0.d0 
+    40.   1.5d0     1.d-3       0.d0 
+    41.   1.5d0     1.d-3       0.d0 
+    42.   1.5d0     1.d-3       0.d0 
+    43.   1.5d0     1.d-3       0.d0 
+    44.   1.5d0     1.d-3       0.d0
+    45.   1.5d0     1.d-3       0.d0
+    46.   0.d0      0.d0        0.d0
+    47.   0.d0      0.d0        0.d0
+    48.   0.d0     0.d0         0.d0
+  /
+/
+
+
+
+TRANSPORT_CONDITION tide
+  TYPE dirichlet
+  CONSTRAINT_LIST
+   0.d0 tide
+  /
+END
+
+TRANSPORT_CONDITION evap
+  TYPE dirichlet
+  CONSTRAINT_LIST
+    0.d0 evap
+  /
+END
+
+FLOW_CONDITION evap
+  TYPE
+    RATE mass_rate
+  /
+     ! liquid gas   energy
+  RATE -5.d-1  1.d-3 0.d0 kg/s kg/s MW
+/
+
+FLOW_CONDITION tide
+  TYPE
+    RATE mass_rate
+  /
+RATE LIST
+  TIME_UNITS hr
+  DATA_UNITS kg/s
+    0.    0.d0      0.d0        0.d0
+    1.    -5.d-3    0.d0        0.d0
+    2.    -4.d-3    0.d0        0.d0
+    3.    -3.d-3    0.d0        0.d0
+    4.    -2.d-3    0.d0        0.d0
+    5.    -1.d-3    0.d0        0.d0
+    6.    0.d0      0.d0        0.d0
+    7.    0.d0      0.d0        0.d0
+    8.    5.d-3     0.d0        0.d0
+    9.    4.d-3     0.d0        0.d0
+    10.   0.d0      0.d0        0.d0
+    11.   0.d0      0.d0        0.d0
+    12.   0.d0      0.d0        0.d0
+    13.   0.d0      0.d0        0.d0
+    14.   -5.d0     0.d0        0.d0
+    15.   -4.d-3    0.d0        0.d0
+    16.   -3.d-3    0.d0        0.d0
+    17.   -2.d-3    0.d0        0.d0
+    18.   -1.d-3    0.d0        0.d0
+    19.   0.d0      0.d0        0.d0
+    20.   0.d0      0.d0        0.d0
+    21.   5.d-3     0.d0        0.d0
+    22.   4.d-3     0.d0        0.d0
+    23.   0.d0     0.d0         0.d0 
+    24.   -2.d-3     0.d0         0.d0
+    25.   -4.d-3     0.d0         0.d0
+    26.   -6.d-3     0.d0         0.d0
+    27.   -4.d-3    0.d0        0.d0
+    28.   -2.d-3    0.d0        0.d0
+    29.   -3.d-3    0.d0        0.d0
+    30.   -2.d-3    0.d0        0.d0
+    31.   2.d-3    0.d0        0.d0
+    32.   4.d-3    0.d0        0.d0
+    33.   6.d-3      0.d0        0.d0
+    34.   4.d-3     0.d0        0.d0 
+    35.   2.d-3     0.d0        0.d0 
+    36.   0.d0     0.d0        0.d0
+    37.   0.d0     0.d0         0.d0 
+    38.   0.d0     0.d0         0.d0 
+    39.   0.d0     0.d0         0.d0 
+    40.   0.d0     0.d0         0.d0 
+    41.   0.d0     0.d0         0.d0 
+    42.   0.d0      0.d0        0.d0 
+    43.   0.d0      0.d0        0.d0 
+    44.   2.d-3    0.d0        0.d0
+    45.   4.d-3    0.d0        0.d0
+    46.   6.d-3    0.d0        0.d0
+    47.   4.d-3     0.d0        0.d0 
+    48.   2.d-3     0.d0        0.d0 
+    
+  /
+ /
+
+
+
+#=========================== condition couplers ===============================
+# initial condition
+INITIAL_CONDITION
+  TRANSPORT_CONDITION initial
+  FLOW_CONDITION initial
+  REGION all
+END
+
+BOUNDARY_CONDITION sed_air_interface
+  TRANSPORT_CONDITION sed_air_interface
+  FLOW_CONDITION sed_air_interface
+  REGION top
+END
+
+
+
+SOURCE_SINK tide
+  FLOW_CONDITION tide
+  TRANSPORT_CONDITION tide
+  REGION top
+END
+
+
+SOURCE_SINK evap
+  FLOW_CONDITION evap
+  TRANSPORT_CONDITION evap
+  REGION aerenchyma
+END
+
+SOURCE_SINK evap2
+  FLOW_CONDITION evap
+  TRANSPORT_CONDITION evap
+  REGION aerenchyma2
+END
+
+SOURCE_SINK evap3
+  FLOW_CONDITION evap
+  TRANSPORT_CONDITION evap
+  REGION aerenchyma3
+END
+
+
+SOURCE_SINK aerenchyma #0.1m
+  FLOW_CONDITION aerenchyma
+  TRANSPORT_CONDITION aerenchyma
+  REGION top
+END
+
+
+SOURCE_SINK aerenchyma2 #0.2m
+  FLOW_CONDITION aerenchyma
+  TRANSPORT_CONDITION aerenchyma
+  REGION aerenchyma
+END
+
+
+SOURCE_SINK aerenchyma3 #0.5m
+  FLOW_CONDITION aerenchyma
+  TRANSPORT_CONDITION aerenchyma
+  REGION aerenchyma2
+END
+
+
+
+
+#=========================== stratigraphy couplers ============================
+STRATA
+  REGION all
+  MATERIAL soil1
+END
+
+#=========================== regression =======================================
+
+#
+END_SUBSURFACE
+#
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

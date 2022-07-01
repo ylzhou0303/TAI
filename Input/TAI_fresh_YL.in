@@ -13,7 +13,7 @@ SIMULATION
     SUBSURFACE_TRANSPORT transport
       MODE GIRT
       OPTIONS
-        #NUMERICAL_JACOBIAN
+      #NUMERICAL_JACOBIAN
       /
     /
   /
@@ -246,7 +246,7 @@ CHEMISTRY
 
   /
   
-  GAS_SPECIES
+  PASSIVE_GAS_SPECIES
     CO2(g)
     O2(g)
     N2(g)*
@@ -725,8 +725,8 @@ CHEMISTRY
   /
 
 
- # LOG_FORMULATION
-  DATABASE ./TAI_database.dat
+  LOG_FORMULATION
+  DATABASE ./TAI_database_Teri.dat
 
   OUTPUT
     PH
@@ -963,6 +963,7 @@ END
 
 
 #=========================== solver options ===================================
+NUMERICAL_METHODS TRANSPORT
 LINEAR_SOLVER TRANSPORT
   !SOLVER DIRECT
   SOLVER ITERATIVE     ! default: ITERATIVE or KRYLOV: KSP_TYPE of BCGS and PC_TYPE of BJACOBI, if not modified below
@@ -977,6 +978,7 @@ NEWTON_SOLVER TRANSPORT
   ITOL 1.d-10
 END
 
+END
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
