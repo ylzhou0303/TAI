@@ -420,6 +420,7 @@ CHEMISTRY
 
   TRUNCATE_CONCENTRATION 1.d-15
 
+skip
 #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
@@ -724,9 +725,9 @@ CHEMISTRY
     /
   /
 
-
+noskip
  # LOG_FORMULATION
-  DATABASE ./hanford.dat
+  DATABASE ./TAI_database_Teri.dat
 
   OUTPUT
     PH
