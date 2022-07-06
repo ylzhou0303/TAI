@@ -12,9 +12,7 @@ SIMULATION
     /
     SUBSURFACE_TRANSPORT transport
       MODE GIRT
-      OPTIONS
       #NUMERICAL_JACOBIAN
-      /
     /
   /
 END
@@ -294,14 +292,14 @@ CHEMISTRY
         DOM2   50.0d0
         microbes 10.d0
       /
-   
+      
       REACTION
         UPSTREAM_POOL CWD
         DOWNSTREAM_POOL LITR2 0.76d0           ! sum of fractions to LITR2+LITR3 = 1. (NO hr!)
         DOWNSTREAM_POOL LITR3 0.24d0
         RATE_DECOMPOSITION 0.00010 1/d         ! CLM-CN fragmentation rate k:
       /
-
+      
       REACTION
         UPSTREAM_POOL LITR1
         DOWNSTREAM_POOL SOIL1 0.61d0
@@ -352,17 +350,20 @@ CHEMISTRY
         DOWNSTREAM_POOL SOIL2 0.72d0
         RATE_DECOMPOSITION 0.1726 1/d          ! CLM-CN dec. rate k: 
       /
+      
       REACTION
         UPSTREAM_POOL SOIL2
         DOWNSTREAM_POOL SOIL3 0.54d0
         RATE_DECOMPOSITION 0.0141 1/d          ! CLM-CN dec. rate k:
       /
+      
       REACTION
         UPSTREAM_POOL SOIL3
         DOWNSTREAM_POOL SOIL4 0.45d0
         RATE_DECOMPOSITION 0.00141 1/d         ! CLM-CN dec. rate k: 
         RATE_AD_FACTOR 10.0d0                  ! Accelerated decomposition factor
-      /       
+      /
+             
       REACTION
         UPSTREAM_POOL SOIL4
         RATE_DECOMPOSITION 0.00010 1/d         ! CLM-CN dec. rate k: 
@@ -394,6 +395,7 @@ CHEMISTRY
         DOWNSTREAM_POOL DOM2 0.090d0
         RATE_DECOMPOSITION 0.00726 1/d          ! CLM-CN dec. rate k: 
       /
+      
       REACTION
         UPSTREAM_POOL microbes
         DOWNSTREAM_POOL SOIL1 0.090d0
@@ -406,21 +408,20 @@ CHEMISTRY
    
     /
     ! (End) ELM CTC-CN SOM decomposition sandboxes ---------------------------------------------------------------------
-
+skip  
     ! (Begin) ELM CTC-CN PLANT N uptake sandboxes ----------------------------------------------------------------------
     PLANTN
       AMMONIUM_HALF_SATURATION 1.0d-8
       NITRATE_HALF_SATURATION 1.0d-2
       AMMONIUM_INHIBITION_NITRATE 5.0d0
     /
-
+noskip
   ! (End) ELM CTC-CN PLANT N uptake sandboxes ------------------------------------------------------------------------
   / ! REACTION_SANDBOX
 
 
   TRUNCATE_CONCENTRATION 1.d-15
 
-skip
 #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
@@ -725,9 +726,9 @@ skip
     /
   /
 
-noskip
+
  # LOG_FORMULATION
-  DATABASE ./TAI_database_Teri.dat
+  DATABASE ./TAI_database_TeriTeri.dat
 
   OUTPUT
     PH
@@ -966,17 +967,17 @@ END
 #=========================== solver options ===================================
 NUMERICAL_METHODS TRANSPORT
 LINEAR_SOLVER TRANSPORT
-  !SOLVER DIRECT
-  SOLVER ITERATIVE     ! default: ITERATIVE or KRYLOV: KSP_TYPE of BCGS and PC_TYPE of BJACOBI, if not modified below
-  PC_TYPE JACOBI       ! default (iterative): BJACOBI. 
-  KSP_TYPE fgmres      ! default: BCGS. NOT much difference 
+  SOLVER DIRECT
+  !SOLVER ITERATIVE     ! default: ITERATIVE or KRYLOV: KSP_TYPE of BCGS and PC_TYPE of BJACOBI, if not modified below
+  !PC_TYPE JACOBI       ! default (iterative): BJACOBI. 
+  !KSP_TYPE fgmres      ! default: BCGS. NOT much difference 
 END
 
 NEWTON_SOLVER TRANSPORT
-  ATOL 1.d-20
+  ATOL 1.d-15
   RTOL 1.d-15
-  STOL 1.d-10
-  ITOL 1.d-10
+  STOL 1.d-15
+  ITOL 1.d-15
 END
 
 END
@@ -1038,10 +1039,10 @@ END
 #=========================== output options ===================================
 OUTPUT
   !PERIODIC_OBSERVATION TIMESTEP 1
-  SCREEN PERIODIC 100
+  SCREEN PERIODIC 1000
 !  PERIODIC TIMESTEP 1
   FORMAT TECPLOT POINT
-  PERIODIC TIME 0.25d0 d
+  PERIODIC TIME 2.d0 d
   VARIABLES
     TEMPERATURE
   /
@@ -1049,7 +1050,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 3.d0 d
+  FINAL_TIME 2.d0 d
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
 END
@@ -1112,32 +1113,32 @@ END
 
 FLOW_CONDITION aerenchyma
   TYPE
-    RATE mass_rate
+    RATE volumetric_rate
   /
 RATE LIST
   TIME_UNITS hr
-  DATA_UNITS kg/s
+  DATA_UNITS m^3/d
     0.    0.d0      0.d0        0.d0
     1.    0.d0      0.d0        0.d0 
     2.    0.d0      0.d0        0.d0 
     3.    0.d0      0.d0        0.d0 
     4.    0.d0      0.d0        0.d0 
     5.    0.d0      0.d0        0.d0 
-    6.    1.5d0     1.d-3       0.d0
-    7.    1.5d0     1.d-3       0.d0
-    8.    1.5d0     1.d-3       0.d0
-    9.    1.5d0     1.d-3       0.d0
-    10.   1.5d0     1.d-3       0.d0
-    11.   1.5d0     1.d-3       0.d0
-    12.   1.5d0     1.d-3       0.d0
-    13.   1.5d0     1.d-3       0.d0
-    14.   1.5d0     1.d-3       0.d0 
-    15.   1.5d0     1.d-3       0.d0 
-    16.   1.5d0     1.d-3       0.d0 
-    17.   1.5d0     1.d-3       0.d0 
-    18.   1.5d0     1.d-3       0.d0 
-    19.   1.5d0     1.d-3       0.d0
-    20.   1.5d0     1.d-3       0.d0
+    6.    1.5d-5     1.d-3       0.d0
+    7.    1.5d-5     1.d-3       0.d0
+    8.    1.5d-5     1.d-3       0.d0
+    9.    1.5d-5     1.d-3       0.d0
+    10.   1.5d-5     1.d-3       0.d0
+    11.   1.5d-5     1.d-3       0.d0
+    12.   1.5d-5     1.d-3       0.d0
+    13.   1.5d-5     1.d-3       0.d0
+    14.   1.5d-5     1.d-3       0.d0 
+    15.   1.5d-5     1.d-3       0.d0 
+    16.   1.5d-5     1.d-3       0.d0 
+    17.   1.5d-5     1.d-3       0.d0 
+    18.   1.5d-5     1.d-3       0.d0 
+    19.   1.5d-5     1.d-3       0.d0
+    20.   1.5d-5     1.d-3       0.d0
     21.   0.d0      0.d0        0.d0
     22.   0.d0      0.d0        0.d0
     23.   0.d0     0.d0         0.d0 
@@ -1148,21 +1149,21 @@ RATE LIST
     28.    0.d0      0.d0        0.d0 
     29.    0.d0      0.d0        0.d0 
     30.    0.d0      0.d0        0.d0 
-    31.    1.5d0     1.d-3       0.d0
-    32.    1.5d0     1.d-3       0.d0
-    33.    1.5d0     1.d-3       0.d0
-    34.    1.5d0     1.d-3       0.d0
-    35.   1.5d0     1.d-3       0.d0
-    36.   1.5d0     1.d-3       0.d0
-    37.   1.5d0     1.d-3       0.d0
-    38.   1.5d0     1.d-3       0.d0
-    39.   1.5d0     1.d-3       0.d0 
-    40.   1.5d0     1.d-3       0.d0 
-    41.   1.5d0     1.d-3       0.d0 
-    42.   1.5d0     1.d-3       0.d0 
-    43.   1.5d0     1.d-3       0.d0 
-    44.   1.5d0     1.d-3       0.d0
-    45.   1.5d0     1.d-3       0.d0
+    31.    1.5d-5     1.d-3       0.d0
+    32.    1.5d-5     1.d-3       0.d0
+    33.    1.5d-5     1.d-3       0.d0
+    34.    1.5d-5     1.d-3       0.d0
+    35.   1.5d-5     1.d-3       0.d0
+    36.   1.5d-5     1.d-3       0.d0
+    37.   1.5d-5     1.d-3       0.d0
+    38.   1.5d-5     1.d-3       0.d0
+    39.   1.5d-5     1.d-3       0.d0 
+    40.   1.5d-5     1.d-3       0.d0 
+    41.   1.5d-5     1.d-3       0.d0 
+    42.   1.5d-5     1.d-3       0.d0 
+    43.   1.5d-5     1.d-3       0.d0 
+    44.   1.5d-5     1.d-3       0.d0
+    45.   1.5d-5     1.d-3       0.d0
     46.   0.d0      0.d0        0.d0
     47.   0.d0      0.d0        0.d0
     48.   0.d0     0.d0         0.d0
@@ -1270,7 +1271,7 @@ BOUNDARY_CONDITION sed_air_interface
 END
 
 
-
+skip
 SOURCE_SINK tide
   FLOW_CONDITION tide
   TRANSPORT_CONDITION tide
@@ -1316,7 +1317,7 @@ SOURCE_SINK aerenchyma3 #0.5m
   TRANSPORT_CONDITION aerenchyma
   REGION aerenchyma2
 END
-
+noskip
 
 
 

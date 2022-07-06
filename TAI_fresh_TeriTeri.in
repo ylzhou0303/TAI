@@ -1050,7 +1050,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 20.d0 d
+  FINAL_TIME 2.d0 d
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
 END
