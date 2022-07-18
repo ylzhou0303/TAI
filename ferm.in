@@ -525,7 +525,7 @@ OUTPUT
   #PERIODIC TIMESTEP 1
   #FORMAT HDF5
   VARIABLES
-    !POROSITY
+    LIQUID_SATURATION
     /
   FORMAT TECPLOT POINT
   MASS_BALANCE_FILE
@@ -672,7 +672,8 @@ FLOW_CONDITION water
     RATE mass_rate  
   /
   ! liquid gas energy
-  !RATE 1.d-05 0.d0 0.d0 kg/s kg/s MW
+  RATE 0 0.d0 0.d0 kg/s kg/s MW
+  skip
   RATE LIST
     TIME_UNITS day
     DATA_UNITS kg/s kg/s MW
@@ -680,7 +681,7 @@ FLOW_CONDITION water
     2.d0 1.d-04 0.d0 0.d0
     4.d0 1.d-03 0.d0 0.d0
   END 
-    
+noskip    
   
 END
 

@@ -728,7 +728,7 @@ noskip
 
 
  # LOG_FORMULATION
-  DATABASE ./TAI_database_TeriTeri.dat
+  DATABASE ./TAI_database.dat
 
   OUTPUT
     PH
@@ -1039,7 +1039,7 @@ END
 #=========================== output options ===================================
 OUTPUT
   !PERIODIC_OBSERVATION TIMESTEP 1
-  SCREEN PERIODIC 1000
+  SCREEN PERIODIC 1000   #show results every 1000 timesteps
 !  PERIODIC TIMESTEP 1
   FORMAT TECPLOT POINT
   PERIODIC TIME 2.d0 d

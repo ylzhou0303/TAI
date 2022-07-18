@@ -7,7 +7,7 @@ SIMULATION
     SUBSURFACE_FLOW flow
       MODE GENERAL
       OPTIONS
-        ARITHMETIC_GAS_DIFFUSIVE_DENSITY
+        #ARITHMETIC_GAS_DIFFUSIVE_DENSITY
       /
     /
     SUBSURFACE_TRANSPORT transport
@@ -40,25 +40,13 @@ noskip
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 1 1 15
+  NXYZ 1 1 3
   DXYZ 
-     1.0d1 
-     1.0d1 
-     13.851152141963599d0 \
-     11.126150294204420d0 \ 
-     6.7483512780057175d0 \ 
-     4.0930819526214002d0 \ 
-     2.4825796969813321d0 \     
-     1.5057607013992766d0 \
-     0.91329003158906108d0 \
-     0.55393840536868488d0 \
-     0.33598062644843263d0 \
-     0.20378255101043175d0 \
-     0.12360036510228053d0 \     
-     0.074967410986208557d0 \    
-     0.04047003324241320d0 \      
-     0.027578969259676251d0 \
-     0.022512817916255204d0
+     1.0d0 
+     1.0d0 
+     15.0\    #bottom soil, sand
+     4.0\    #OM layer
+     1.0      #rhizosphere, aerenchyma
   /
 END
 
@@ -67,8 +55,8 @@ PROC 1 1 1
 #======================= I-2.regions ===========================================
 REGION top
   COORDINATES
-    0.d0 0.d0 42.103197276099188d0
-    1.d0 1.d0 42.103197276099188d0
+    0.d0 0.d0 20.d0
+    1.d0 1.d0 20.d0
   /
   FACE TOP
 END
@@ -83,32 +71,35 @@ END
 
 REGION aerenchyma
   COORDINATES
-    0.5d0 0.5d0 42.0d0
-    0.5d0 0.5d0 42.0d0
+    0.d0 0.d0 19.0d0
+    1.d0 1.d0 20.0d0
   /
   FACE BOTTOM
 END
 
-REGION aerenchyma2
+
+REGION OM
   COORDINATES
-    0.5d0 0.5d0 41.9d0
-    0.5d0 0.5d0 41.9d0
+    0.d0 0.d0 15.d0
+    1.d0 1.d0 19.d0
   /
   FACE BOTTOM
 END
 
-REGION aerenchyma3
+REGION SAND
   COORDINATES
-    0.5d0 0.5d0 41.6d0
-    0.5d0 0.5d0 41.6d0
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 15.d0
   /
   FACE BOTTOM
 END
+
+
 
 REGION all
   COORDINATES
     0.d0 0.d0 0.d0
-    1.d0 1.d0 42.103197276099188d0
+    1.d0 1.d0 20.d0
   /
   FACE TOP
 END
@@ -253,7 +244,7 @@ CHEMISTRY
     CH4(g)
   /
   
-  MINERAL_KINETICS
+  MINERAL_KINETICS   #mineral precipitation
     Fe 
       RATE_CONSTANT 1.d-20 mol/m^2-sec
       /  
@@ -276,6 +267,7 @@ CHEMISTRY
 
 
   REACTION_SANDBOX
+  
     ! (Begin) ELM CTC-CN SOM decomposition sandboxes -------------------------------------------------------------------
     SOMDECOMP
       
@@ -299,10 +291,10 @@ CHEMISTRY
         DOWNSTREAM_POOL LITR3 0.24d0
         RATE_DECOMPOSITION 0.00010 1/d         ! CLM-CN fragmentation rate k:
       /
-      
+ 
       REACTION
         UPSTREAM_POOL LITR1
-        DOWNSTREAM_POOL SOIL1 0.61d0
+        DOWNSTREAM_POOL SOIL1 0.31d0
         RATE_DECOMPOSITION 1.204 1/d           ! CLM-CN dec. rate k:
         !
         MONOD
@@ -314,7 +306,7 @@ CHEMISTRY
           HALF_SATURATION_CONSTANT 1.0d-5          ! unit: moles/m3 soil - much faster if <1.d-5 (~1.d-10 g/gsoil)
         /
       /
-
+skip
       REACTION
         UPSTREAM_POOL LITR2    
         DOWNSTREAM_POOL SOIL2 0.45d0
@@ -408,6 +400,7 @@ CHEMISTRY
    
     /
     ! (End) ELM CTC-CN SOM decomposition sandboxes ---------------------------------------------------------------------
+noskip
 skip  
     ! (Begin) ELM CTC-CN PLANT N uptake sandboxes ----------------------------------------------------------------------
     PLANTN
@@ -417,11 +410,12 @@ skip
     /
 noskip
   ! (End) ELM CTC-CN PLANT N uptake sandboxes ------------------------------------------------------------------------
-  / ! REACTION_SANDBOX
-
+  / ! END OF REACTION_SANDBOX
+/
 
   TRUNCATE_CONCENTRATION 1.d-15
 
+skip
 #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
@@ -725,23 +719,25 @@ noskip
       YIELD 0.01d0
     /
   /
+noskip
 
 
  # LOG_FORMULATION
-  DATABASE ./TAI_database_TeriTeri.dat
+  DATABASE ./TAI_database.dat
 
   OUTPUT
     PH
     TOTAL !FREE_ION
       O2(aq)
-      SO4--
-      H2S(aq)
-      CH4(aq)
+      #SO4--
+      #H2S(aq)
+      #CH4(aq)
       DOM1
-      DOM2
+      #DOM2
       NO3-
       NH4+
-      HCO3-
+      #HCO3-
+    skip 
       Tracer
       Tracer1
       Tracer2
@@ -752,7 +748,7 @@ noskip
       Tracer7
       Fe(OH)2(aq)
       Fe(OH)3(aq)
-    
+    noskip
     !TOTAL
     !  Fe(OH)2(aq)
     !  Fe(OH)3(aq)
@@ -763,6 +759,8 @@ noskip
     !PRIMARY_SPECIES
     !SECONDARY_SPECIES
     !IMMOBILE
+      SOIL1
+      LITR1C
     !GASES
     !MINERALS
   /
@@ -872,7 +870,7 @@ CONSTRAINT tide
   CONCENTRATIONS
     NH4+        3.d-6      T
     NO3-        4.5d-8	   T
-    O2(aq)      2.43d-6    T #G O2(g)
+    O2(aq)      2.43d-10    T #G O2(g)
     N2(aq)      4.65d-4    T #G N2(g)*
     N2O(aq)     4.65d-15   T #G N2O(g) 
     H+          8.5d0      P
@@ -936,7 +934,7 @@ CONSTRAINT aerenchyma
   CONCENTRATIONS
     NH4+        3.d-20      T
     NO3-        4.5d-20	   T
-    O2(aq)      2.5d-4    G O2(g)
+    O2(aq)      2.5d-4    G O2(g)     #inject oxygen
     N2(aq)      4.65d-20   T #G N2(g)*
     N2O(aq)     4.65d-20   T #G N2O(g) 
     H+          7.0d0      P
@@ -1016,6 +1014,10 @@ MATERIAL_PROPERTY soil1
     PERM_Z 6.5870260083342112E-013
   /
 /
+
+
+
+
 #=========================== characteristic curves ============================
 CHARACTERISTIC_CURVES sf01
   SATURATION_FUNCTION VAN_GENUCHTEN
@@ -1036,21 +1038,24 @@ CHARACTERISTIC_CURVES sf01
     M 0.5d0
   /
 END
+
+
 #=========================== output options ===================================
 OUTPUT
   !PERIODIC_OBSERVATION TIMESTEP 1
-  SCREEN PERIODIC 1000
+  SCREEN PERIODIC 1000   #show the results on screen every 1000 timesteps
 !  PERIODIC TIMESTEP 1
   FORMAT TECPLOT POINT
-  PERIODIC TIME 2.d0 d
+  PERIODIC TIME 1 h
   VARIABLES
-    TEMPERATURE
+    #TEMPERATURE
+    LIQUID_SATURATION
   /
 END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 2.d0 d
+  FINAL_TIME 10 h
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
 END
@@ -1082,12 +1087,12 @@ END
 
 FLOW_CONDITION initial
   TYPE
-    LIQUID_PRESSURE dirichlet
-    MOLE_FRACTION dirichlet
+    GAS_PRESSURE dirichlet
+    GAS_SATURATION dirichlet
     TEMPERATURE dirichlet
   /
-  LIQUID_PRESSURE 200159.412d0
-  MOLE_FRACTION 1.d-10
+  GAS_PRESSURE 1.d5
+  GAS_SATURATION 0.5   #if this is zero, it might cause some problem for multiple discretization
   TEMPERATURE 20.d0
 /
 
@@ -1098,8 +1103,8 @@ FLOW_CONDITION sed_air_interface
     TEMPERATURE dirichlet
 
   /
-  LIQUID_PRESSURE 200159.412d0
-  MOLE_FRACTION 1.d-8
+  LIQUID_PRESSURE 2001.412d0
+  MOLE_FRACTION 5.d-1
   TEMPERATURE 20.d0
 /
 
@@ -1117,7 +1122,7 @@ FLOW_CONDITION aerenchyma
   /
 RATE LIST
   TIME_UNITS hr
-  DATA_UNITS m^3/d
+  DATA_UNITS m^3/hour
     0.    0.d0      0.d0        0.d0
     1.    0.d0      0.d0        0.d0 
     2.    0.d0      0.d0        0.d0 
@@ -1186,23 +1191,37 @@ TRANSPORT_CONDITION evap
   /
 END
 
+
 FLOW_CONDITION evap
   TYPE
-    RATE mass_rate
+    RATE volumetric_rate
   /
-     ! liquid gas   energy
-  RATE -5.d-1  1.d-3 0.d0 kg/s kg/s MW
+     ! liquid   gas   energy
+  RATE 0  0  0.d0 m^3/d m^3/d MW
 /
+
+
 
 FLOW_CONDITION tide
   TYPE
-    RATE mass_rate
+    RATE volumetric_rate
   /
+ RATE   0  0  0 m^3/d m^3/d MW
+skip
 RATE LIST
   TIME_UNITS hr
-  DATA_UNITS kg/s
-    0.    0.d0      0.d0        0.d0
-    1.    -5.d-3    0.d0        0.d0
+  DATA_UNITS  m^3/hr m^3/d MW
+  0. 0.d0    0.d0    0.d0
+  1.   0.1    0.d0   0.d0
+  6.   -0.1   0.d0   0.d0
+  8.   0.d0   0.d0   0.d0
+/
+
+RATE LIST
+  TIME_UNITS hr
+  DATA_UNITS m^3/hour
+    0. 0.d0      0.d0        0.d0
+    1.    11.d-3    0.d0        0.d0
     2.    -4.d-3    0.d0        0.d0
     3.    -3.d-3    0.d0        0.d0
     4.    -2.d-3    0.d0        0.d0
@@ -1252,6 +1271,7 @@ RATE LIST
     48.   2.d-3     0.d0        0.d0 
     
   /
+noskip
  /
 
 
@@ -1264,60 +1284,32 @@ INITIAL_CONDITION
   REGION all
 END
 
-BOUNDARY_CONDITION sed_air_interface
-  TRANSPORT_CONDITION sed_air_interface
-  FLOW_CONDITION sed_air_interface
-  REGION top
-END
 
 
-skip
+
 SOURCE_SINK tide
   FLOW_CONDITION tide
   TRANSPORT_CONDITION tide
-  REGION top
+  REGION bottom
 END
 
 
-SOURCE_SINK evap
+
+
+SOURCE_SINK evap            #evapotranspiration
   FLOW_CONDITION evap
   TRANSPORT_CONDITION evap
   REGION aerenchyma
-END
-
-SOURCE_SINK evap2
-  FLOW_CONDITION evap
-  TRANSPORT_CONDITION evap
-  REGION aerenchyma2
-END
-
-SOURCE_SINK evap3
-  FLOW_CONDITION evap
-  TRANSPORT_CONDITION evap
-  REGION aerenchyma3
-END
-
-
-SOURCE_SINK aerenchyma #0.1m
-  FLOW_CONDITION aerenchyma
-  TRANSPORT_CONDITION aerenchyma
-  REGION top
-END
-
-
-SOURCE_SINK aerenchyma2 #0.2m
-  FLOW_CONDITION aerenchyma
-  TRANSPORT_CONDITION aerenchyma
-  REGION aerenchyma
-END
-
-
-SOURCE_SINK aerenchyma3 #0.5m
-  FLOW_CONDITION aerenchyma
-  TRANSPORT_CONDITION aerenchyma
-  REGION aerenchyma2
 END
 noskip
+
+
+
+SOURCE_SINK aerenchyma     #O2 injection
+  FLOW_CONDITION aerenchyma
+  TRANSPORT_CONDITION aerenchyma
+  REGION aerenchyma
+END
 
 
 
@@ -1326,6 +1318,7 @@ STRATA
   REGION all
   MATERIAL soil1
 END
+
 
 #=========================== regression =======================================
 
