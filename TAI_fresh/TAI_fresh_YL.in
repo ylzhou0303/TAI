@@ -40,10 +40,10 @@ noskip
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 1 1 4
+  NXYZ 1 1 5
   BOUNDS 
     0.d0 0.d0 0.d0
-    1.d0 1.d0 0.4d0   # 40cm deep
+    1.d0 1.d0 1.d0   # 1m deep
   /
 END
 
@@ -52,8 +52,8 @@ PROC 1 1 1
 #======================= I-2.regions ===========================================
 REGION top
   COORDINATES
-    0.d0 0.d0 0.4d0
-    1.d0 1.d0 0.4d0
+    0.d0 0.d0 0.8d0
+    1.d0 1.d0 1.0d0
   /
   FACE TOP
 END
@@ -68,8 +68,8 @@ END
 
 REGION aerenchyma
   COORDINATES
-    0.d0 0.d0 0.2d0
-    1.d0 1.d0 0.4d0
+    0.d0 0.d0 0.8d0
+    1.d0 1.d0 1.d0
   /
   FACE BOTTOM
 END
@@ -77,16 +77,16 @@ END
 
 REGION OM
   COORDINATES
-    0.d0 0.d0 0.d0
-    1.d0 1.d0 0.3d0
+    0.d0 0.d0 0.6d0
+    1.d0 1.d0 1.d0
   /
   FACE BOTTOM
 END
 
 REGION CLAY
   COORDINATES
-    0.d0 0.d0 0.3d0
-    1.d0 1.d0 0.4d0
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 0.6d0
   /
   FACE BOTTOM
 END
@@ -96,7 +96,7 @@ END
 REGION all
   COORDINATES
     0.d0 0.d0 0.d0
-    1.d0 1.d0 0.4d0
+    1.d0 1.d0 1.d0
   /
   FACE TOP
 END
@@ -412,7 +412,7 @@ noskip
 
   TRUNCATE_CONCENTRATION 1.d-15
 
-skip
+
 #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
@@ -430,7 +430,7 @@ skip
       YIELD 0.01d0
     /
   /
-
+skip
 #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION 2.0 DOM2 + 13.0 O2(aq) -> 12.0 HCO3- + 8.0 H+ + 1.d-1 NH4+
@@ -725,14 +725,15 @@ noskip
   OUTPUT
     PH
     TOTAL !FREE_ION
+      
       O2(aq)
       #SO4--
       #H2S(aq)
       #CH4(aq)
-      DOM1
+      #DOM1
       #DOM2
-      NO3-
-      NH4+
+      #NO3-
+      #NH4+
       #HCO3-
     skip 
       Tracer
@@ -756,8 +757,8 @@ noskip
     !PRIMARY_SPECIES
     !SECONDARY_SPECIES
     !IMMOBILE
-      SOIL1
-      LITR1C
+      #SOIL1
+      #LITR1C
     !GASES
     !MINERALS
   /
@@ -766,15 +767,15 @@ END
 #=========================== transport constraints ============================
 CONSTRAINT initial
   CONCENTRATIONS
-    NH4+        4.d-9      T NH3(g) #GCReW Data
+    NH4+        4.d-9      T NH3(g) #GCReW Data   #unit, mol/L
     NO3-        3.5d-5	   T #Steinmuller paper
-    O2(aq)      0.1 G O2(g)#2.5d-4     G O2(g) 
+    O2(aq)      0.21       G O2(g)    #unit: bar, the partial pressure of oxygen in the atmosphere
     N2(aq)      4.65d-6    G N2(g)* 
     N2O(aq)     4.65d-15   G N2O(g)
     H+          6.7d0      P 
     DOM1        5.d-4      T #Steinmuller paper
     DOM2        1.d-2      T #Steinmuller paper
-    HCO3-       5.5d-4      G CO2(g) 
+    HCO3-       1.d-3      G CO2(g) 
     CH4(aq)     1.d-6      T #GCReW Data
     SO4--       3.d-3      T
     H2S(aq)     9.d-4	     T
@@ -835,7 +836,7 @@ CONSTRAINT sed_air_interface
   CONCENTRATIONS
     NH4+        4.d-9      G NH3(g) #GCReW Data
     NO3-        9.6d-6	   T #Steinmuller paper
-    O2(aq)      2.5d-4    G O2(g)
+    O2(aq)      2.5d-2    G O2(g)
     N2(aq)      4.65d-4    G N2(g)*
     N2O(aq)     4.65d-15   G N2O(g) 
     H+          6.6d0      P 
@@ -867,7 +868,7 @@ CONSTRAINT tide
   CONCENTRATIONS
     NH4+        3.d-6      T
     NO3-        4.5d-8	   T
-    O2(aq)      2.43d-10    T #G O2(g)
+    O2(aq)      2.43d-6    T #G O2(g)
     N2(aq)      4.65d-4    T #G N2(g)*
     N2O(aq)     4.65d-15   T #G N2O(g) 
     H+          8.5d0      P
@@ -904,7 +905,7 @@ CONSTRAINT evap
     H+          7.0d0      P
     DOM1        1.d-20      T
     DOM2        1.d-20      T
-    HCO3-       6.6d-20     T G CO2(g)
+    HCO3-       6.6d-20     T #G CO2(g)
     CH4(aq)     2.d-3       G CH4(g)
     SO4--       2.8e-20     T
     H2S(aq)     1.d-20	     T
@@ -979,12 +980,12 @@ END
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 1.d-6
+  DIFFUSION_COEFFICIENT 1.d-1
 END
 
 FLUID_PROPERTY
   PHASE gas
-  DIFFUSION_COEFFICIENT 6.d-04
+  DIFFUSION_COEFFICIENT 1.d-10
 END
 
 #=========================== material properties ==============================
@@ -1008,7 +1009,7 @@ MATERIAL_PROPERTY soil1
   PERMEABILITY
     PERM_X 6.5870260083342112E-013
     PERM_Y 6.5870260083342112E-013
-    PERM_Z 6.5870260083342112E-013
+    PERM_Z 6.5870260083342112E-010
   /
 /
 
@@ -1052,14 +1053,14 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 10 h
+  FINAL_TIME 24 h
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
 END
 
 #=========================== regions ==========================================
 REGION obs_pt
-  COORDINATE 0.5 0.5 1.9
+  COORDINATE 0.5 0.5 0.5
 END
 
 #=========================== observation points ===============================
@@ -1089,8 +1090,8 @@ FLOW_CONDITION initial
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.5   #if this is zero, it might cause some problem for multiple discretization
-  TEMPERATURE 20.d0
+  GAS_SATURATION 0   #if this is zero, it might cause some problem for multiple discretization
+  TEMPERATURE 25.d0
 /
 
 FLOW_CONDITION sed_air_interface
@@ -1113,63 +1114,45 @@ TRANSPORT_CONDITION aerenchyma
   /
 END
 
-FLOW_CONDITION aerenchyma
+FLOW_CONDITION tide
   TYPE
     RATE volumetric_rate
   /
+  RATE  0  0  0 m^3/d m^3/d MW
+
+skip  
 RATE LIST
+  EXTERNAL_FILE Tide.txt
+
   TIME_UNITS hr
-  DATA_UNITS m^3/hour
-    0.    0.d0      0.d0        0.d0
-    1.    0.d0      0.d0        0.d0 
-    2.    0.d0      0.d0        0.d0 
-    3.    0.d0      0.d0        0.d0 
-    4.    0.d0      0.d0        0.d0 
-    5.    0.d0      0.d0        0.d0 
-    6.    1.5d-5     1.d-3       0.d0
-    7.    1.5d-5     1.d-3       0.d0
-    8.    1.5d-5     1.d-3       0.d0
-    9.    1.5d-5     1.d-3       0.d0
-    10.   1.5d-5     1.d-3       0.d0
-    11.   1.5d-5     1.d-3       0.d0
-    12.   1.5d-5     1.d-3       0.d0
-    13.   1.5d-5     1.d-3       0.d0
-    14.   1.5d-5     1.d-3       0.d0 
-    15.   1.5d-5     1.d-3       0.d0 
-    16.   1.5d-5     1.d-3       0.d0 
-    17.   1.5d-5     1.d-3       0.d0 
-    18.   1.5d-5     1.d-3       0.d0 
-    19.   1.5d-5     1.d-3       0.d0
-    20.   1.5d-5     1.d-3       0.d0
-    21.   0.d0      0.d0        0.d0
-    22.   0.d0      0.d0        0.d0
-    23.   0.d0     0.d0         0.d0 
-    24.   0.d0      0.d0        0.d0
-    25.    0.d0      0.d0        0.d0
-    26.    0.d0      0.d0        0.d0 
-    27.    0.d0      0.d0        0.d0 
-    28.    0.d0      0.d0        0.d0 
-    29.    0.d0      0.d0        0.d0 
-    30.    0.d0      0.d0        0.d0 
-    31.    1.5d-5     1.d-3       0.d0
-    32.    1.5d-5     1.d-3       0.d0
-    33.    1.5d-5     1.d-3       0.d0
-    34.    1.5d-5     1.d-3       0.d0
-    35.   1.5d-5     1.d-3       0.d0
-    36.   1.5d-5     1.d-3       0.d0
-    37.   1.5d-5     1.d-3       0.d0
-    38.   1.5d-5     1.d-3       0.d0
-    39.   1.5d-5     1.d-3       0.d0 
-    40.   1.5d-5     1.d-3       0.d0 
-    41.   1.5d-5     1.d-3       0.d0 
-    42.   1.5d-5     1.d-3       0.d0 
-    43.   1.5d-5     1.d-3       0.d0 
-    44.   1.5d-5     1.d-3       0.d0
-    45.   1.5d-5     1.d-3       0.d0
-    46.   0.d0      0.d0        0.d0
-    47.   0.d0      0.d0        0.d0
-    48.   0.d0     0.d0         0.d0
-  /
+  DATA_UNITS  m^3/hr
+   0	-0.000539749999999728	0	0
+    1	-0.00106044999999999	0	0
+    2	-0.000958849999999956	0	0
+    3	0.000330199999999836	0	0
+    4	0.00360679999999991	0	0
+    5	0.0265747500000001	0	0
+    6	0.0298704000000000	0	0
+    7	0.00647700000000029	0	0
+    8	-0.0384619500000003	0	0
+    9	-0.0105854500000001	0	0
+    10	-0.00586739999999963	0	0
+    11	-0.00620395000000029	0	0
+    12	-0.00223519999999988	0	0
+    13	-0.00102235000000006	0	0
+    14	-0.000463549999999979	0	0
+    15	-0.000253999999999976	0	0
+    16	0.000819149999999991	0	0
+    17	0.00706120000000021	0	0
+    18	0.0326643999999998	0	0
+    19	0.0148018499999999	0	0
+    20	-0.0280352499999998	0	0
+    21	-0.0114046000000000	0	0
+    22	-0.00624840000000004	0	0
+    23	-0.00605155000000002	0	0
+    24	-0.00141605000000000	0	0
+  noskip
+  
 /
 
 
@@ -1198,13 +1181,14 @@ FLOW_CONDITION evap
 /
 
 
-
+skip
 FLOW_CONDITION tide
   TYPE
     RATE volumetric_rate
   /
- RATE   0  0  0 m^3/d m^3/d MW
-skip
+
+ RATE   0.1  0  0 m^3/d m^3/d MW
+
 RATE LIST
   TIME_UNITS hr
   DATA_UNITS  m^3/hr m^3/d MW
@@ -1214,10 +1198,12 @@ RATE LIST
   8.   0.d0   0.d0   0.d0
 /
 
+
+
 RATE LIST
   TIME_UNITS hr
   DATA_UNITS m^3/hour
-    0. 0.d0      0.d0        0.d0
+    0.     0.d0      0.d0        0.d0
     1.    11.d-3    0.d0        0.d0
     2.    -4.d-3    0.d0        0.d0
     3.    -3.d-3    0.d0        0.d0
@@ -1268,9 +1254,9 @@ RATE LIST
     48.   2.d-3     0.d0        0.d0 
     
   /
-noskip
- /
 
+ /
+noskip
 
 
 #=========================== condition couplers ===============================
@@ -1281,13 +1267,17 @@ INITIAL_CONDITION
   REGION all
 END
 
-
+BOUNDARY_CONDITION
+  TRANSPORT_CONDITION sed_air_interface
+  FLOW_CONDITION sed_air_interface
+  REGION top
+END
 
 
 SOURCE_SINK tide
   FLOW_CONDITION tide
   TRANSPORT_CONDITION tide
-  REGION bottom
+  REGION top
 END
 
 
@@ -1301,13 +1291,13 @@ END
 noskip
 
 
-
+skip
 SOURCE_SINK aerenchyma     #O2 injection
   FLOW_CONDITION aerenchyma
   TRANSPORT_CONDITION aerenchyma
   REGION aerenchyma
 END
-
+noskip
 
 
 #=========================== stratigraphy couplers ============================
