@@ -1,0 +1,31 @@
+-- SATURATION: Liquid Saturation --
+      Max:   9.4773628347952E-01
+      Min:   6.6635972896890E-01
+     Mean:   8.0802341160777E-01
+        1:   9.4773628347952E-01
+-- CONCENTRATION: Total O2(aq) --
+      Max:   2.4999413476503E-06
+      Min:   2.4999397941745E-06
+     Mean:   2.4999405295564E-06
+        1:   2.4999397941745E-06
+-- DISCRETE: Material ID --
+      Max:         1
+      Min:         1
+     Mean:   1.0000000000000E+00
+        1:         1
+-- SOLUTION: Flow --
+   Time (seconds):   2.1654853820801E+00
+   Time Steps:         4745
+   Newton Iterations:        21020
+   Linear Solver Iterations:        21020
+   Time Step Cuts:           28
+   Solution 2-Norm:   2.3355667496485E+04
+   Residual 2-Norm:   8.4807749896646E-14
+-- SOLUTION: Transport --
+   Time (seconds):   8.8887524604797E-01
+   Time Steps:         4761
+   Newton Iterations:         4762
+   Linear Solver Iterations:        27689
+   Time Step Cuts:            0
+   Solution 2-Norm:   2.2360679775009E+03
+   Residual 2-Norm:   4.6670925572007E-16

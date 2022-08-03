@@ -4,24 +4,22 @@
 SIMULATION
   SIMULATION_TYPE SUBSURFACE
   PROCESS_MODELS
-    SUBSURFACE_TRANSPORT transport
-      MODE GIRT
+    SUBSURFACE_FLOW flow
+      MODE GENERAL
       OPTIONS
+        #ARITHMETIC_GAS_DIFFUSIVE_DENSITY
       /
     /
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
+      #NUMERICAL_JACOBIAN
+    /
   /
-
 END
-
-
 
 SUBSURFACE
 
 #=========================== useful transport parameters =======================
-SPECIFIED_VELOCITY
-  UNIFORM? YES
-  DATASET 0.d0 0.d0 0.d0
-END
 
 REFERENCE_LIQUID_DENSITY 1.d3
 
@@ -89,11 +87,13 @@ PASSIVE_GAS_SPECIES
   O2(g)
   #### NOTE: End of auto-inserted gas species ####
 /
+
+skip
 #### NOTE: Beginning of auto-inserted reactions ####
   # DOM aerobic respiration
   MICROBIAL_REACTION
     REACTION 1.0e+00 DOM1  + 1.0e+00 O2(aq)  -> 1.0e+00 HCO3-  + 1.0e+00 H+  + 1.0e+00 Tracer 
-    RATE_CONSTANT       1.0e-05
+    RATE_CONSTANT       1.0e-9
     MONOD
       SPECIES_NAME        O2(aq)
       HALF_SATURATION_CONSTANT 1.0e-08
@@ -105,51 +105,10 @@ PASSIVE_GAS_SPECIES
       THRESHOLD_CONCENTRATION 1.0e-14
     /
   /
-  # Fe reduction
-  MICROBIAL_REACTION
-    REACTION 1.0e+00 DOM1  + 3.0e+00 Fe+++  -> 1.0e+00 HCO3-  + 3.0e+00 Fe++  + 1.5e+01 H+  + 1.0e+00 Tracer 
-    RATE_CONSTANT       2.0e-06
-    MONOD
-      SPECIES_NAME        DOM1
-      HALF_SATURATION_CONSTANT 2.0e-03
-      THRESHOLD_CONCENTRATION 1.0e-15
-    /
-    MONOD
-      SPECIES_NAME        Fe+++
-      HALF_SATURATION_CONSTANT 1.3e-03
-      THRESHOLD_CONCENTRATION 1.0e-15
-    /
-    INHIBITION
-      SPECIES_NAME        O2(aq)
-      TYPE MONOD
-      INHIBITION_CONSTANT 6.2e-08
-    /
-  /
-  REACTION_SANDBOX
-    SOMDECOMP
-      POOLS
-        cellulose           50.0
-        DOM1                50.0
-      /
-    # Fermentation hydrolysis
-    REACTION
-      UPSTREAM_POOL       cellulose
-      DOWNSTREAM_POOL     DOM1                6.7e-01
-      TURNOVER_TIME       1.0e-01 y
-      INHIBITION
-        SPECIES_NAME        DOM1
-        TYPE MONOD
-        INHIBITION_CONSTANT 1.0e-05
-      /
-    /
-      CO2_SPECIES_NAME HCO3-
-      
-      O2_SPECIES_NAME O2(aq)
-      
-    /
-  /
-  #### NOTE: End of auto-inserted reactions ####
+  
 
+  #### NOTE: End of auto-inserted reactions ####
+noskip
 
   TRUNCATE_CONCENTRATION 1.d-80
 
@@ -160,7 +119,7 @@ PASSIVE_GAS_SPECIES
   OUTPUT
     !PH
     TOTAL
-      DOM1
+      O2(aq)
     #FREE_ION
     #PRIMARY_SPECIES
     #SECONDARY_SPECIES
@@ -181,9 +140,9 @@ CONSTRAINT initial
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-10
-    H+                  5.9 P
-    O2(aq)              1.0e-12
+    DOM1                1.0e-3 T
+    H+                  5.9 P 
+    O2(aq)              2.5d-6 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -201,7 +160,35 @@ CONSTRAINT initial
 END
 
 
-CONSTRAINT dom_enrich
+CONSTRAINT moreO2
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-3 T
+    H+                  5.9 P 
+    O2(aq)              2.5d-3 T
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-15
+    Tracer              1.0e-15
+    CH4(aq)             1.0e-15
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
+CONSTRAINT sed_air_interface
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
@@ -212,7 +199,8 @@ CONSTRAINT dom_enrich
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-1
     H+                  5.9 P
-    O2(aq)              1.0e-1
+    O2(aq)              0.21 G O2(g)
+    #O2(aq)              2.5d-4 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -229,7 +217,37 @@ CONSTRAINT dom_enrich
   /  
 END
 
-CONSTRAINT bc
+CONSTRAINT tide
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e-20
+    HRimm                1.0e-20
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-20
+    H+                  1.0e-20
+    O2(aq)              1.0e-4
+    HCO3-               1.0e-20
+    Fe+++               1.0e-20
+    Fe++                1.0e-20
+    NH4+                1.0e-20
+    Tracer              1.0e-20
+    CH4(aq)             1.0e-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.0e-20 1.0
+    FeO                 1.0e-20 1.0
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /
+
+END
+
+
+CONSTRAINT evap
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e-20
@@ -257,7 +275,6 @@ CONSTRAINT bc
   /
 
 END
-
 #=========================== solver options ===================================
 NUMERICAL_METHODS TRANSPORT
   LINEAR_SOLVER
@@ -280,18 +297,14 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 2 1 3   #two colums, three layers, O2 injection in the middle
-  DXYZ   #spacing
-    1.d0\
-    1.d0
-
-    1.d0
-
-    4.9\ 
-    0.2\
-    4.9
+  NXYZ 1 1 5
+  BOUNDS 
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 1.d0   # 1m deep
   /
 END
+
+PROC 1 1 1
 
 #=========================== fluid properties =================================
 FLUID_PROPERTY
@@ -301,34 +314,66 @@ END
 
 FLUID_PROPERTY
   PHASE gas
-  DIFFUSION_COEFFICIENT 1.000d-05
+  DIFFUSION_COEFFICIENT 1.d-5
 END
 
 #=========================== material properties ==============================
 MATERIAL_PROPERTY soil1
   ID 1
   POROSITY 0.25d0
-  TORTUOSITY 1.d0
-  SATURATION_FUNCTION default
+  SOIL_COMPRESSIBILITY_FUNCTION DEFAULT     ! BRAGFLO compressed porosity has mathematical issue at high pressure
+  ! 1d-7~1d-8 equivalent to ice expansion of volume, upon 'default' or 'BRAGFLO'
+  ! beyond this range may cause tiny-time stepping
+  SOIL_COMPRESSIBILITY 1.d-07               ! 1d-7~1d-8 is a critical value for freezing expansion in soil;
+  SOIL_REFERENCE_PRESSURE 201325.d0
+  ROCK_DENSITY 2650.0d0
+  SPECIFIC_HEAT 830.0d0
+  THERMAL_CONDUCTIVITY_DRY 0.12037926674717922d0
+  THERMAL_CONDUCTIVITY_WET 1.6082691464310437d0
+  THERMAL_COND_EXPONENT 0.45d0
+  THERMAL_CONDUCTIVITY_FROZEN 2.29d+00
+  THERMAL_COND_EXPONENT_FROZEN 0.95d0
+  CHARACTERISTIC_CURVES sf01
+  PERMEABILITY
+    PERM_X 6.5870260083342112E-013
+    PERM_Y 6.5870260083342112E-013
+    PERM_Z 6.5870260083342112E-010
+  /
+/
+
+
+
+#=========================== characteristic curves ============================
+CHARACTERISTIC_CURVES sf01
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    ALPHA 1.d-4
+    M 0.5d0
+    MAX_CAPILLARY_PRESSURE 1.d6
+  /
+  PERMEABILITY_FUNCTION MUALEM
+    PHASE LIQUID
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    M 0.5d0
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_GAS
+    PHASE GAS
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    GAS_RESIDUAL_SATURATION 1.d-40
+    M 0.5d0
+  /
 END
 
-# == saturation / permeability functions ======================================
-SATURATION_FUNCTION HD
-SATURATION_FUNCTION_TYPE VAN_GENUCHTEN
-RESIDUAL_SATURATION 0.115
-LAMBDA 0.286
-ALPHA 1.9401d-4
-/
 
 #=========================== output options ===================================
 OUTPUT
   #PERIODIC_OBSERVATION TIMESTEP 200
-  PERIODIC_OBSERVATION TIME 100 day           #print output every 100 day
+  #PERIODIC_OBSERVATION TIME 1 h           #print output every interval specified here, but that's for the observation point
   SCREEN PERIODIC 100
-  #PERIODIC TIMESTEP 1
+  PERIODIC TIME 1 h          #the frequency of generating output
   #FORMAT HDF5
   VARIABLES
-    POROSITY
+    LIQUID_SATURATION
     /
   FORMAT TECPLOT POINT
   MASS_BALANCE_FILE
@@ -345,45 +390,62 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 3.6e+02 d
+  FINAL_TIME 48 h
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
 END
 
 #=========================== regions ==========================================
-REGION all
+REGION top
   COORDINATES
-    0.d0 0.d0 0.d0
-    2.d0 1.d0 10.d0
+    0.d0 0.d0 1.0d0
+    1.d0 1.d0 1.0d0
   /
+  FACE TOP
 END
-
 
 REGION bottom
   COORDINATES
+    0.d0 0.d0 0.0d0
+    1.d0 1.d0 0.0d0
+  /
+  FACE BOTTOM
+END
+
+
+
+
+REGION OM
+  COORDINATES
+    0.d0 0.d0 0.6d0
+    1.d0 1.d0 1.d0
+  /
+  FACE BOTTOM
+END
+
+REGION CLAY
+  COORDINATES
     0.d0 0.d0 0.d0
-    2.d0 1.d0 4.9
+    1.d0 1.d0 0.6d0
   /
+  FACE BOTTOM
 END
 
-REGION dom_enrich
+
+
+REGION all
   COORDINATES
-    0.d0 0.d0 4.9
-    2.d0 1.d0 5.1
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 1.d0
   /
+  FACE TOP
 END
 
 
-REGION top
-  COORDINATES
-    0.d0 0.d0 5.1
-    2.d0 1.d0 10.d0
-  /
-END
 
 REGION obs_pt
-  COORDINATE 0.1 0.1 10
+  COORDINATE 0.1 0.1 1
 END
 
 #=========================== observation points ===============================
@@ -394,56 +456,168 @@ END
 
 #=========================== transport conditions =============================
 TRANSPORT_CONDITION initial
-  TYPE DIRICHLET
+  TYPE dirichlet
+  TIME_UNITS hr
   CONSTRAINT_LIST
     0.d0 initial
+ 
   /
 END
 
-TRANSPORT_CONDITION dom_enrich
-  TYPE DIRICHLET
+TRANSPORT_CONDITION sed_air_interface
+  TYPE dirichlet
+  TIME_UNITS hr
   CONSTRAINT_LIST
-    0.d0 dom_enrich
+   0.d0 sed_air_interface
+   5.d0 initial
   /
 END
 
 
+FLOW_CONDITION initial
+  TYPE
+    GAS_PRESSURE dirichlet
+    GAS_SATURATION dirichlet
+    TEMPERATURE dirichlet
+  /
+  GAS_PRESSURE 1.d5
+  GAS_SATURATION 0.d0   #if this is zero, it might cause some problem for multiple discretization
+  TEMPERATURE 25.d0
+/
 
-TRANSPORT_CONDITION bc_transport
-  TYPE DIRICHLET_ZERO_GRADIENT
+
+
+FLOW_CONDITION sed_air_interface
+  TYPE
+    GAS_PRESSURE dirichlet
+    GAS_SATURATION dirichlet
+    TEMPERATURE dirichlet
+
+  /
+  GAS_PRESSURE 1.d5
+  GAS_SATURATION 0.05   
+  #IF we use "GAS_SATUARTION" and set this as the boundary condition, the liquid saturation for the whole soil profile
+  #is adjusted to match the characteristic curve
+  
+  TEMPERATURE 25.d0
+/
+
+
+
+
+FLOW_CONDITION tide
+  TYPE
+    RATE volumetric_rate
+  /
+  RATE  -0.001  0  0 m^3/hr m^3/hr MW
+
+skip  
+RATE LIST
+  EXTERNAL_FILE Tide.txt
+
+  TIME_UNITS hr
+  DATA_UNITS  m^3/hr
+   0	-0.000539749999999728	0	0
+    1	-0.00106044999999999	0	0
+    2	-0.000958849999999956	0	0
+    3	0.000330199999999836	0	0
+    4	0.00360679999999991	0	0
+    5	0.0265747500000001	0	0
+    6	0.0298704000000000	0	0
+    7	0.00647700000000029	0	0
+    8	-0.0384619500000003	0	0
+    9	-0.0105854500000001	0	0
+    10	-0.00586739999999963	0	0
+    11	-0.00620395000000029	0	0
+    12	-0.00223519999999988	0	0
+    13	-0.00102235000000006	0	0
+    14	-0.000463549999999979	0	0
+    15	-0.000253999999999976	0	0
+    16	0.000819149999999991	0	0
+    17	0.00706120000000021	0	0
+    18	0.0326643999999998	0	0
+    19	0.0148018499999999	0	0
+    20	-0.0280352499999998	0	0
+    21	-0.0114046000000000	0	0
+    22	-0.00624840000000004	0	0
+    23	-0.00605155000000002	0	0
+    24	-0.00141605000000000	0	0
+  noskip
+  
+/
+
+
+
+TRANSPORT_CONDITION tide
+  TYPE NEUMANN
+  TIME_UNITS hr
   CONSTRAINT_LIST
-    0.d0 bc
+   0.d0 tide
+   
   /
 END
+
+
+
+TRANSPORT_CONDITION evap
+  TYPE dirichlet
+  CONSTRAINT_LIST
+    0.d0 evap
+  /
+END
+
+
+FLOW_CONDITION evap
+  TYPE
+    RATE volumetric_rate
+  /
+     ! liquid   gas   energy
+  RATE 0  0  0.d0 m^3/d m^3/d MW
+/
+
 
 #=========================== condition couplers ===============================
 # initial condition
 INITIAL_CONDITION
-  TRANSPORT_CONDITION dom_enrich
-  REGION dom_enrich
+  TRANSPORT_CONDITION initial
+  FLOW_CONDITION initial
+  REGION all
 END
 
-
-
-INITIAL_CONDITION
-  TRANSPORT_CONDITION initial
+skip
+BOUNDARY_CONDITION
+  TRANSPORT_CONDITION sed_air_interface
+  FLOW_CONDITION sed_air_interface
   REGION top
 END
+noskip
 
-
-INITIAL_CONDITION
-  TRANSPORT_CONDITION initial
-  REGION bottom
+SOURCE_SINK tide
+  FLOW_CONDITION tide
+  TRANSPORT_CONDITION tide
+  REGION top
 END
 
 
 
 skip
-BOUNDARY_CONDITION edge
-  TRANSPORT_CONDITION bc_transport
-  REGION top
+SOURCE_SINK evap            #evapotranspiration
+  FLOW_CONDITION evap
+  TRANSPORT_CONDITION evap
+  REGION aerenchyma
+END
+
+
+
+SOURCE_SINK aerenchyma     #O2 injection
+  FLOW_CONDITION aerenchyma
+  TRANSPORT_CONDITION aerenchyma
+  REGION aerenchyma
 END
 noskip
+
+
+
 #=========================== stratigraphy couplers ============================
 STRATA
   REGION all

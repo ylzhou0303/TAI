@@ -4,7 +4,7 @@ Created on Tue Jul 12 11:39:47 2022
 
 @author: YZ60069
 """
-
+# This file is for plotting the profiles at different time points
 
 from contextlib import AsyncExitStack
 #from socket import AF_X25
@@ -26,11 +26,13 @@ elif var_id == 3:
     var_str = 'Total CH4(aq) [M]'
 elif var_id == 4:
     var_str = 'Total DOM1 [M]'
-
 #%%
-for i in range(0,7):
+for i in range(0,18):
     
     file_name = 'TAI_fresh_YL-00' + str(i) + '.tec'
+    if len(file_name)>20:
+        file_name = file_name[0:13] + file_name[14:21]
+    
     with open(file_name,'r') as inputFile:
         read_lines = inputFile.readlines()
        
@@ -48,11 +50,13 @@ for i in range(0,7):
     
     for i in range(0, len(parameter_list)):
         results[parameter_list[i]] = data_list[:,i]
-    
+
+
+   
     xdata = results[var_str]
     #xdata = results['SOIL1 [mol/m^3]']
     #xdata = results['Total NH4+ [M]']
-    ydata = results['Z [m]'] - 20   #minus the depth of the soil profile
+    ydata = results['Z [m]'] - 1  #minus the depth of the soil profile
     plt.plot(xdata, ydata)
 
 
