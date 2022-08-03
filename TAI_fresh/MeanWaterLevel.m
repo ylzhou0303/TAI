@@ -70,7 +70,7 @@ VolRate_t0 = (WTMean.WT(201) - soil_surf) .* Area .* Porosity;   %this is for PF
 
 
 %%
-save("C:\Users\yz60069\TAI\TAI_fresh\WaterTableData.mat", "WTMean",'-v7')
+load("C:\Users\yz60069\TAI\TAI_fresh\WaterTableData.mat")
 
 %%
 writetable(WTMean, 'C:\Users\yz60069\TAI\TAI_fresh\WTMean.csv')
