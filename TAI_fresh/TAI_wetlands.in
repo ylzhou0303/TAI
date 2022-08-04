@@ -122,10 +122,9 @@ PASSIVE_GAS_SPECIES
       SPECIES_NAME microbes
       YIELD 0.01d0
     /
-    
+ /
 
-    
-  /
+ 
   #### NOTE: End of auto-inserted reactions ####
 
 
@@ -142,6 +141,7 @@ PASSIVE_GAS_SPECIES
     TOTAL
       O2(aq)
       CH4(aq)
+      DOM1
     #FREE_ION
     #PRIMARY_SPECIES
     #SECONDARY_SPECIES
@@ -163,7 +163,7 @@ CONSTRAINT initial
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-4 T
+    DOM1                1.0e-2 T
     H+                  5.9 P 
     O2(aq)              2.5d-6 T
     HCO3-               400e-6 G CO2(g)
@@ -184,6 +184,8 @@ CONSTRAINT initial
 END
 
 
+
+
 CONSTRAINT sed_air_interface
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
@@ -194,10 +196,9 @@ CONSTRAINT sed_air_interface
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-4
+    DOM1                1.0e-2
     H+                  5.9 P
     O2(aq)              0.21 G O2(g)
-    #O2(aq)              2.5d-4 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -226,10 +227,9 @@ CONSTRAINT sed_water_interface
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-4
+    DOM1                1.0e-2
     H+                  5.9 P
     O2(aq)              2.5d-5 T
-    #O2(aq)              2.5d-4 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -343,7 +343,7 @@ PROC 1 1 1
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 1.d-9
+  DIFFUSION_COEFFICIENT 1.d-5
 END
 
 FLUID_PROPERTY
@@ -404,7 +404,7 @@ OUTPUT
   #PERIODIC_OBSERVATION TIMESTEP 200
   #PERIODIC_OBSERVATION TIME 1 h           #print output every interval specified here, but that's for the observation point
   SCREEN PERIODIC 100
-  PERIODIC TIME 1 h          #the frequency of generating output
+  PERIODIC TIME 12 h          #the frequency of generating output
   #FORMAT HDF5
   VARIABLES
     LIQUID_SATURATION
@@ -424,7 +424,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 48 h
+  FINAL_TIME 5 d
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -494,6 +494,7 @@ TRANSPORT_CONDITION initial
   TIME_UNITS hr
   CONSTRAINT_LIST
     0.d0 initial
+    
  
   /
 END
@@ -508,6 +509,7 @@ TRANSPORT_CONDITION sed_air_interface
    9.d0 sed_air_interface
    31.d0 sed_water_interface
    33.d0 sed_air_interface
+   #48.d0 sed_water_interface
   /
 END
 
@@ -547,12 +549,12 @@ FLOW_CONDITION tide
   TYPE
     RATE volumetric_rate
   /
-#  RATE  0  0  0 m^3/hr m^3/hr MW
+  RATE  0  0  0 m^3/hr m^3/hr MW
 
-  
+skip  
 RATE LIST
   EXTERNAL_FILE Tide.txt
-skip
+
   TIME_UNITS hr
   DATA_UNITS  m^3/hr
    0	-0.000539749999999728	0	0
@@ -581,7 +583,7 @@ skip
     23	-0.00605155000000002	0	0
     24	-0.00141605000000000	0	0
   noskip
-  /
+  
 /
 
 
@@ -622,13 +624,13 @@ INITIAL_CONDITION
   REGION all
 END
 
-skip
+
 BOUNDARY_CONDITION
   TRANSPORT_CONDITION sed_air_interface
   FLOW_CONDITION sed_air_interface
   REGION top
 END
-noskip
+
 
 SOURCE_SINK tide
   FLOW_CONDITION tide
