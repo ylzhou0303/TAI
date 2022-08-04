@@ -122,13 +122,9 @@ PASSIVE_GAS_SPECIES
       SPECIES_NAME microbes
       YIELD 0.01d0
     /
-    skip
-    INHIBITION
-      SPECIES_NAME O2(aq)
-      TYPE MONOD
-      INHIBITION_CONSTANT 1.d-4
-    /
-    noskip
+    
+
+    
   /
   #### NOTE: End of auto-inserted reactions ####
 
@@ -208,7 +204,7 @@ CONSTRAINT sed_air_interface
     NH4+                1.0e-15
     Tracer              1.0e-15
     Tracer1             1.0e-15
-    CH4(aq)             1.0e-10
+    CH4(aq)             1.0e-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -626,13 +622,13 @@ INITIAL_CONDITION
   REGION all
 END
 
-
+skip
 BOUNDARY_CONDITION
   TRANSPORT_CONDITION sed_air_interface
   FLOW_CONDITION sed_air_interface
   REGION top
 END
-
+noskip
 
 SOURCE_SINK tide
   FLOW_CONDITION tide
