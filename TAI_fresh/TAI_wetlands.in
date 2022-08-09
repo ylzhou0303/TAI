@@ -620,21 +620,12 @@ INITIAL_CONDITION
 END
 
 
-
 SOURCE_SINK tide
   FLOW_CONDITION tide
   TRANSPORT_CONDITION tide
   REGION top
 END
 
-
-
-skip
-SOURCE_SINK evap            #evapotranspiration
-  FLOW_CONDITION evap
-  TRANSPORT_CONDITION evap
-  REGION aerenchyma
-END
 
 
 
