@@ -348,7 +348,7 @@ END
 
 FLUID_PROPERTY
   PHASE gas
-  DIFFUSION_COEFFICIENT 1.d-5
+  DIFFUSION_COEFFICIENT 1.d-8
 END
 
 #=========================== material properties ==============================
@@ -424,7 +424,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 5 d
+  FINAL_TIME 14 d
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -504,12 +504,7 @@ TRANSPORT_CONDITION sed_air_interface
   TYPE dirichlet
   TIME_UNITS hr
   CONSTRAINT_LIST
-   0.d0 sed_air_interface
-   6.d0 sed_water_interface
-   9.d0 sed_air_interface
-   31.d0 sed_water_interface
-   33.d0 sed_air_interface
-   #48.d0 sed_water_interface
+   EXTERNAL_FILE Constraint_List.txt
   /
 END
 
@@ -521,7 +516,7 @@ FLOW_CONDITION initial
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.d0   #if this is zero, it might cause some problem for multiple discretization
+  GAS_SATURATION 0.5d0   #if this is zero, it might cause some problem for multiple discretization
   TEMPERATURE 25.d0
 /
 
