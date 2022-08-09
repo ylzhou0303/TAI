@@ -1,41 +1,41 @@
 -- SATURATION: Liquid Saturation --
-      Max:   1.0000000000000E+00
-      Min:   9.3270961745632E-01
-     Mean:   9.8298001436928E-01
-        1:   1.0000000000000E+00
+      Max:   8.9101234734362E-01
+      Min:   6.1182143657108E-01
+     Mean:   7.4739405066622E-01
+        1:   8.9101234734362E-01
 -- CONCENTRATION: Total DOM1 --
-      Max:   1.0236140296163E-02
-      Min:   9.7170246312152E-03
-     Mean:   9.9646910767656E-03
-        1:   9.9828743831144E-03
+      Max:   9.9257078453860E-03
+      Min:   3.7384086140816E-03
+     Mean:   7.5709446605915E-03
+        1:   9.9257078453860E-03
 -- CONCENTRATION: Total O2(aq) --
-      Max:   1.4778451127524E-10
-      Min:   9.9715948117676E-13
-     Mean:   3.0354692815209E-11
-        1:   9.9716158803607E-13
+      Max:   2.4943720705287E-05
+      Min:   9.9712674885236E-13
+     Mean:   4.9962157466958E-06
+        1:   9.9712674885236E-13
 -- CONCENTRATION: Total CH4(aq) --
-      Max:   7.6348642055229E-06
-      Min:   5.5771348264998E-06
-     Mean:   7.1123301627233E-06
-        1:   7.6348642055229E-06
+      Max:   1.5149025727189E-07
+      Min:   5.2023132402556E-08
+     Mean:   1.1157616846713E-07
+        1:   1.5149025727189E-07
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Flow --
-   Time (seconds):   1.0503208637238E+00
-   Time Steps:         2449
-   Newton Iterations:        10101
-   Linear Solver Iterations:        10101
-   Time Step Cuts:          359
-   Solution 2-Norm:   2.2632645181847E+05
-   Residual 2-Norm:   2.9741151676619E-07
+   Time (seconds):   3.4298570156097E+00
+   Time Steps:         8419
+   Newton Iterations:        32865
+   Linear Solver Iterations:        32865
+   Time Step Cuts:           27
+   Solution 2-Norm:   5.6107754714018E+04
+   Residual 2-Norm:   3.0789942408866E-11
 -- SOLUTION: Transport --
-   Time (seconds):   7.3470711708069E-01
-   Time Steps:         2459
-   Newton Iterations:         3372
-   Linear Solver Iterations:        22542
+   Time (seconds):   1.9980440139771E+00
+   Time Steps:         8420
+   Newton Iterations:         9599
+   Linear Solver Iterations:        40974
    Time Step Cuts:            0
-   Solution 2-Norm:   2.2360679776115E+03
-   Residual 2-Norm:   2.1656957749713E-10
+   Solution 2-Norm:   2.2360679775701E+03
+   Residual 2-Norm:   1.0808365768706E-10

@@ -50,12 +50,12 @@ Area = 1 * 1;
 WTMean.Vol_rate = WTMean.Rate .* Area .* Porosity;  
 %convert the rate of water level change into volumetric rate of water addition/removal, accounting for the porosity
 
-Rate_List = table();
+Rate_tide = table();
 
-Rate_List.Time = [1:48]';
-Rate_List.Liquid = WTMean.Vol_rate(201:248);
-Rate_List.Gas = repmat(0,size(Rate_List,1),1);
-Rate_List.Energy = repmat(0,size(Rate_List,1),1);
+Rate_tide.Time = [1:48]';
+Rate_tide.Liquid = WTMean.Vol_rate(201:248);
+Rate_tide.Gas = repmat(0,size(Rate_tide,1),1);
+Rate_tide.Energy = repmat(0,size(Rate_tide,1),1);
 
 
 % one more step for PFLOTRAN input
@@ -66,6 +66,16 @@ VolRate_t0 = (WTMean.WT(201) - soil_surf) .* Area .* Porosity;   %this is for PF
 % In PFLOTRAN, we set the water saturation as 100% at t0, but if the actual
 %  water level at the first timepoint is higher than the soil surface, we
 %  need to tell PFLOTRAN to add more water to the soil profile
+
+%% create flow rate list for O2 exchange at the sed_air_interface
+Rate_O2 = table();
+Rate_O2.WT = WTMean.WT(201:248);
+Rate_O2.Time = [1:48]';
+Rate_O2.Liquid (Rate_O2.WT > 3.11) = 0;
+Rate_O2.Liquid (~(Rate_O2.WT > 3.11)) = 1.d-5;
+Rate_O2.Gas = zeros(size(Rate_O2,1),1);
+Rate_O2.Energy = zeros(size(Rate_O2,1),1);
+
 
 
 

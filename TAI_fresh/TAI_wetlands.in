@@ -198,7 +198,7 @@ CONSTRAINT sed_air_interface
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-2
     H+                  5.9 P
-    O2(aq)              0.21 G O2(g)
+    O2(aq)              2.5d-2 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -216,36 +216,6 @@ CONSTRAINT sed_air_interface
   /  
 END
 
-
-CONSTRAINT sed_water_interface
-  IMMOBILE
-    #### NOTE: Beginning of auto-inserted immobile species ####
-    cellulose            1.0e+03
-    HRimm                1.0e-20
-    microbes              6.d-7
-    #### NOTE: End of auto-inserted immobile species ####
-  /
-  CONCENTRATIONS
-    #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-2
-    H+                  5.9 P
-    O2(aq)              2.5d-5 T
-    HCO3-               400e-6 G CO2(g)
-    Fe+++               0.37e-3 M Fe(OH)3
-    Fe++                0.37e-10
-    NH4+                1.0e-15
-    Tracer              1.0e-15
-    Tracer1             1.0e-15
-    CH4(aq)             1.0e-15
-    #### NOTE: End of auto-inserted concentration constraints ####
-  /
-  MINERALS
-    #### NOTE: Beginning of auto-inserted mineral constraints ####
-    Fe(OH)3             1.d-5  1.e2 m^2/m^3
-    FeO                 0.0  1. m^2/m^3
-    #### NOTE: End of auto-inserted mineral constraints ####
-  /  
-END
 
 CONSTRAINT tide
   IMMOBILE
@@ -259,13 +229,13 @@ CONSTRAINT tide
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  1.0e-20
-    O2(aq)              0.21 G O2(g)
+    O2(aq)              1.0e-6 T
     HCO3-               1.0e-20
     Fe+++               1.0e-20
     Fe++                1.0e-20
     NH4+                1.0e-20
     Tracer              1.0e-20
-    Tracer1              1.0e-20
+    Tracer1             1.0e-20
     CH4(aq)             1.0e-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
@@ -279,36 +249,7 @@ CONSTRAINT tide
 END
 
 
-CONSTRAINT evap
-  IMMOBILE
-    #### NOTE: Beginning of auto-inserted immobile species ####
-    cellulose            1.0e-20
-    HRimm                1.0e-20
-    microbes              6.d-7
-    #### NOTE: End of auto-inserted immobile species ####
-  /
-  CONCENTRATIONS
-    #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-20
-    H+                  1.0e-20
-    O2(aq)              1.0e-20
-    HCO3-               1.0e-20
-    Fe+++               1.0e-20
-    Fe++                1.0e-20
-    NH4+                1.0e-20
-    Tracer              1.0e-20
-    Tracer1              1.0e-20
-    CH4(aq)             1.0e-20
-    #### NOTE: End of auto-inserted concentration constraints ####
-  /
-  MINERALS
-    #### NOTE: Beginning of auto-inserted mineral constraints ####
-    Fe(OH)3             1.0e-20 1.0
-    FeO                 1.0e-20 1.0
-    #### NOTE: End of auto-inserted mineral constraints ####
-  /
 
-END
 #=========================== solver options ===================================
 NUMERICAL_METHODS TRANSPORT
   LINEAR_SOLVER
@@ -404,7 +345,7 @@ OUTPUT
   #PERIODIC_OBSERVATION TIMESTEP 200
   #PERIODIC_OBSERVATION TIME 1 h           #print output every interval specified here, but that's for the observation point
   SCREEN PERIODIC 100
-  PERIODIC TIME 12 h          #the frequency of generating output
+  PERIODIC TIME 2 h          #the frequency of generating output
   #FORMAT HDF5
   VARIABLES
     LIQUID_SATURATION
@@ -424,7 +365,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 14 d
+  FINAL_TIME 2 d
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -493,9 +434,7 @@ TRANSPORT_CONDITION initial
   TYPE dirichlet
   TIME_UNITS hr
   CONSTRAINT_LIST
-    0.d0 initial
-    
- 
+    0.d0 initial 
   /
 END
 
@@ -504,9 +443,19 @@ TRANSPORT_CONDITION sed_air_interface
   TYPE dirichlet
   TIME_UNITS hr
   CONSTRAINT_LIST
-   EXTERNAL_FILE Constraint_List.txt
+   0.d0 sed_air_interface
   /
 END
+
+
+TRANSPORT_CONDITION tide
+  TYPE NEUMANN
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 tide   
+  /
+END
+
 
 
 FLOW_CONDITION initial
@@ -516,7 +465,7 @@ FLOW_CONDITION initial
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.5d0   #if this is zero, it might cause some problem for multiple discretization
+  GAS_SATURATION 0.05d0   #if this is zero, it might cause some problem for multiple discretization
   TEMPERATURE 25.d0
 /
 
@@ -524,17 +473,13 @@ FLOW_CONDITION initial
 
 FLOW_CONDITION sed_air_interface
   TYPE
-    GAS_PRESSURE dirichlet
-    GAS_SATURATION dirichlet
-    TEMPERATURE dirichlet
+    RATE volumetric_rate
 
   /
-  GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.1   
-  #IF we use "GAS_SATUARTION" and set this as the boundary condition, the liquid saturation for the whole soil profile
-  #is adjusted to match the characteristic curve
-  
-  TEMPERATURE 25.d0
+#  RATE  1.d-5   0    0   m^3/hr   m^3/hr  MW
+  RATE LIST 
+    EXTERNAL_FILE O2_exchange.txt
+  /
 /
 
 
@@ -544,72 +489,12 @@ FLOW_CONDITION tide
   TYPE
     RATE volumetric_rate
   /
-  RATE  0  0  0 m^3/hr m^3/hr MW
-
-skip  
+#  RATE  0  0  0 m^3/hr m^3/hr MW
+  
 RATE LIST
   EXTERNAL_FILE Tide.txt
-
-  TIME_UNITS hr
-  DATA_UNITS  m^3/hr
-   0	-0.000539749999999728	0	0
-    1	-0.00106044999999999	0	0
-    2	-0.000958849999999956	0	0
-    3	0.000330199999999836	0	0
-    4	0.00360679999999991	0	0
-    5	0.0265747500000001	0	0
-    6	0.0298704000000000	0	0
-    7	0.00647700000000029	0	0
-    8	-0.0384619500000003	0	0
-    9	-0.0105854500000001	0	0
-    10	-0.00586739999999963	0	0
-    11	-0.00620395000000029	0	0
-    12	-0.00223519999999988	0	0
-    13	-0.00102235000000006	0	0
-    14	-0.000463549999999979	0	0
-    15	-0.000253999999999976	0	0
-    16	0.000819149999999991	0	0
-    17	0.00706120000000021	0	0
-    18	0.0326643999999998	0	0
-    19	0.0148018499999999	0	0
-    20	-0.0280352499999998	0	0
-    21	-0.0114046000000000	0	0
-    22	-0.00624840000000004	0	0
-    23	-0.00605155000000002	0	0
-    24	-0.00141605000000000	0	0
-  noskip
-  
+ /  
 /
-
-
-
-TRANSPORT_CONDITION tide
-  TYPE NEUMANN
-  TIME_UNITS hr
-  CONSTRAINT_LIST
-   0.d0 tide
-   
-  /
-END
-
-
-
-TRANSPORT_CONDITION evap
-  TYPE dirichlet
-  CONSTRAINT_LIST
-    0.d0 evap
-  /
-END
-
-
-FLOW_CONDITION evap
-  TYPE
-    RATE volumetric_rate
-  /
-     ! liquid   gas   energy
-  RATE 0  0  0.d0 m^3/d m^3/d MW
-/
-
 
 #=========================== condition couplers ===============================
 # initial condition
@@ -619,6 +504,14 @@ INITIAL_CONDITION
   REGION all
 END
 
+SOURCE_SINK sed_air_interface             #O2 exchange between soil and atm
+  FLOW_CONDITION sed_air_interface
+  TRANSPORT_CONDITION sed_air_interface
+  REGION top
+END
+
+
+
 
 SOURCE_SINK tide
   FLOW_CONDITION tide
@@ -627,14 +520,6 @@ SOURCE_SINK tide
 END
 
 
-
-
-SOURCE_SINK aerenchyma     #O2 injection
-  FLOW_CONDITION aerenchyma
-  TRANSPORT_CONDITION aerenchyma
-  REGION aerenchyma
-END
-noskip
 
 
 
