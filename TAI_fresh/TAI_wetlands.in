@@ -165,7 +165,7 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-2 T
     H+                  5.9 P 
-    O2(aq)              2.5d-6 T
+    O2(aq)              2.5d-5 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -198,7 +198,7 @@ CONSTRAINT sed_air_interface
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-2
     H+                  5.9 P
-    O2(aq)              2.5d-2 T
+    O2(aq)              5.d-2 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -345,7 +345,7 @@ OUTPUT
   #PERIODIC_OBSERVATION TIMESTEP 200
   #PERIODIC_OBSERVATION TIME 1 h           #print output every interval specified here, but that's for the observation point
   SCREEN PERIODIC 100
-  PERIODIC TIME 2 h          #the frequency of generating output
+  PERIODIC TIME 1 h          #the frequency of generating output
   #FORMAT HDF5
   VARIABLES
     LIQUID_SATURATION
@@ -379,6 +379,7 @@ REGION top
   /
   FACE TOP
 END
+
 
 REGION bottom
   COORDINATES
@@ -449,7 +450,7 @@ END
 
 
 TRANSPORT_CONDITION tide
-  TYPE NEUMANN
+  TYPE dirichlet
   TIME_UNITS hr
   CONSTRAINT_LIST
    0.d0 tide   
@@ -465,7 +466,7 @@ FLOW_CONDITION initial
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.05d0   #if this is zero, it might cause some problem for multiple discretization
+  GAS_SATURATION 0.d0   #if this is zero, it might cause some problem for multiple discretization
   TEMPERATURE 25.d0
 /
 

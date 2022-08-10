@@ -64,20 +64,36 @@ soil_surf = 3.11;
 VolRate_t0 = (WTMean.WT(201) - soil_surf) .* Area .* Porosity;   %this is for PFLOTRAN
 
 % In PFLOTRAN, we set the water saturation as 100% at t0, but if the actual
-%  water level at the first timepoint is higher than the soil surface, we
-%  need to tell PFLOTRAN to add more water to the soil profile
+%  water level at the first timepoint is higher (or lower) than the soil surface, we
+%  need to tell PFLOTRAN to add more (or reduce) water to the soil profile
+%  at t0 to reach the actual observed water content
 
 %% create flow rate list for O2 exchange at the sed_air_interface
 Rate_O2 = table();
 Rate_O2.WT = WTMean.WT(201:248);
 Rate_O2.Time = [1:48]';
-Rate_O2.Liquid (Rate_O2.WT > 3.11) = 0;
-Rate_O2.Liquid (~(Rate_O2.WT > 3.11)) = 1.d-5;
+
+% When there is overlying water, no O2 exchange
+% When the soil is not saturated with water, turn on O2 exchange with atm
+% Less water, more O2 exchange
+
+
+f = abs(soil_surf - Rate_O2.WT) ./ 0.1; %here use 0.1m as the reference point, if water level is 0.1m lower than the surface, turn on O2 exchange "in full power"
+Rate_O2.Liquid = 1.d-5 .* f;
+Rate_O2.Liquid (Rate_O2.WT > soil_surf) = 0; % if water table is higher than soil surface, turn off O2 exchange
+Rate_O2.Liquid (Rate_O2.WT - soil_surf < -0.1 ) = 1.d-5;
+
+
+
 Rate_O2.Gas = zeros(size(Rate_O2,1),1);
 Rate_O2.Energy = zeros(size(Rate_O2,1),1);
 
-
-
+%%
+figure;
+plot(Rate_O2.Liquid);hold on
+yyaxis right
+plot(WTMean.WT(201:248))
+plot([0 48], [soil_surf soil_surf], 'k-')
 
 %%
 load("C:\Users\yz60069\TAI\TAI_fresh\WaterTableData.mat")
