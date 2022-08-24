@@ -44,7 +44,7 @@ figure;
 plot(WTMean.Date, WTMean.WT)
 
 
-%% generate the rate list
+%% generate the rate list of tide
 Porosity = 0.25;
 Area = 1 * 1;
 WTMean.Vol_rate = WTMean.Rate .* Area .* Porosity;  
