@@ -80,8 +80,8 @@ IMMOBILE_SPECIES
   #### NOTE: Beginning of auto-inserted immobile species ####
   cellulose
   HRimm
-  microbes1
-  microbes2
+  microbes
+
   #### NOTE: End of auto-inserted immobile species ####
 /
 PASSIVE_GAS_SPECIES
@@ -96,7 +96,7 @@ PASSIVE_GAS_SPECIES
   #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 5.0d0 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 1.0d-2 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
     MONOD
       SPECIES_NAME O2(aq)
       HALF_SATURATION_CONSTANT 4.d-2 #Gao et al 2010
@@ -106,7 +106,7 @@ PASSIVE_GAS_SPECIES
       HALF_SATURATION_CONSTANT 3.d-2 #Gao et al 2010
     /
     BIOMASS
-      SPECIES_NAME microbes1
+      SPECIES_NAME microbes
       YIELD 0.01d0   #the portion of the energy transfered to microbes to support the growth of microbes
     /
   /
@@ -117,20 +117,40 @@ PASSIVE_GAS_SPECIES
 #Methanogenesis DOM1
   MICROBIAL_REACTION 
     REACTION DOM1 + H2O -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+ + Tracer1
-    RATE_CONSTANT 0.8d-3 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    
+    RATE_CONSTANT 8.d-4 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    
     MONOD
       SPECIES_NAME DOM1
       HALF_SATURATION_CONSTANT 7.d0  #Gao et al 2010
     /
    
     BIOMASS
-      SPECIES_NAME microbes2
+      SPECIES_NAME microbes
       YIELD 0.01d0
     /
    
  /
-
-
+ 
+skip
+#Methane oxidation - O2
+  MICROBIAL_REACTION 
+    REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
+    RATE_CONSTANT 1.16d-7 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 3.6d0  #Gao et al 2010
+    /
+    MONOD
+      SPECIES_NAME CH4(aq)
+      HALF_SATURATION_CONSTANT 3.6d0  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes
+      YIELD 0.01d0
+    /
+  /
+noskip
   #### NOTE: End of auto-inserted reactions ####
 
 
@@ -148,14 +168,15 @@ PASSIVE_GAS_SPECIES
       O2(aq)
       CH4(aq)
       DOM1
-      NH4+
     #FREE_ION
     #PRIMARY_SPECIES
     #SECONDARY_SPECIES
     #GASES
     #MINERALS
     IMMOBILE
-      microbes1
+      microbes
+   
+  
 
   /
 END
@@ -166,13 +187,13 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1              6.d-7
-    microbes2              6.d-7
+    microbes              6.d-7
+    
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-3 T
+    DOM1                2.0e-2 T
     H+                  5.9 P 
     O2(aq)              2.5d-5 T
     HCO3-               400e-6 G CO2(g)
@@ -200,13 +221,13 @@ CONSTRAINT O2_exchange
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1              6.d-7
-    microbes2              6.d-7
+    microbes             6.d-7
+    
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-3
+    DOM1                1.0e-20
     H+                  5.9 P
     O2(aq)              5.d-2 T
     HCO3-               400e-6 G CO2(g)
@@ -232,9 +253,8 @@ CONSTRAINT tide
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e-20
     HRimm                1.0e-20
-    microbes1             6.d-7
-    microbes2             6.d-7
-
+    microbes             6.d-7
+    
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -284,25 +304,40 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 5 1 5
+  NXYZ 1 1 5
 
+  
+  DXYZ
+    1.d0
+    1.d0
+    0.575d0\
+    0.25d0\
+    0.05d0\
+    0.05d0\
+    0.075d0
+  /
+
+
+skip
   BOUNDS 
     0.d0 0.d0 0.d0
     1.d0 1.d0 1.d0   # 1m deep
   /
+noskip
 END
+
 
 PROC 1 1 1
 
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 1.d-5
+  DIFFUSION_COEFFICIENT 2.d-9  #unit: m2/s
 END
 
 FLUID_PROPERTY
-  PHASE gas
-  DIFFUSION_COEFFICIENT 1.d-8
+  PHASE GAS
+  DIFFUSION_COEFFICIENT 2.d-5
 END
 
 #=========================== material properties ==============================
@@ -358,7 +393,7 @@ OUTPUT
   #PERIODIC_OBSERVATION TIMESTEP 200
   #PERIODIC_OBSERVATION TIME 1 h           #print output every interval specified here, but that's for the observation point
   SCREEN PERIODIC 100
-  PERIODIC TIME 24 h          #the frequency of generating output
+  PERIODIC TIME 1 h          #the frequency of generating output
   #FORMAT HDF5
   VARIABLES
     LIQUID_SATURATION
@@ -372,7 +407,7 @@ OUTPUT
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 2 day
+  FINAL_TIME 14 day
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -399,24 +434,6 @@ END
 
 
 
-REGION OM
-  COORDINATES
-    0.d0 0.d0 0.6d0
-    1.d0 1.d0 1.d0
-  /
-  FACE BOTTOM
-END
-
-REGION CLAY
-  COORDINATES
-    0.d0 0.d0 0.d0
-    1.d0 1.d0 0.6d0
-  /
-  FACE BOTTOM
-END
-
-
-
 REGION all
   COORDINATES
     0.d0 0.d0 0.d0
@@ -426,21 +443,21 @@ REGION all
 END
 
 
-REGION O2_inj
-  COORDINATES
-    0.d0   0.d0  0.8d0
-    1.d0   1.d0  1.d0
-  /
-
-  FACE TOP
-/ 
 
 
 REGION obs_pt
   COORDINATE  0.5   0.5  0.5
   FACE TOP
-
 /
+
+
+REGION top_layer
+  COORDINATES
+    0.d0 0.d0 0.8d0
+    1.d0 1.d0 1.d0
+  /
+  FACE TOP
+END
 
 
 #=========================== observation points ===============================
@@ -472,7 +489,7 @@ END
 
 
 TRANSPORT_CONDITION tide
-  TYPE NEUMANN
+  TYPE dirichlet
   TIME_UNITS hr
   CONSTRAINT_LIST
    0.d0 tide
@@ -492,24 +509,26 @@ FLOW_CONDITION initial
   TEMPERATURE 25.d0
 /
 
+
 FLOW_CONDITION tide
   TYPE
     RATE volumetric_rate
   /
-#  RATE -0.001  0  0 m^3/hr m^3/hr MW
+#  RATE 0  0  0 m^3/hr m^3/hr MW
 
  
-RATE LIST
-  EXTERNAL_FILE RateListTide_typha.txt
+  RATE LIST
+    EXTERNAL_FILE RateListTide_typha.txt
 
 
-skip  
+skip 
   TIME_UNITS hr
   DATA_UNITS m^3/hr   m^3/hr   MW
-   0.d0   0.01   0.d0    0.d0
-   2.d0   -0.01    0.d0   0.d0
-  #6.d0   0        0      0
-noskip
+   0.d0   -0.0001   0.d0    0.d0
+   2.d0    0.0001    0.d0   0.d0
+  10.d0   -0.0001        0      0
+noskip  
+
  /
 /
 
@@ -532,7 +551,11 @@ FLOW_CONDITION O2_inj
     RATE volumetric_rate
    /
   
-  RATE  1.d-6   0    0   m^3/hr   m^3/hr  MW
+  RATE LIST
+    TIME_UNITS hr
+    DATA_UNITS m^3/hr   m^3/hr   MW
+      0.d0   1.d-6   0.d0    0.d0
+  /
 /
 
 
@@ -544,11 +567,13 @@ INITIAL_CONDITION     # initial condition
   REGION all
 END
 
+
 SOURCE_SINK tide
   FLOW_CONDITION tide
   TRANSPORT_CONDITION tide
   REGION top
 END
+
 
 
 SOURCE_SINK O2_exchange             #O2 exchange between soil and atm
@@ -561,12 +586,8 @@ END
 SOURCE_SINK O2_inj            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_exchange
-  REGION O2_inj
+  REGION top
 END
-
-
-
-
 
 
 #=========================== stratigraphy couplers ============================
