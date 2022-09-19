@@ -80,7 +80,9 @@ IMMOBILE_SPECIES
   #### NOTE: Beginning of auto-inserted immobile species ####
   cellulose
   HRimm
-  microbes
+  microbes1
+  microbes2
+  microbes3
 
   #### NOTE: End of auto-inserted immobile species ####
 /
@@ -96,7 +98,7 @@ PASSIVE_GAS_SPECIES
   #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 1.0d-2 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 1.0d-3 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
     MONOD
       SPECIES_NAME O2(aq)
       HALF_SATURATION_CONSTANT 4.d-2 #Gao et al 2010
@@ -106,7 +108,7 @@ PASSIVE_GAS_SPECIES
       HALF_SATURATION_CONSTANT 3.d-2 #Gao et al 2010
     /
     BIOMASS
-      SPECIES_NAME microbes
+      SPECIES_NAME microbes1
       YIELD 0.01d0   #the portion of the energy transfered to microbes to support the growth of microbes
     /
   /
@@ -118,7 +120,7 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION DOM1 + H2O -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+ + Tracer1
     
-    RATE_CONSTANT 8.d-4 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 8.d-20 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
     
     MONOD
       SPECIES_NAME DOM1
@@ -126,7 +128,7 @@ PASSIVE_GAS_SPECIES
     /
    
     BIOMASS
-      SPECIES_NAME microbes
+      SPECIES_NAME microbes2
       YIELD 0.01d0
     /
    
@@ -136,17 +138,17 @@ skip
 #Methane oxidation - O2
   MICROBIAL_REACTION 
     REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
-    RATE_CONSTANT 1.16d-7 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 1.16d-1 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 3.6d0  #Gao et al 2010
+      HALF_SATURATION_CONSTANT 3.6d-5  #Gao et al 2010
     /
     MONOD
       SPECIES_NAME CH4(aq)
-      HALF_SATURATION_CONSTANT 3.6d0  #Gao et al 2010
+      HALF_SATURATION_CONSTANT 3.6d-5  #Gao et al 2010
     /
     BIOMASS
-      SPECIES_NAME microbes
+      SPECIES_NAME microbes3
       YIELD 0.01d0
     /
   /
@@ -174,7 +176,10 @@ noskip
     #GASES
     #MINERALS
     IMMOBILE
-      microbes
+      microbes1
+      microbes2
+      microbes3
+
    
   
 
@@ -187,8 +192,10 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes              6.d-7
-    
+    microbes1             6.d-7
+    microbes2             6.d-7
+    microbes3             6.d-7
+
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -221,8 +228,10 @@ CONSTRAINT O2_exchange
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes             6.d-7
-    
+    microbes1             6.d-7
+    microbes2             6.d-7
+    microbes3             6.d-7
+
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -253,7 +262,9 @@ CONSTRAINT tide
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e-20
     HRimm                1.0e-20
-    microbes             6.d-7
+    microbes1             6.d-7
+    microbes2             6.d-7
+    microbes3             6.d-7
     
     #### NOTE: End of auto-inserted immobile species ####
   /
@@ -261,7 +272,7 @@ CONSTRAINT tide
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  1.0e-20
-    O2(aq)              1.0e-5 T
+    O2(aq)              5.0e-5 T
     HCO3-               1.0e-20
     Fe+++               1.0e-20
     Fe++                1.0e-20
@@ -567,13 +578,13 @@ INITIAL_CONDITION     # initial condition
   REGION all
 END
 
-
+skip
 SOURCE_SINK tide
   FLOW_CONDITION tide
   TRANSPORT_CONDITION tide
   REGION top
 END
-
+noskip
 
 
 SOURCE_SINK O2_exchange             #O2 exchange between soil and atm
