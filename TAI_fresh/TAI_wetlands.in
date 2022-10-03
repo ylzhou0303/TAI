@@ -121,7 +121,7 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION DOM1 + H2O -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+ + Tracer1
     
-    RATE_CONSTANT 8.d-5 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 2.d-3 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
     
     MONOD
       SPECIES_NAME DOM1
@@ -139,7 +139,7 @@ PASSIVE_GAS_SPECIES
 #Methane oxidation - O2
   MICROBIAL_REACTION 
     REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
-    RATE_CONSTANT 1.16d-1 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 9.d-1 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
     MONOD
       SPECIES_NAME O2(aq)
       HALF_SATURATION_CONSTANT 3.6d-5  #Gao et al 2010
