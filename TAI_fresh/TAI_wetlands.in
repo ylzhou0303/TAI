@@ -203,7 +203,7 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-3 T
     H+                  5.9 P 
-    O2(aq)              1.d-20 T           #the initial concentration of O2 for the soil except top layer should be zero
+    O2(aq)              2.5d-5 T           #the initial concentration of O2 for the soil except top layer should be zero
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -347,12 +347,20 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 1 1 5
+  NXYZ 3 3 5
 
   
   DXYZ
-    1.d0
-    1.d0
+    0.33d0\
+    0.34d0\
+    0.33d0
+
+
+    0.33d0\
+    0.34d0\
+    0.33d0
+
+
     0.575d0\
     0.25d0\
     0.05d0\
@@ -401,8 +409,8 @@ MATERIAL_PROPERTY soil1
   THERMAL_COND_EXPONENT_FROZEN 0.95d0
   CHARACTERISTIC_CURVES sf01
   PERMEABILITY
-    PERM_X 6.5870260083342112E-013
-    PERM_Y 6.5870260083342112E-013
+    PERM_X 6.5870260083342112E-012
+    PERM_Y 6.5870260083342112E-012
     PERM_Z 6.5870260083342112E-010
   /
 /
@@ -486,6 +494,14 @@ REGION all
 END
 
 
+REGION o2_inj     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.5d0 0.5d0 0.925d0
+    0.5d0 0.5d0 1.d0
+  /
+  FACE TOP
+END
+
 
 
 REGION obs_pt
@@ -493,14 +509,6 @@ REGION obs_pt
   FACE TOP
 /
 
-
-REGION top_layer
-  COORDINATES
-    0.d0 0.d0 0.925d0
-    1.d0 1.d0 1.d0
-  /
-  FACE TOP
-END
 
 
 #=========================== observation points ===============================
@@ -618,11 +626,7 @@ INITIAL_CONDITION     # initial condition
   REGION all
 END
 
-INITIAL_CONDITION     # initial condition
-  TRANSPORT_CONDITION top_layer
-  FLOW_CONDITION initial
-  REGION top_layer
-END
+
 
 skip
 SOURCE_SINK tide
@@ -644,8 +648,9 @@ END
 SOURCE_SINK O2_inj            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_exchange
-  REGION top_layer
+  REGION o2_inj
 END
+
 
 
 #=========================== stratigraphy couplers ============================
