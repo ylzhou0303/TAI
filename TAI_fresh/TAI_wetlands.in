@@ -98,7 +98,7 @@ PASSIVE_GAS_SPECIES
   #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 7.0d-1 
+    RATE_CONSTANT 5.0d0
 
     MONOD
       SPECIES_NAME O2(aq)
@@ -139,7 +139,7 @@ PASSIVE_GAS_SPECIES
 #Methane oxidation - O2
   MICROBIAL_REACTION 
     REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
-    RATE_CONSTANT 9.d-1 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 1.16d-7 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
     MONOD
       SPECIES_NAME O2(aq)
       HALF_SATURATION_CONSTANT 3.6d-5  #Gao et al 2010
@@ -203,7 +203,7 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-3 T
     H+                  5.9 P 
-    O2(aq)              2.5d-5 T           #the initial concentration of O2 for the soil except top layer should be zero
+    O2(aq)              5.d-5 T           #the initial concentration of O2 for the soil except top layer should be zero
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -222,38 +222,7 @@ CONSTRAINT initial
 END
 
 
-CONSTRAINT top_layer
-  IMMOBILE
-    #### NOTE: Beginning of auto-inserted immobile species ####
-    cellulose            1.0e+03
-    HRimm                1.0e-20
-    microbes1             6.d-7
-    microbes2             6.d-7
-    microbes3             6.d-7
 
-    #### NOTE: End of auto-inserted immobile species ####
-  /
-  CONCENTRATIONS
-    #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-3 T
-    H+                  5.9 P 
-    O2(aq)              2.5d-5 T
-    HCO3-               400e-6 G CO2(g)
-    Fe+++               0.37e-3 M Fe(OH)3
-    Fe++                0.37e-10
-    NH4+                1.0e-6
-    Tracer              1.0e-15
-    Tracer1             1.0e-15
-    CH4(aq)             1.0e-15
-    #### NOTE: End of auto-inserted concentration constraints ####
-  /
-  MINERALS
-    #### NOTE: Beginning of auto-inserted mineral constraints ####
-    Fe(OH)3             1.d-5  1.e2 m^2/m^3
-    FeO                 0.0  1. m^2/m^3
-    #### NOTE: End of auto-inserted mineral constraints ####
-  /  
-END
 
 CONSTRAINT O2_exchange
   IMMOBILE
@@ -383,7 +352,7 @@ PROC 1 1 1
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 3.d-7  #unit: m2/s
+  DIFFUSION_COEFFICIENT 2.d-9  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
 END
 
 FLUID_PROPERTY
@@ -409,8 +378,8 @@ MATERIAL_PROPERTY soil1
   THERMAL_COND_EXPONENT_FROZEN 0.95d0
   CHARACTERISTIC_CURVES sf01
   PERMEABILITY
-    PERM_X 6.5870260083342112E-012
-    PERM_Y 6.5870260083342112E-012
+    PERM_X 6.5870260083342112E-013
+    PERM_Y 6.5870260083342112E-013
     PERM_Z 6.5870260083342112E-010
   /
 /
@@ -448,6 +417,7 @@ OUTPUT
   #FORMAT HDF5
   VARIABLES
     LIQUID_SATURATION
+    
     /
   FORMAT TECPLOT POINT
   MASS_BALANCE_FILE
@@ -458,7 +428,7 @@ OUTPUT
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 14 day
+  FINAL_TIME 154 hr
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -529,13 +499,7 @@ TRANSPORT_CONDITION initial
 END
 
 
-TRANSPORT_CONDITION top_layer
-  TYPE dirichlet
-  TIME_UNITS hr
-  CONSTRAINT_LIST
-    0.d0 top_layer 
-  /
-END
+
 
 TRANSPORT_CONDITION O2_exchange
   TYPE dirichlet
@@ -564,7 +528,7 @@ FLOW_CONDITION initial
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.d0   #if this is zero, it might cause some problem for multiple discretization
+  GAS_SATURATION 0.d0   
   TEMPERATURE 25.d0
 /
 
@@ -613,6 +577,7 @@ FLOW_CONDITION O2_inj
   RATE LIST
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
+      
       0.d0   1.d-7   0.d0    0.d0
   /
 /
