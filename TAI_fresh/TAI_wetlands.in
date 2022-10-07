@@ -602,12 +602,14 @@ END
 noskip
 
 
-
+skip
 SOURCE_SINK O2_exchange             #O2 exchange between soil and atm
   FLOW_CONDITION O2_exchange
   TRANSPORT_CONDITION O2_exchange
   REGION top
 END
+noskip
+
 
 
 SOURCE_SINK O2_inj            #typha plant-mediated O2 injection to soil
