@@ -180,9 +180,7 @@ PASSIVE_GAS_SPECIES
       microbes1
       microbes2
       microbes3
-
-   
-  
+ 
 
   /
 END
@@ -239,7 +237,7 @@ CONSTRAINT O2_exchange
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  5.9 P
-    O2(aq)              2.d-1 T
+    O2(aq)              1.d-2 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -316,10 +314,11 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 3 3 5
+  NXYZ 1 1 5
 
   
   DXYZ
+  skip
     0.33d0\
     0.34d0\
     0.33d0
@@ -328,7 +327,11 @@ GRID
     0.33d0\
     0.34d0\
     0.33d0
+   noskip
 
+    1.d0
+
+    1.d0
 
     0.575d0\
     0.25d0\
@@ -414,7 +417,7 @@ OUTPUT
   #PERIODIC_OBSERVATION TIME 1 h           #print output every interval specified here, but that's for the observation point
   SCREEN PERIODIC 100
   PERIODIC TIME 1 h          #the frequency of generating output
-  #FORMAT HDF5
+  FORMAT HDF5
   VARIABLES
     LIQUID_SATURATION
     
@@ -428,7 +431,7 @@ OUTPUT
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 154 hr
+  FINAL_TIME 14 day
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -463,7 +466,7 @@ REGION all
   FACE TOP
 END
 
-
+skip
 REGION o2_inj     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
     0.5d0 0.5d0 0.925d0
@@ -471,7 +474,7 @@ REGION o2_inj     #where the rhizomes are, where O2 is transported into the soil
   /
   FACE TOP
 END
-
+noskip
 
 
 REGION obs_pt
@@ -560,11 +563,9 @@ FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
   TYPE
     RATE volumetric_rate
   /
- # RATE  0   0    0   m^3/hr   m^3/hr  MW
+  RATE  1.d-10   0    0   m^3/hr   m^3/hr  MW
 
-  RATE LIST 
-    EXTERNAL_FILE RateListO2_typha.txt
-  /
+  
 
 /
 
@@ -578,7 +579,7 @@ FLOW_CONDITION O2_inj
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   1.d-7   0.d0    0.d0
+      0.d0   1.d-6   0.d0    0.d0
   /
 /
 
@@ -602,20 +603,20 @@ END
 noskip
 
 
-skip
+
 SOURCE_SINK O2_exchange             #O2 exchange between soil and atm
   FLOW_CONDITION O2_exchange
   TRANSPORT_CONDITION O2_exchange
   REGION top
 END
-noskip
+
 
 
 
 SOURCE_SINK O2_inj            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_exchange
-  REGION o2_inj
+  REGION top
 END
 
 
