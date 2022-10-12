@@ -544,7 +544,7 @@ FLOW_CONDITION tide
 
  
   RATE LIST
-    EXTERNAL_FILE RateListTide_typha.txt
+    EXTERNAL_FILE RateListTide_MI.txt
 
 
 skip 
@@ -563,10 +563,14 @@ FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
   TYPE
     RATE volumetric_rate
   /
-  RATE  1.d-7   0    0   m^3/hr   m^3/hr  MW
-
   
+  #RATE 1.d-07  0   0   m^3/hr   m^3/hr   MW
 
+
+  RATE LIST
+    EXTERNAL_FILE RateListO2_MI.txt
+  /
+  
 /
 
 
