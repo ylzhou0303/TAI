@@ -176,7 +176,7 @@ PASSIVE_GAS_SPECIES
     #SECONDARY_SPECIES
     #GASES
     #MINERALS
-    IMMOBILE
+    #IMMOBILE
       microbes1
       microbes2
       microbes3
@@ -563,7 +563,7 @@ FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
   TYPE
     RATE volumetric_rate
   /
-  RATE  1.d-10   0    0   m^3/hr   m^3/hr  MW
+  RATE  1.d-7   0    0   m^3/hr   m^3/hr  MW
 
   
 
