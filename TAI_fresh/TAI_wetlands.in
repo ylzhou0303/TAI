@@ -501,15 +501,32 @@ REGION all
 END
 
 
-REGION O2_inj     #where the rhizomes are, where O2 is transported into the soil by roots
+REGION O2_inj1     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
     0.495d0 0.495d0 0.925d0
     0.505d0 0.505d0 1.d0
   /
+
   FACE TOP
 END
 
+REGION O2_inj2     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.15d0 0.495d0 0.925d0
+    0.16d0 0.505d0 1.d0
+  /
 
+  FACE TOP
+END
+
+REGION O2_inj3     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.81d0 0.495d0 0.925d0
+    0.82d0 0.505d0 1.d0
+  /
+
+  FACE TOP
+END
 
 REGION obs_pt
   COORDINATE  0.5   0.5  1.d0
@@ -626,7 +643,7 @@ FLOW_CONDITION O2_inj
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   1.d-6   0.d0    0.d0
+      0.d0   3.3d-7   0.d0    0.d0
   /
 /
 
@@ -658,15 +675,24 @@ SOURCE_SINK O2_exchange             #O2 exchange between soil and atm
 END
 
 
-
-
-SOURCE_SINK O2_inj            #typha plant-mediated O2 injection to soil
+SOURCE_SINK O2_inj1            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_inj
-  REGION O2_inj
+  REGION O2_inj1
+END
+
+SOURCE_SINK O2_inj2            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION O2_inj2
 END
 
 
+SOURCE_SINK O2_inj3            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION O2_inj3
+END
 
 #=========================== stratigraphy couplers ============================
 STRATA
