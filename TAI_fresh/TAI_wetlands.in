@@ -98,7 +98,7 @@ PASSIVE_GAS_SPECIES
   #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 5.0d0
+    RATE_CONSTANT 5.0d-1
 
     MONOD
       SPECIES_NAME O2(aq)
@@ -208,7 +208,7 @@ CONSTRAINT initial
     NH4+                1.0e-6
     Tracer              1.0e-15
     Tracer1             1.0e-15
-    CH4(aq)             1.0e-15
+    CH4(aq)             1.0e-6
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -237,7 +237,7 @@ CONSTRAINT O2_exchange
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  5.9 P
-    O2(aq)              1.d-2 T
+    O2(aq)              1.d-1 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -379,7 +379,7 @@ GRID
     0.05d0\
     0.05d0\
     0.075d0
-  
+ 
   END
 
 
@@ -504,8 +504,6 @@ REGION bottom
 END
 
 
-
-
 REGION all
   COORDINATES
     0.d0 0.d0 0.d0
@@ -517,17 +515,17 @@ END
 
 REGION O2_inj1     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.495d0 0.495d0 0.925d0
-    0.505d0 0.505d0 1.d0
+    0.495d0 0.495d0 0.9d0
+    0.505d0 0.505d0 0.9d0
   /
 
-  FACE TOP
+  FACE BOTTOM
 END
 
 REGION O2_inj2     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.15d0 0.495d0 0.925d0
-    0.16d0 0.505d0 1.d0
+    0.15d0 0.495d0 0.9d0
+    0.16d0 0.505d0 0.9d0
   /
 
   FACE TOP
@@ -535,8 +533,8 @@ END
 
 REGION O2_inj3     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.81d0 0.495d0 0.925d0
-    0.82d0 0.505d0 1.d0
+    0.81d0 0.495d0 0.9d0
+    0.82d0 0.505d0 0.9d0
   /
 
   FACE TOP
@@ -544,8 +542,8 @@ END
 
 REGION O2_inj4     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.15d0 0.15d0 0.925d0
-    0.16d0 0.16d0 1.d0
+    0.15d0 0.15d0 0.9d0
+    0.16d0 0.16d0 0.9d0
   /
 
   FACE TOP
@@ -554,8 +552,8 @@ END
 
 REGION O2_inj5     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.495d0 0.15d0 0.925d0
-    0.505d0 0.16d0 1.d0
+    0.495d0 0.15d0 0.9d0
+    0.505d0 0.16d0 0.9d0
   /
 
   FACE TOP
@@ -564,8 +562,8 @@ END
 
 REGION O2_inj6     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.81d0 0.15d0 0.925d0
-    0.82d0 0.16d0 1.d0
+    0.81d0 0.15d0 0.9d0
+    0.82d0 0.16d0 0.9d0
   /
 
   FACE TOP
@@ -574,8 +572,8 @@ END
 
 REGION O2_inj7     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.15d0 0.81d0 0.925d0
-    0.16d0 0.82d0 1.d0
+    0.15d0 0.81d0 0.9d0
+    0.16d0 0.82d0 0.9d0
   /
 
   FACE TOP
@@ -584,8 +582,8 @@ END
 
 REGION O2_inj8     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.495d0 0.81d0 0.925d0
-    0.505d0 0.82d0 1.d0
+    0.495d0 0.81d0 0.9d0
+    0.505d0 0.82d0 0.9d0
   /
 
   FACE TOP
@@ -594,8 +592,8 @@ END
 
 REGION O2_inj9     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.81d0 0.81d0 0.925d0
-    0.82d0 0.82d0 1.d0
+    0.81d0 0.81d0 0.9d0
+    0.82d0 0.82d0 0.9d0
   /
 
   FACE TOP
@@ -625,8 +623,6 @@ TRANSPORT_CONDITION initial
     0.d0 initial 
   /
 END
-
-
 
 
 TRANSPORT_CONDITION O2_exchange
@@ -698,7 +694,7 @@ FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
     RATE volumetric_rate
   /
   
-  RATE 0.0204d-07  0   0   m^3/hr   m^3/hr   MW    # 1.d-7 divided by number of columns in discretization
+  RATE 0.102d-07  0   0   m^3/hr   m^3/hr   MW    # 5.d-7 divided by number of columns in discretization
 
   skip
   RATE LIST
@@ -744,13 +740,15 @@ noskip
 
 
 
-SOURCE_SINK O2_exchange             #O2 exchange between soil and atm
+SOURCE_SINK O2_exchange             #O2 exchange between soil and atm, happening at the sediment-air/water interface
   FLOW_CONDITION O2_exchange
   TRANSPORT_CONDITION O2_exchange
   REGION top
 END
 
 
+
+# O2 injection by roots
 SOURCE_SINK O2_inj1            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_inj
@@ -811,7 +809,7 @@ SOURCE_SINK O2_inj9            #typha plant-mediated O2 injection to soil
   TRANSPORT_CONDITION O2_inj
   REGION  O2_inj9
 END
-
+noskip
 
 #=========================== stratigraphy couplers ============================
 STRATA
