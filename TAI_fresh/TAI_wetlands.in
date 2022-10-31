@@ -98,15 +98,15 @@ PASSIVE_GAS_SPECIES
   #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 5.0d-1
+    RATE_CONSTANT 5.0d0   #unit: mol L-1 s-1 (mol m3 biomass)-1, this rate is then multiplied by the abundance of microbes
 
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 4.d-2 #Gao et al 2010
+      HALF_SATURATION_CONSTANT 4.d-2 #Sulman 2022
     /
     MONOD
       SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 3.d-2 #Gao et al 2010
+      HALF_SATURATION_CONSTANT 3.d-2 #Sulman 2022
     /
     BIOMASS
       SPECIES_NAME microbes1
@@ -116,7 +116,7 @@ PASSIVE_GAS_SPECIES
 
 
 
-
+skip
 #Methanogenesis DOM1
   MICROBIAL_REACTION 
     REACTION DOM1 + H2O -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+ + Tracer1
@@ -153,7 +153,7 @@ PASSIVE_GAS_SPECIES
       YIELD 0.01d0
     /
   /
-
+noskip
   #### NOTE: End of auto-inserted reactions ####
 
 
@@ -199,9 +199,10 @@ CONSTRAINT initial
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-3 T
+    DOM1                1.0e-2 T
     H+                  5.9 P 
-    O2(aq)              5.d-5 T           #the initial concentration of O2 for the soil except top layer should be zero
+    O2(aq)              2.d-6 T           
+    #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -237,7 +238,7 @@ CONSTRAINT O2_exchange
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  5.9 P
-    O2(aq)              1.d-1 T
+    O2(aq)              1.d-2 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -271,7 +272,7 @@ CONSTRAINT O2_inj
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  5.9 P
-    O2(aq)              1.d-1 T
+    O2(aq)              1.d-2 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -694,7 +695,7 @@ FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
     RATE volumetric_rate
   /
   
-  RATE 0.102d-07  0   0   m^3/hr   m^3/hr   MW    # 5.d-7 divided by number of columns in discretization
+  RATE 0.0204d-07  0   0   m^3/hr   m^3/hr   MW    # 1.d-7 divided by number of columns in discretization
 
   skip
   RATE LIST
