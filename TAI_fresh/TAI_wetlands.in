@@ -38,6 +38,8 @@ PRIMARY_SPECIES
   Tracer
   Tracer1
   CH4(aq)
+  SO4--
+  H2S(aq)
   #### NOTE: End of auto-inserted primary species ####
 /
 DECOUPLED_EQUILIBRIUM_REACTIONS
@@ -51,6 +53,7 @@ DECOUPLED_EQUILIBRIUM_REACTIONS
   NH4+
   Tracer
   CH4(aq)
+  H2S(aq)
   #### NOTE: End of auto-inserted primary species ####
 /
 SECONDARY_SPECIES
@@ -83,6 +86,7 @@ IMMOBILE_SPECIES
   microbes1
   microbes2
   microbes3
+  microbes4
 
   #### NOTE: End of auto-inserted immobile species ####
 /
@@ -98,15 +102,16 @@ PASSIVE_GAS_SPECIES
   #DOM RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 2.0 O2(aq) + H2O -> 2.0 HCO3- + 2.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 5.0d0   #unit: mol L-1 s-1 (mol m3 biomass)-1, this rate is then multiplied by the abundance of microbes
+    RATE_CONSTANT 3.d-8   #unit: mol L-1 s-1 (mol m3 biomass)-1, this rate is then multiplied by the abundance of microbes
+                          
 
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 4.d-2 #Sulman 2022
+      HALF_SATURATION_CONSTANT 4.d-2 #Gao et al. 2010
     /
     MONOD
       SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 3.d-2 #Sulman 2022
+      HALF_SATURATION_CONSTANT 3.d-2 #Gao et al. 2010
     /
     BIOMASS
       SPECIES_NAME microbes1
@@ -116,12 +121,12 @@ PASSIVE_GAS_SPECIES
 
 
 
-skip
+
 #Methanogenesis DOM1
   MICROBIAL_REACTION 
     REACTION DOM1 + H2O -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+ + Tracer1
     
-    RATE_CONSTANT 2.d-3 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 4.8d-12 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
     
     MONOD
       SPECIES_NAME DOM1
@@ -139,7 +144,7 @@ skip
 #Methane oxidation - O2
   MICROBIAL_REACTION 
     REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
-    RATE_CONSTANT 1.16d-7 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 6.d-12 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec)  # was 6.d-16
     MONOD
       SPECIES_NAME O2(aq)
       HALF_SATURATION_CONSTANT 3.6d-5  #Gao et al 2010
@@ -153,10 +158,23 @@ skip
       YIELD 0.01d0
     /
   /
-noskip
+
   #### NOTE: End of auto-inserted reactions ####
 
 
+#Sulfate reduction DOM1
+  MICROBIAL_REACTION 
+    REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 HCO3- + 1.d0 H2S(aq) + 1.d-1 NH4+
+    RATE_CONSTANT 1.d-10 #Furukawa et al 2004 mol-m3 bulk/(L water-mol biomass-sec)
+    MONOD
+      SPECIES_NAME SO4--
+      HALF_SATURATION_CONSTANT 1.0d-3  #Gao et al 2010
+    /
+    BIOMASS
+      SPECIES_NAME microbes4
+      YIELD 0.01d0
+    /
+  /
 
 
   TRUNCATE_CONCENTRATION 1.d-80
@@ -171,6 +189,8 @@ noskip
       O2(aq)
       CH4(aq)
       DOM1
+      SO4--
+      H2S(aq)
     #FREE_ION
     #PRIMARY_SPECIES
     #SECONDARY_SPECIES
@@ -180,6 +200,7 @@ noskip
       microbes1
       microbes2
       microbes3
+      microbes4
  
 
   /
@@ -191,15 +212,16 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             6.d-7
-    microbes2             6.d-7
-    microbes3             6.d-7
+    microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
 
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.0e-2 T
+    DOM1                1.0e-1 T
     H+                  5.9 P 
     O2(aq)              2.d-6 T           
     #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
@@ -209,7 +231,9 @@ CONSTRAINT initial
     NH4+                1.0e-6
     Tracer              1.0e-15
     Tracer1             1.0e-15
-    CH4(aq)             1.0e-6
+    CH4(aq)             6.0e-4          #from measured data at typha
+    SO4--               3.d-2
+    H2S(aq)             1.d-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -228,10 +252,10 @@ CONSTRAINT O2_exchange
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             6.d-7
-    microbes2             6.d-7
-    microbes3             6.d-7
-
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -246,6 +270,8 @@ CONSTRAINT O2_exchange
     Tracer              1.0e-15
     Tracer1             1.0e-15
     CH4(aq)             1.0e-20
+    SO4--               1.d-20
+    H2S(aq)             1.d-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -262,17 +288,17 @@ CONSTRAINT O2_inj
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             6.d-7
-    microbes2             6.d-7
-    microbes3             6.d-7
-
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  5.9 P
-    O2(aq)              1.d-2 T
+    O2(aq)              1.d-1 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -280,6 +306,8 @@ CONSTRAINT O2_inj
     Tracer              1.0e-15
     Tracer1             1.0e-15
     CH4(aq)             1.0e-20
+    SO4--               1.d-20
+    H2S(aq)             1.d-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -296,10 +324,10 @@ CONSTRAINT tide
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e-20
     HRimm                1.0e-20
-    microbes1             6.d-7
-    microbes2             6.d-7
-    microbes3             6.d-7
-    
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -314,6 +342,8 @@ CONSTRAINT tide
     Tracer              1.0e-20
     Tracer1             1.0e-20
     CH4(aq)             1.0e-20
+    SO4--               1.d-20
+    H2S(aq)             1.d-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
@@ -349,11 +379,11 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 7 7 5
+  NXYZ 1 1 5
 
   
   DXYZ
-    
+  skip  
     0.14d0\
     0.14d0\
     0.14d0\
@@ -371,9 +401,11 @@ GRID
     0.14d0\
     0.14d0\
     0.14d0
-    
+  noskip  
 
-    
+    0.98d0
+
+    0.98d0
 
     0.575d0\
     0.25d0\
