@@ -1,0 +1,950 @@
+# Description: Simple microbial decomposition and dissolution to DOM network
+# Rate constants estimated to show different processes
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_FLOW flow
+      MODE GENERAL
+      OPTIONS
+        #ARITHMETIC_GAS_DIFFUSIVE_DENSITY
+      /
+    /
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
+      #NUMERICAL_JACOBIAN
+    /
+  /
+END
+
+SUBSURFACE
+
+#=========================== useful transport parameters =======================
+
+REFERENCE_LIQUID_DENSITY 1.d3
+
+
+#=========================== chemistry ========================================
+CHEMISTRY
+PRIMARY_SPECIES
+  #### NOTE: Beginning of auto-inserted primary species ####
+  DOM1
+  H+
+  O2(aq)
+  HCO3-
+  NH4+
+  Fe+++
+  Fe++
+  Tracer
+  Tracer1
+  CH4(aq)
+  SO4--
+  H2S(aq)
+  #### NOTE: End of auto-inserted primary species ####
+/
+DECOUPLED_EQUILIBRIUM_REACTIONS
+  #### NOTE: Beginning of auto-inserted primary species ####
+  DOM1
+  H+
+  O2(aq)
+  HCO3-
+  Fe+++
+  Fe++
+  NH4+
+  Tracer
+  CH4(aq)
+  H2S(aq)
+  #### NOTE: End of auto-inserted primary species ####
+/
+SECONDARY_SPECIES
+  #### NOTE: Beginning of auto-inserted secondary species ####
+  CO2(aq)
+  OH-
+  FeCO3+
+  #### NOTE: End of auto-inserted secondary species ####
+/
+MINERALS
+  #### NOTE: Beginning of auto-inserted secondary species ####
+  Fe(OH)3
+  FeO
+  #### NOTE: End of auto-inserted secondary species ####
+/
+MINERAL_KINETICS
+  #### NOTE: Beginning of auto-inserted secondary species ####
+  Fe(OH)3
+    RATE_CONSTANT  1.d-7 mol/m^2-sec
+  /
+  FeO
+    RATE_CONSTANT  1.d-7 mol/m^2-sec
+  /
+  #### NOTE: End of auto-inserted secondary species ####
+/
+IMMOBILE_SPECIES
+  #### NOTE: Beginning of auto-inserted immobile species ####
+  cellulose
+  HRimm
+  microbes1
+  microbes2
+  microbes3
+  microbes4
+  microbes5
+
+  #### NOTE: End of auto-inserted immobile species ####
+/
+PASSIVE_GAS_SPECIES
+  #### NOTE: Beginning of auto-inserted gas species ####
+  CO2(g)
+  O2(g)
+  #### NOTE: End of auto-inserted gas species ####
+/
+
+
+
+
+#### NOTE: Beginning of auto-inserted reactions ####
+  #DOM RESPIRATION
+ MICROBIAL_REACTION
+    REACTION     Tracer -> O2(aq)
+    RATE_CONSTANT    2.3d-10   # mol L-1 s-1, this was converted from the O2 diffusion rate of 20 mmol m-2 day-1
+                          
+    
+    MONOD
+      SPECIES_NAME                   Tracer
+      HALF_SATURATION_CONSTANT       1.d-1
+      #THRESHOLD_CONCENTRATION        0.05   # this inhibition term is not quite useful, as the tracer concentration at bottom is very low, so the reaction rate is low
+    /
+    
+    INHIBITION
+      SPECIES_NAME O2(aq)
+      TYPE MONOD
+      INHIBITION_CONSTANT  2.5d-6
+    /
+    
+  /
+
+
+
+
+
+
+#### NOTE: End of auto-inserted reactions ####
+
+
+
+
+  TRUNCATE_CONCENTRATION 1.d-80
+
+
+  LOG_FORMULATION
+  DATABASE ./hanford.dat
+
+  OUTPUT
+    !PH
+    TOTAL
+      O2(aq)
+      CH4(aq)
+      DOM1
+      SO4--
+      H2S(aq)
+      Tracer
+    #FREE_ION
+    #PRIMARY_SPECIES
+    #SECONDARY_SPECIES
+    #GASES
+    #MINERALS
+    #IMMOBILE
+      microbes1
+      microbes2
+      microbes3
+      microbes4
+      microbes5
+ 
+
+  /
+END
+
+#=========================== transport constraints ============================
+CONSTRAINT initial
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
+    microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                6.0e-3 T
+    H+                  5.9 P 
+    O2(aq)              2.d-6 T           
+    #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-6
+    Tracer              1.0e-15
+    Tracer1             1.0e-15
+    CH4(aq)             6.0e-4          #from measured data at typha
+    SO4--               5.d-3
+    H2S(aq)             3.d-4
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
+
+
+CONSTRAINT top_layer
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
+    microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                6.0e-3 T
+    H+                  5.9 P 
+    O2(aq)              2.5d-4 T           
+    #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-6
+    Tracer              1.0e0
+    Tracer1             1.0e-15
+    CH4(aq)             6.0e-4          #from measured data at typha
+    SO4--               5.d-3
+    H2S(aq)             3.d-4
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
+
+
+CONSTRAINT O2_exchange
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-20
+    H+                  5.9 P
+    O2(aq)              8.d0 T
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-15
+    Tracer              1.0e-15
+    Tracer1             1.0e-15
+    CH4(aq)             1.0e-20
+    SO4--               1.d-20
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
+
+CONSTRAINT O2_inj
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-20
+    H+                  5.9 P
+    O2(aq)              1.d0 T
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-15
+    Tracer              1.0e-15
+    Tracer1             1.0e-15
+    CH4(aq)             1.0e-20
+    SO4--               1.d-20
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
+
+CONSTRAINT tide
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e-20
+    HRimm                1.0e-20
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-20
+    H+                  1.0e-20
+    O2(aq)              5.0e-5 T
+    HCO3-               1.0e-20
+    Fe+++               1.0e-20
+    Fe++                1.0e-20
+    NH4+                1.0e-20
+    Tracer              1.0e-20
+    Tracer1             1.0e-20
+    CH4(aq)             1.0e-20
+    SO4--               1.d-20
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.0e-20 1.0
+    FeO                 1.0e-20 1.0
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /
+
+END
+
+
+
+CONSTRAINT add_dom
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e-20
+    HRimm                1.0e-20
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                5.d0
+    H+                  1.0e-20
+    O2(aq)              1.0e-20 T
+    HCO3-               1.0e-20
+    NH4+                1.0e-20
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    Tracer              1.0e-20
+    Tracer1             1.0e-20
+    CH4(aq)             1.0e-20
+    SO4--               1.d-20
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.0e-20 1.0
+    FeO                 1.0e-20 1.0
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /
+
+END
+
+
+#=========================== solver options ===================================
+NUMERICAL_METHODS TRANSPORT
+  LINEAR_SOLVER
+    SOLVER DIRECT
+    !SOLVER ITERATIVE     ! default: ITERATIVE or KRYLOV: KSP_TYPE of BCGS and PC_TYPE of BJACOBI, if not modified below
+    PC_TYPE JACOBI       ! default (iterative): BJACOBI. 
+    KSP_TYPE fgmres      ! default: BCGS. NOT much difference 
+  /
+
+  NEWTON_SOLVER TRANSPORT
+    NUMERICAL_JACOBIAN
+    ATOL 1.d-20
+    RTOL 1.d-15
+    STOL 1.d-10
+    ITOL 1.d-10
+  /
+END
+
+#=========================== discretization ===================================
+GRID
+  TYPE structured
+  ORIGIN 0.d0 0.d0 0.d0
+  NXYZ 1 1 5
+
+  
+  DXYZ
+  skip  
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0
+
+
+
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0
+  noskip  
+
+    0.98d0
+
+    0.98d0
+
+    0.575d0\
+    0.25d0\
+    0.05d0\
+    0.05d0\
+    0.075d0
+  END
+
+
+skip
+  BOUNDS 
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 1.d0   # 1m deep
+  /
+noskip
+END
+
+
+PROC 1 1 1
+
+#=========================== fluid properties =================================
+FLUID_PROPERTY
+  PHASE LIQUID
+  DIFFUSION_COEFFICIENT 2.d-9  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
+END
+
+FLUID_PROPERTY
+  PHASE GAS
+  DIFFUSION_COEFFICIENT 2.d-5
+END
+
+#=========================== material properties ==============================
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY 0.8d0
+  SOIL_COMPRESSIBILITY_FUNCTION DEFAULT     ! BRAGFLO compressed porosity has mathematical issue at high pressure
+  ! 1d-7~1d-8 equivalent to ice expansion of volume, upon 'default' or 'BRAGFLO'
+  ! beyond this range may cause tiny-time stepping
+  SOIL_COMPRESSIBILITY 1.d-07               ! 1d-7~1d-8 is a critical value for freezing expansion in soil;
+  SOIL_REFERENCE_PRESSURE 201325.d0
+  ROCK_DENSITY 2650.0d0
+  SPECIFIC_HEAT 830.0d0
+  THERMAL_CONDUCTIVITY_DRY 0.12037926674717922d0
+  THERMAL_CONDUCTIVITY_WET 1.6082691464310437d0
+  THERMAL_COND_EXPONENT 0.45d0
+  THERMAL_CONDUCTIVITY_FROZEN 2.29d+00
+  THERMAL_COND_EXPONENT_FROZEN 0.95d0
+  CHARACTERISTIC_CURVES sf01
+  PERMEABILITY
+    PERM_X 1.d-11
+    PERM_Y 1.d-11
+    PERM_Z 1.d-11
+  /
+/
+
+
+
+#=========================== characteristic curves ============================
+CHARACTERISTIC_CURVES sf01
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    ALPHA 1.d-4
+    M 0.5d0
+    MAX_CAPILLARY_PRESSURE 1.d6
+  /
+  PERMEABILITY_FUNCTION MUALEM
+    PHASE LIQUID
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    M 0.5d0
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_GAS
+    PHASE GAS
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    GAS_RESIDUAL_SATURATION 1.d-40
+    M 0.5d0
+  /
+END
+
+
+#=========================== output options ===================================
+OUTPUT
+  SCREEN PERIODIC 100
+  PERIODIC TIME 1 hour          #the frequency of generating output
+  FORMAT HDF5                #hdf5 file can be read by VISITS
+  FORMAT TECPLOT POINT       #text file, can be read in python and plot data
+
+
+  OBSERVATION_FILE      #generate results only for the observation points
+    PERIODIC TIME  12 hour
+
+  END
+
+
+  VARIABLES
+    LIQUID_SATURATION    
+  END
+  
+ MASS_BALANCE_FILE
+    PERIODIC TIMESTEP 10
+  /
+
+END
+
+#=========================== times ============================================
+TIME
+  FINAL_TIME 7 day
+
+  INITIAL_TIMESTEP_SIZE 0.5d0 h
+  MAXIMUM_TIMESTEP_SIZE 12.d0 h
+END
+
+#=========================== regions ==========================================
+REGION top
+  COORDINATES
+    0.d0 0.d0 1.0d0
+    1.d0 1.d0 1.0d0
+  /
+  FACE TOP
+END
+
+
+REGION bottom
+  COORDINATES
+    0.d0 0.d0 0.0d0
+    1.d0 1.d0 0.0d0
+  /
+  FACE BOTTOM
+END
+
+
+REGION all
+  COORDINATES
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 1.d0
+  /
+  FACE TOP
+END
+
+
+REGION O2_inj1     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.495d0 0.495d0 0.9d0
+    0.505d0 0.505d0 0.9d0
+  /
+
+  FACE BOTTOM
+END
+
+REGION O2_inj2     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.15d0 0.495d0 0.9d0
+    0.16d0 0.505d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+REGION O2_inj3     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.81d0 0.495d0 0.9d0
+    0.82d0 0.505d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+REGION O2_inj4     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.15d0 0.15d0 0.9d0
+    0.16d0 0.16d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj5     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.495d0 0.15d0 0.9d0
+    0.505d0 0.16d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj6     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.81d0 0.15d0 0.9d0
+    0.82d0 0.16d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj7     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.15d0 0.81d0 0.9d0
+    0.16d0 0.82d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj8     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.495d0 0.81d0 0.9d0
+    0.505d0 0.82d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj9     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.81d0 0.81d0 0.9d0
+    0.82d0 0.82d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+
+REGION obs_pt
+  COORDINATE  0.5   0.5  1.d0
+  FACE TOP
+/
+
+
+REGION top_layer
+  COORDINATES
+    0.d0  0.d0  0.925d0
+    0.98d0  0.98d0  1.d0
+  /
+  FACE TOP
+END
+
+#=========================== observation points ===============================
+OBSERVATION
+  REGION obs_pt
+  AT_COORDINATE    # if not "AT_COORDINATE", then observation data sampled from the center of the cell (by default)
+END
+
+
+#=========================== transport conditions =============================
+TRANSPORT_CONDITION initial
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+    0.d0 initial 
+  /
+END
+
+
+TRANSPORT_CONDITION O2_exchange
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 O2_exchange
+   
+  /
+END
+
+TRANSPORT_CONDITION O2_inj
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 O2_inj
+   
+  /
+END
+
+
+TRANSPORT_CONDITION tide
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 tide
+  /
+END
+
+
+TRANSPORT_CONDITION add_dom
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 add_dom
+  /
+END
+
+
+TRANSPORT_CONDITION top_layer
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 top_layer
+  /
+END
+
+#=========================== flow conditions =============================
+
+FLOW_CONDITION initial
+  TYPE
+    GAS_PRESSURE dirichlet
+    GAS_SATURATION dirichlet
+    TEMPERATURE dirichlet
+  /
+  GAS_PRESSURE 1.d5
+  GAS_SATURATION 0.d0   
+  TEMPERATURE 25.d0
+/
+
+
+FLOW_CONDITION tide
+  TYPE
+    RATE volumetric_rate
+  /
+#  RATE 0  0  0 m^3/hr m^3/hr MW
+
+ 
+  RATE LIST
+    EXTERNAL_FILE RateListTide_MI.txt
+
+
+skip 
+  TIME_UNITS hr
+  DATA_UNITS m^3/hr   m^3/hr   MW
+   0.d0   -0.0001   0.d0    0.d0
+   2.d0    0.0001    0.d0   0.d0
+  10.d0   -0.0001        0      0
+noskip  
+
+ /
+/
+
+
+FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
+  TYPE
+    RATE volumetric_rate
+  /
+  
+  RATE 1.d-06  0   0   m^3/hr   m^3/hr   MW    # 1.d-6 divided by number of columns in discretization
+
+  skip
+  RATE LIST
+    EXTERNAL_FILE RateListO2_MI_9cols.txt
+  /
+  noskip
+/
+
+
+FLOW_CONDITION O2_inj
+  TYPE
+    RATE volumetric_rate
+   /
+  
+  RATE LIST
+    TIME_UNITS hr
+    DATA_UNITS m^3/hr   m^3/hr   MW
+      
+      0.d0   0.1111d-6   0.d0    0.d0   
+      # 1.d-6 divided by number of roots; 
+      #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
+  /
+/
+
+
+FLOW_CONDITION add_dom   #adding DOM to the entire soil profile, to maintain the steady state of DOM, avoid depletion
+  TYPE
+    RATE volumetric_rate
+   /
+  
+  RATE LIST
+    TIME_UNITS hr
+    DATA_UNITS m^3/hr   m^3/hr   MW
+      
+      0.d0   0.2d-6   0.d0    0.d0   
+      # 1.d-6 divided by number of layers; 
+  /
+/
+
+
+#=========================== condition couplers ===============================
+INITIAL_CONDITION     # initial condition
+  TRANSPORT_CONDITION initial
+  FLOW_CONDITION initial
+  REGION all
+END
+
+
+INITIAL_CONDITION     # initial condition
+  TRANSPORT_CONDITION top_layer
+  FLOW_CONDITION initial
+  REGION top_layer
+END
+
+
+
+skip
+SOURCE_SINK tide
+  FLOW_CONDITION tide
+  TRANSPORT_CONDITION tide
+  REGION top
+END
+
+
+
+
+SOURCE_SINK O2_exchange             #O2 exchange between soil and atm, happening at the sediment-air/water interface
+  FLOW_CONDITION O2_exchange
+  TRANSPORT_CONDITION O2_exchange
+  REGION top
+END
+
+
+# O2 injection by roots
+SOURCE_SINK O2_inj1            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION O2_inj1
+END
+
+
+
+SOURCE_SINK O2_inj2            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION O2_inj2
+END
+
+
+SOURCE_SINK O2_inj3            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj3
+END
+
+SOURCE_SINK O2_inj4            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj4
+END
+
+SOURCE_SINK O2_inj5            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj5
+END
+
+
+SOURCE_SINK O2_inj6            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj6
+END
+
+
+SOURCE_SINK O2_inj7            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj7
+END
+
+
+SOURCE_SINK O2_inj8            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj8
+END
+
+
+SOURCE_SINK O2_inj9            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj9
+END
+
+
+SOURCE_SINK add_dom             #add DOM to the soil
+  FLOW_CONDITION add_dom
+  TRANSPORT_CONDITION add_dom
+  REGION all
+END
+noskip
+
+
+#=========================== stratigraphy couplers ============================
+STRATA
+  REGION all
+  MATERIAL soil1
+END
+
+#=========================== regression =======================================
+REGRESSION
+  CELL_IDS
+    1
+  /
+END
+
+END_SUBSURFACE
+
+
