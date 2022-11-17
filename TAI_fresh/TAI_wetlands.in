@@ -100,23 +100,22 @@ PASSIVE_GAS_SPECIES
 
 
 #### NOTE: Beginning of auto-inserted reactions ####
-  #DOM RESPIRATION
+  #DOM Aerobic RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 6.d-9   #unit: mol L-1 s-1 (mol m3 biomass)-1, Furukawa 2022, this rate is then multiplied by the abundance of microbes
-                          
+    RATE_CONSTANT 1.d-12   #unit: mol L-1 s-1 (mol m3 biomass)-1
 
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 8.d-6   #Furukawa 2004, in which they cited Boudreau 1998 
+      HALF_SATURATION_CONSTANT 2.5d-5   
     /
 
     
     MONOD
       SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 1.d-3  
+      HALF_SATURATION_CONSTANT 5.d-4  
     /
-   
+    
 
     BIOMASS
       SPECIES_NAME microbes1
@@ -129,14 +128,14 @@ PASSIVE_GAS_SPECIES
 
 #Methanogenesis DOM1
   MICROBIAL_REACTION 
-    REACTION 2.d0 DOM1 -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+ + Tracer1   
+    REACTION 2.d0 DOM1 -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+
     #it is the combination of aceticlastic and hydrogenotrophic methanogenesis, DOM1 is counted as the moles of carbon
     
     RATE_CONSTANT 9.d-13 # Weston 2014, mol L-1 s-1 (mol m3 biomass)-1, corrected for the microbial abundance from 9.d-11 mol L-1 s-1
     
     MONOD
       SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 1.d-3
+      HALF_SATURATION_CONSTANT 5.d-4
     /
    
 
@@ -152,18 +151,19 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
     
-    RATE_CONSTANT 1.d-8 #Thompson et al 1995 mol-m3 bulk/(L water-mol biomass-sec) 
+    RATE_CONSTANT 1.6d-12                   # Sulman's Fe++ and H2S oxidation
     
     
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 1.d-4  
+      HALF_SATURATION_CONSTANT 2.5d-5  
     /
 
     MONOD
       SPECIES_NAME CH4(aq)
-      HALF_SATURATION_CONSTANT 1.d-1  
+      HALF_SATURATION_CONSTANT 6.d-5  
     /
+
     BIOMASS
       SPECIES_NAME microbes3
       YIELD 0.01d0
@@ -181,14 +181,16 @@ PASSIVE_GAS_SPECIES
    
     MONOD
       SPECIES_NAME SO4--
-      HALF_SATURATION_CONSTANT 1.d-3    #Furukawa 2014, they cited Boudreau 1998
+      HALF_SATURATION_CONSTANT 5.d-4    #based on the SO4-- concentration
     /
 
+    skip     #In Furukawa 2014, there was no Monod term for DOM
     MONOD
       SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 0.5d0    
+      HALF_SATURATION_CONSTANT 3.d-3    
     /
-
+    noskip
+    
     BIOMASS
       SPECIES_NAME microbes4
       YIELD 0.01d0
@@ -202,16 +204,16 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION 1.d0 H2S(aq) + 2.d0 O2(aq) -> 1.d0 SO4-- + 2.d0 H+ 
     
-    RATE_CONSTANT 1.d-8 #mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 1.6d-12 #mol-m3 bulk/(L water-mol biomass-sec)
     
     MONOD
-      SPECIES_NAME H2S(aq)
-      HALF_SATURATION_CONSTANT 1.d-1
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 2.5d-5
     /
 
     MONOD
-       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 1.d-4 
+      SPECIES_NAME H2S(aq)
+      HALF_SATURATION_CONSTANT 6.d-5 
     /
     
     BIOMASS
@@ -220,6 +222,19 @@ PASSIVE_GAS_SPECIES
     /
   /
 
+
+# DOM recharge at the top layer, DOM leaching from plant materials
+MICROBIAL_REACTION 
+    REACTION Tracer -> DOM1
+    
+    RATE_CONSTANT 5.d-8     # unit: mol L-1 s-1
+
+    MONOD
+      SPECIES_NAME  Tracer
+      HALF_SATURATION_CONSTANT   0.1
+    /
+    
+  /
 
 
 #### NOTE: End of auto-inserted reactions ####
@@ -241,6 +256,7 @@ PASSIVE_GAS_SPECIES
       DOM1
       SO4--
       H2S(aq)
+      Tracer
     #FREE_ION
     #PRIMARY_SPECIES
     #SECONDARY_SPECIES
@@ -280,7 +296,7 @@ CONSTRAINT initial
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
     NH4+                1.0e-6
-    Tracer              1.0e-15
+    Tracer              0.1
     Tracer1             1.0e-15
     CH4(aq)             6.0e-4          #from measured data at typha
     SO4--               5.d-3
@@ -410,13 +426,12 @@ CONSTRAINT tide
 END
 
 
-
-CONSTRAINT add_dom
+CONSTRAINT top_layer
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
-    cellulose            1.0e-20
+    cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             100.d0
+    microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
     microbes2             100.d0
     microbes3             100.d0
     microbes4             100.d0
@@ -425,27 +440,27 @@ CONSTRAINT add_dom
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                5.d0
-    H+                  1.0e-20
-    O2(aq)              1.0e-20 T
-    HCO3-               1.0e-20
-    NH4+                1.0e-20
+    DOM1                6.0e-3 T
+    H+                  5.9 P 
+    O2(aq)              2.d-6 T           
+    #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
+    HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
-    Tracer              1.0e-20
-    Tracer1             1.0e-20
-    CH4(aq)             1.0e-20
-    SO4--               1.d-20
-    H2S(aq)             1.d-20
+    NH4+                1.0e-6
+    Tracer              1.0            # the Tracer concentration at the top layer is set as high, to distinguish from the bottom layers
+    Tracer1             1.0e-15
+    CH4(aq)             6.0e-4          #from measured data at typha
+    SO4--               5.d-3
+    H2S(aq)             3.d-4
     #### NOTE: End of auto-inserted concentration constraints ####
   /
   MINERALS
     #### NOTE: Beginning of auto-inserted mineral constraints ####
-    Fe(OH)3             1.0e-20 1.0
-    FeO                 1.0e-20 1.0
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
     #### NOTE: End of auto-inserted mineral constraints ####
-  /
-
+  /  
 END
 
 
@@ -522,6 +537,7 @@ PROC 1 1 1
 FLUID_PROPERTY
   PHASE LIQUID
   DIFFUSION_COEFFICIENT 2.d-9  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
+
 END
 
 FLUID_PROPERTY
@@ -580,7 +596,7 @@ END
 #=========================== output options ===================================
 OUTPUT
   SCREEN PERIODIC 100
-  PERIODIC TIME 1 hour          #the frequency of generating output
+  PERIODIC TIME 24 hour          #the frequency of generating output
   FORMAT HDF5                #hdf5 file can be read by VISITS
   FORMAT TECPLOT POINT       #text file, can be read in python and plot data
 
@@ -603,7 +619,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 7 day
+  FINAL_TIME 30 day
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -613,6 +629,14 @@ END
 REGION top
   COORDINATES
     0.d0 0.d0 1.0d0
+    1.d0 1.d0 1.0d0
+  /
+  FACE TOP
+END
+
+REGION top_layer
+  COORDINATES
+    0.d0 0.d0 0.925d0
     1.d0 1.d0 1.0d0
   /
   FACE TOP
@@ -777,11 +801,11 @@ TRANSPORT_CONDITION tide
 END
 
 
-TRANSPORT_CONDITION add_dom
+TRANSPORT_CONDITION top_layer
   TYPE dirichlet
   TIME_UNITS hr
   CONSTRAINT_LIST
-   0.d0 add_dom
+    0.d0 top_layer
   /
 END
 
@@ -827,7 +851,7 @@ FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
     RATE volumetric_rate
   /
   
-  RATE 1.d-06  0   0   m^3/hr   m^3/hr   MW    # 1.d-6 divided by number of columns in discretization
+  RATE 1.d-07  0   0   m^3/hr   m^3/hr   MW    # 1.d-6 divided by number of columns in discretization
 
   skip
   RATE LIST
@@ -847,25 +871,12 @@ FLOW_CONDITION O2_inj
     DATA_UNITS m^3/hr   m^3/hr   MW
       
       0.d0   0.1111d-6   0.d0    0.d0   
-      # 1.d-6 divided by number of roots; 
+      # 1.d-7 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
 /
 
 
-FLOW_CONDITION add_dom   #adding DOM to the entire soil profile, to maintain the steady state of DOM, avoid depletion
-  TYPE
-    RATE volumetric_rate
-   /
-  
-  RATE LIST
-    TIME_UNITS hr
-    DATA_UNITS m^3/hr   m^3/hr   MW
-      
-      0.d0   0.2d-6   0.d0    0.d0   
-      # 1.d-6 divided by number of layers; 
-  /
-/
 
 
 #=========================== condition couplers ===============================
@@ -875,6 +886,13 @@ INITIAL_CONDITION     # initial condition
   REGION all
 END
 
+
+
+INITIAL_CONDITION     # initial condition
+  TRANSPORT_CONDITION top_layer
+  FLOW_CONDITION initial
+  REGION top_layer
+END
 
 
 skip
@@ -955,14 +973,6 @@ SOURCE_SINK O2_inj9            #typha plant-mediated O2 injection to soil
   TRANSPORT_CONDITION O2_inj
   REGION  O2_inj9
 END
-
-skip
-SOURCE_SINK add_dom             #add DOM to the soil
-  FLOW_CONDITION add_dom
-  TRANSPORT_CONDITION add_dom
-  REGION all
-END
-noskip
 
 
 #=========================== stratigraphy couplers ============================
