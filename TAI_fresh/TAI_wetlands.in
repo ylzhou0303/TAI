@@ -103,7 +103,7 @@ PASSIVE_GAS_SPECIES
   #DOM Aerobic RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 1.d-12   #unit: mol L-1 s-1 (mol m3 biomass)-1
+    RATE_CONSTANT 1.d-11   #unit: mol L-1 s-1 (mol m3 biomass)-1
 
     MONOD
       SPECIES_NAME O2(aq)
@@ -151,7 +151,7 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
     
-    RATE_CONSTANT 1.6d-12                   # Sulman's Fe++ and H2S oxidation
+    RATE_CONSTANT 1.6d-11                   # Sulman's Fe++ and H2S oxidation
     
     
     MONOD
@@ -204,7 +204,7 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION 1.d0 H2S(aq) + 2.d0 O2(aq) -> 1.d0 SO4-- + 2.d0 H+ 
     
-    RATE_CONSTANT 1.6d-12 #mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 1.6d-11 #mol-m3 bulk/(L water-mol biomass-sec)
     
     MONOD
       SPECIES_NAME O2(aq)
@@ -870,7 +870,7 @@ FLOW_CONDITION O2_inj
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   0.1111d-6   0.d0    0.d0   
+      0.d0   0.1111d-7   0.d0    0.d0   
       # 1.d-7 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
