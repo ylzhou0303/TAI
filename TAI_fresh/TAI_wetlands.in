@@ -267,9 +267,6 @@ MICROBIAL_REACTION
 
 #### NOTE: End of auto-inserted reactions ####
 
-
-
-
   TRUNCATE_CONCENTRATION 1.d-80
 
 
@@ -515,11 +512,10 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 1 1 5
+  NXYZ 7 7 5
 
   
-  DXYZ
-  skip  
+  DXYZ  
     0.14d0\
     0.14d0\
     0.14d0\
@@ -537,11 +533,8 @@ GRID
     0.14d0\
     0.14d0\
     0.14d0
-  noskip  
+    
 
-    0.98d0
-
-    0.98d0
 
     0.575d0\
     0.25d0\
@@ -672,6 +665,14 @@ REGION top_layer
 END
 
 
+REGION sec_layer
+  COORDINATES
+    0.d0 0.d0 0.875d0
+    1.d0 1.d0 0.925d0
+  /
+  FACE TOP
+END
+
 REGION bottom
   COORDINATES
     0.d0 0.d0 0.0d0
@@ -692,8 +693,8 @@ END
 
 REGION O2_inj1     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
+    0.485d0 0.485d0 0.9d0
     0.495d0 0.495d0 0.9d0
-    0.505d0 0.505d0 0.9d0
   /
 
   FACE BOTTOM
@@ -701,8 +702,8 @@ END
 
 REGION O2_inj2     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.15d0 0.495d0 0.9d0
-    0.16d0 0.505d0 0.9d0
+    0.205d0 0.205d0 0.9d0
+    0.215d0 0.215d0 0.9d0
   /
 
   FACE TOP
@@ -710,8 +711,8 @@ END
 
 REGION O2_inj3     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.81d0 0.495d0 0.9d0
-    0.82d0 0.505d0 0.9d0
+    0.485d0 0.205d0 0.9d0
+    0.495d0 0.215d0 0.9d0
   /
 
   FACE TOP
@@ -719,8 +720,8 @@ END
 
 REGION O2_inj4     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.15d0 0.15d0 0.9d0
-    0.16d0 0.16d0 0.9d0
+    0.765d0 0.205d0 0.9d0
+    0.775d0 0.215d0 0.9d0
   /
 
   FACE TOP
@@ -729,8 +730,8 @@ END
 
 REGION O2_inj5     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.495d0 0.15d0 0.9d0
-    0.505d0 0.16d0 0.9d0
+    0.205d0 0.485d0 0.9d0
+    0.215d0 0.495d0 0.9d0
   /
 
   FACE TOP
@@ -739,8 +740,8 @@ END
 
 REGION O2_inj6     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.81d0 0.15d0 0.9d0
-    0.82d0 0.16d0 0.9d0
+    0.765d0 0.485d0 0.9d0
+    0.775d0 0.495d0 0.9d0
   /
 
   FACE TOP
@@ -749,8 +750,8 @@ END
 
 REGION O2_inj7     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.15d0 0.81d0 0.9d0
-    0.16d0 0.82d0 0.9d0
+    0.205d0 0.765d0 0.9d0
+    0.215d0 0.775d0 0.9d0
   /
 
   FACE TOP
@@ -759,8 +760,8 @@ END
 
 REGION O2_inj8     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.495d0 0.81d0 0.9d0
-    0.505d0 0.82d0 0.9d0
+    0.485d0 0.765d0 0.9d0
+    0.495d0 0.775d0 0.9d0
   /
 
   FACE TOP
@@ -769,14 +770,172 @@ END
 
 REGION O2_inj9     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.81d0 0.81d0 0.9d0
-    0.82d0 0.82d0 0.9d0
+    0.765d0 0.765d0 0.9d0
+    0.775d0 0.775d0 0.9d0
   /
 
   FACE TOP
 END
 
 
+
+REGION O2_inj10     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.065d0 0.065d0 0.9d0
+    0.075d0 0.075d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj11     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.34d0 0.06d0 0.9d0
+    0.35d0 0.07d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj12     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.62d0 0.06d0 0.9d0
+    0.63d0 0.07d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj13     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.90d0 0.06d0 0.9d0
+    0.91d0 0.07d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+
+REGION O2_inj14     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.06d0 0.34d0 0.9d0
+    0.07d0 0.35d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj15     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.34d0 0.34d0 0.9d0
+    0.35d0 0.35d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj16     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.62d0 0.34d0 0.9d0
+    0.63d0 0.35d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj17     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.90d0 0.34d0 0.9d0
+    0.91d0 0.35d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj18     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.06d0 0.62d0 0.9d0
+    0.07d0 0.63d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj19     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.34d0 0.62d0 0.9d0
+    0.35d0 0.63d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+
+REGION O2_inj20     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.62d0 0.62d0 0.9d0
+    0.63d0 0.63d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+REGION O2_inj21     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.90d0 0.62d0 0.9d0
+    0.91d0 0.63d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj22     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.06d0 0.90d0 0.9d0
+    0.07d0 0.91d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+REGION O2_inj23     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.34d0 0.90d0 0.9d0
+    0.35d0 0.91d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+REGION O2_inj24     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.62d0 0.90d0 0.9d0
+    0.63d0 0.91d0 0.9d0
+  /
+
+  FACE TOP
+END
+
+
+REGION O2_inj25     #where the rhizomes are, where O2 is transported into the soil by roots
+    COORDINATES
+    0.90d0 0.90d0 0.9d0
+    0.91d0 0.91d0 0.9d0
+  /
+
+  FACE TOP
+END
 
 REGION obs_pt
   COORDINATE  0.5   0.5  1.d0
@@ -810,6 +969,9 @@ TRANSPORT_CONDITION O2_exchange
    
   /
 END
+
+
+
 
 TRANSPORT_CONDITION O2_inj
   TYPE dirichlet
@@ -882,11 +1044,11 @@ FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
     RATE volumetric_rate
   /
   
-  RATE 1.d-07  0   0   m^3/hr   m^3/hr   MW    # 1.d-6 divided by number of columns in discretization
+  RATE 0.0204d-07  0   0   m^3/hr   m^3/hr   MW    # 1.d-7 divided by number of columns in discretization
 
   skip
   RATE LIST
-    EXTERNAL_FILE RateListO2_MI_9cols.txt
+    EXTERNAL_FILE RateListO2_CB.txt
   /
   noskip
 /
@@ -901,7 +1063,7 @@ FLOW_CONDITION O2_inj
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   0.1111d-7   0.d0    0.d0   
+      0.d0   0.04d-7   0.d0    0.d0   
       # 1.d-7 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
@@ -942,6 +1104,16 @@ SOURCE_SINK O2_exchange             #O2 exchange between soil and atm, happening
   TRANSPORT_CONDITION O2_exchange
   REGION top
 END
+
+
+skip
+SOURCE_SINK O2_inj             #O2 injection by roots, but inject the O2 into the entire layer, with no heterogeneity
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION sec_layer
+END
+noskip
+
 
 
 # O2 injection by roots
@@ -1006,7 +1178,106 @@ SOURCE_SINK O2_inj9            #typha plant-mediated O2 injection to soil
   REGION  O2_inj9
 END
 
+SOURCE_SINK O2_inj10            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj10
+END
 
+
+SOURCE_SINK O2_inj11            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj11
+END
+
+
+SOURCE_SINK O2_inj12            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj12
+END
+
+
+SOURCE_SINK O2_inj13            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj13
+END
+
+SOURCE_SINK O2_inj14            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj14
+END
+
+SOURCE_SINK O2_inj15            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj15
+END
+
+SOURCE_SINK O2_inj16            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj16
+END
+
+
+SOURCE_SINK O2_inj17            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj17
+END
+
+SOURCE_SINK O2_inj18            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj18
+END
+
+SOURCE_SINK O2_inj19            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj19
+END
+
+SOURCE_SINK O2_inj20            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj20
+END
+
+SOURCE_SINK O2_inj21            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj21
+END
+
+
+SOURCE_SINK O2_inj22            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj22
+END
+
+SOURCE_SINK O2_inj23            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj23
+END
+
+SOURCE_SINK O2_inj24            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj24
+END
+
+SOURCE_SINK O2_inj25            #typha plant-mediated O2 injection to soil
+  FLOW_CONDITION O2_inj
+  TRANSPORT_CONDITION O2_inj
+  REGION  O2_inj25
+END
 #=========================== stratigraphy couplers ============================
 STRATA
   REGION all
