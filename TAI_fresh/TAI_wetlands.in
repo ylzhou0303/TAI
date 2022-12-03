@@ -392,7 +392,7 @@ CONSTRAINT O2_inj
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.0e-20
     H+                  5.9 P
-    O2(aq)              1.d0 T
+    O2(aq)              5.d0 T
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -411,7 +411,6 @@ CONSTRAINT O2_inj
     #### NOTE: End of auto-inserted mineral constraints ####
   /  
 END
-
 
 
 CONSTRAINT tide
@@ -452,44 +451,6 @@ CONSTRAINT tide
 END
 
 
-CONSTRAINT top_layer
-  IMMOBILE
-    #### NOTE: Beginning of auto-inserted immobile species ####
-    cellulose            1.0e+03
-    HRimm                1.0e-20
-    microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
-    microbes2             100.d0
-    microbes3             100.d0
-    microbes4             100.d0
-    microbes5             100.d0
-    #### NOTE: End of auto-inserted immobile species ####
-  /
-  CONCENTRATIONS
-    #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                6.0e-3 T
-    H+                  5.9 P 
-    O2(aq)              2.d-6 T           
-    #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
-    HCO3-               400e-6 G CO2(g)
-    Fe+++               0.37e-3 M Fe(OH)3
-    Fe++                0.37e-10
-    NH4+                1.0e-6
-    Tracer              1.0            # the Tracer concentration at the top layer is set as high, to distinguish from the bottom layers
-    Tracer1             1.0e-15
-    CH4(aq)             6.0e-4          #from measured data at typha
-    SO4--               5.d-3
-    H2S(aq)             3.d-4
-    #### NOTE: End of auto-inserted concentration constraints ####
-  /
-  MINERALS
-    #### NOTE: Beginning of auto-inserted mineral constraints ####
-    Fe(OH)3             1.d-5  1.e2 m^2/m^3
-    FeO                 0.0  1. m^2/m^3
-    #### NOTE: End of auto-inserted mineral constraints ####
-  /  
-END
-
-
 #=========================== solver options ===================================
 NUMERICAL_METHODS TRANSPORT
   LINEAR_SOLVER
@@ -515,25 +476,25 @@ GRID
   NXYZ 7 7 5
 
   
-  DXYZ  
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0
-
-
-
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0
+  DXYZ
     
+    0.14d0\ 
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0
+
+
+
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0\
+    0.14d0
 
 
     0.575d0\
@@ -593,6 +554,29 @@ MATERIAL_PROPERTY soil1
 
 
 
+MATERIAL_PROPERTY soil2
+  ID 2
+  POROSITY 0.5d0
+  SOIL_COMPRESSIBILITY_FUNCTION DEFAULT     ! BRAGFLO compressed porosity has mathematical issue at high pressure
+  ! 1d-7~1d-8 equivalent to ice expansion of volume, upon 'default' or 'BRAGFLO'
+  ! beyond this range may cause tiny-time stepping
+  SOIL_COMPRESSIBILITY 1.d-07               ! 1d-7~1d-8 is a critical value for freezing expansion in soil;
+  SOIL_REFERENCE_PRESSURE 201325.d0
+  ROCK_DENSITY 2650.0d0
+  SPECIFIC_HEAT 830.0d0
+  THERMAL_CONDUCTIVITY_DRY 0.12037926674717922d0
+  THERMAL_CONDUCTIVITY_WET 1.6082691464310437d0
+  THERMAL_COND_EXPONENT 0.45d0
+  THERMAL_CONDUCTIVITY_FROZEN 2.29d+00
+  THERMAL_COND_EXPONENT_FROZEN 0.95d0
+  CHARACTERISTIC_CURVES sf02
+  PERMEABILITY
+    PERM_X 1.d-11
+    PERM_Y 1.d-11
+    PERM_Z 1.d-11
+  /
+/
+
 #=========================== characteristic curves ============================
 CHARACTERISTIC_CURVES sf01
   SATURATION_FUNCTION VAN_GENUCHTEN
@@ -613,6 +597,28 @@ CHARACTERISTIC_CURVES sf01
     M 0.5d0
   /
 END
+
+
+CHARACTERISTIC_CURVES sf02
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.1d0
+    ALPHA 0.5
+    M 0.2d0
+    MAX_CAPILLARY_PRESSURE 1.d6
+  /
+  PERMEABILITY_FUNCTION MUALEM
+    PHASE LIQUID
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    M 0.5d0
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_GAS
+    PHASE GAS
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    GAS_RESIDUAL_SATURATION 1.d-40
+    M 0.5d0
+  /
+END
+
 
 
 #=========================== output options ===================================
@@ -656,6 +662,23 @@ REGION top
   FACE TOP
 END
 
+REGION west
+    COORDINATES
+    0.d0   0.d0 0.d0
+    0.49d0 1.d0 1.0d0
+  /
+  FACE TOP
+END
+
+
+REGION east
+    COORDINATES
+    0.49d0   0.d0 0.d0
+    0.98d0   1.d0 1.0d0
+  /
+  FACE TOP
+END
+
 REGION top_layer
   COORDINATES
     0.d0 0.d0 0.925d0
@@ -693,8 +716,8 @@ END
 
 REGION O2_inj1     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.485d0 0.485d0 0.9d0
-    0.495d0 0.495d0 0.9d0
+    0.77d0 0.91d0 0.9d0
+    0.77d0 0.91d0 0.9d0
   /
 
   FACE BOTTOM
@@ -702,8 +725,8 @@ END
 
 REGION O2_inj2     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.205d0 0.205d0 0.9d0
-    0.215d0 0.215d0 0.9d0
+    0.63d0 0.49d0 0.9d0
+    0.63d0 0.49d0 0.9d0
   /
 
   FACE TOP
@@ -711,8 +734,8 @@ END
 
 REGION O2_inj3     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.485d0 0.205d0 0.9d0
-    0.495d0 0.215d0 0.9d0
+    0.35d0 0.49d0 0.9d0
+    0.35d0 0.49d0 0.9d0
   /
 
   FACE TOP
@@ -720,8 +743,8 @@ END
 
 REGION O2_inj4     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.765d0 0.205d0 0.9d0
-    0.775d0 0.215d0 0.9d0
+    0.07d0 0.21d0 0.9d0
+    0.07d0 0.21d0 0.9d0
   /
 
   FACE TOP
@@ -730,8 +753,8 @@ END
 
 REGION O2_inj5     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.205d0 0.485d0 0.9d0
-    0.215d0 0.495d0 0.9d0
+    0.91d0 0.07d0 0.9d0
+    0.91d0 0.07d0 0.9d0
   /
 
   FACE TOP
@@ -740,8 +763,8 @@ END
 
 REGION O2_inj6     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.765d0 0.485d0 0.9d0
-    0.775d0 0.495d0 0.9d0
+    0.21d0 0.35d0 0.9d0
+    0.21d0 0.35d0 0.9d0
   /
 
   FACE TOP
@@ -750,8 +773,8 @@ END
 
 REGION O2_inj7     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.205d0 0.765d0 0.9d0
-    0.215d0 0.775d0 0.9d0
+    0.35d0 0.07d0 0.9d0
+    0.35d0 0.07d0 0.9d0
   /
 
   FACE TOP
@@ -760,8 +783,8 @@ END
 
 REGION O2_inj8     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.485d0 0.765d0 0.9d0
-    0.495d0 0.775d0 0.9d0
+    0.35d0 0.35d0 0.9d0
+    0.35d0 0.35d0 0.9d0
   /
 
   FACE TOP
@@ -770,8 +793,8 @@ END
 
 REGION O2_inj9     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.765d0 0.765d0 0.9d0
-    0.775d0 0.775d0 0.9d0
+    0.49d0 0.49d0 0.9d0
+    0.49d0 0.49d0 0.9d0
   /
 
   FACE TOP
@@ -781,8 +804,8 @@ END
 
 REGION O2_inj10     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.065d0 0.065d0 0.9d0
-    0.075d0 0.075d0 0.9d0
+    0.06d0 0.06d0 0.9d0
+    0.07d0 0.07d0 0.9d0
   /
 
   FACE TOP
@@ -1063,7 +1086,7 @@ FLOW_CONDITION O2_inj
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   0.04d-7   0.d0    0.d0   
+      0.d0   0.0204d-7   0.d0    0.d0   
       # 1.d-7 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
@@ -1078,13 +1101,6 @@ INITIAL_CONDITION     # initial condition
   REGION all
 END
 
-
-
-INITIAL_CONDITION     # initial condition
-  TRANSPORT_CONDITION top_layer
-  FLOW_CONDITION initial
-  REGION top_layer
-END
 
 
 skip
@@ -1106,23 +1122,22 @@ SOURCE_SINK O2_exchange             #O2 exchange between soil and atm, happening
 END
 
 
-skip
+
 SOURCE_SINK O2_inj             #O2 injection by roots, but inject the O2 into the entire layer, with no heterogeneity
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_inj
   REGION sec_layer
 END
-noskip
 
 
 
+skip
 # O2 injection by roots
 SOURCE_SINK O2_inj1            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_inj
   REGION O2_inj1
 END
-
 
 
 SOURCE_SINK O2_inj2            #typha plant-mediated O2 injection to soil
@@ -1177,7 +1192,9 @@ SOURCE_SINK O2_inj9            #typha plant-mediated O2 injection to soil
   TRANSPORT_CONDITION O2_inj
   REGION  O2_inj9
 END
+noskip
 
+skip
 SOURCE_SINK O2_inj10            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_inj
@@ -1278,11 +1295,32 @@ SOURCE_SINK O2_inj25            #typha plant-mediated O2 injection to soil
   TRANSPORT_CONDITION O2_inj
   REGION  O2_inj25
 END
+noskip
+
+
+
+
 #=========================== stratigraphy couplers ============================
+skip
+STRATA
+  REGION west
+  MATERIAL soil1
+END
+
+STRATA
+  REGION east
+  MATERIAL soil2
+END
+noskip
+
+
 STRATA
   REGION all
   MATERIAL soil1
 END
+
+
+
 
 #=========================== regression =======================================
 REGRESSION
