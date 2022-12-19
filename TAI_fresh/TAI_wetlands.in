@@ -451,6 +451,43 @@ CONSTRAINT tide
 END
 
 
+CONSTRAINT boundary
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
+    microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                6.0e-3 T
+    H+                  5.9 P 
+    O2(aq)              2.5d-4 T           
+    #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-6
+    Tracer              0.1
+    Tracer1             0.1
+    CH4(aq)             1.0e-4          #from measured data at typha
+    SO4--               5.d-3
+    H2S(aq)             1.d-4
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
 #=========================== solver options ===================================
 NUMERICAL_METHODS TRANSPORT
   LINEAR_SOLVER
@@ -553,6 +590,30 @@ MATERIAL_PROPERTY soil1
 /
 
 
+
+
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY 0.8d0
+  SOIL_COMPRESSIBILITY_FUNCTION DEFAULT     ! BRAGFLO compressed porosity has mathematical issue at high pressure
+  ! 1d-7~1d-8 equivalent to ice expansion of volume, upon 'default' or 'BRAGFLO'
+  ! beyond this range may cause tiny-time stepping
+  SOIL_COMPRESSIBILITY 1.d-07               ! 1d-7~1d-8 is a critical value for freezing expansion in soil;
+  SOIL_REFERENCE_PRESSURE 201325.d0
+  ROCK_DENSITY 2650.0d0
+  SPECIFIC_HEAT 830.0d0
+  THERMAL_CONDUCTIVITY_DRY 0.12037926674717922d0
+  THERMAL_CONDUCTIVITY_WET 1.6082691464310437d0
+  THERMAL_COND_EXPONENT 0.45d0
+  THERMAL_CONDUCTIVITY_FROZEN 2.29d+00
+  THERMAL_COND_EXPONENT_FROZEN 0.95d0
+  CHARACTERISTIC_CURVES sf01
+  PERMEABILITY
+    PERM_X 1.d-11
+    PERM_Y 1.d-11
+    PERM_Z 1.d-11
+  /
+/
 
 MATERIAL_PROPERTY soil2
   ID 2
@@ -1015,15 +1076,15 @@ TRANSPORT_CONDITION tide
 END
 
 
-TRANSPORT_CONDITION top_layer
+
+
+TRANSPORT_CONDITION boundary
   TYPE dirichlet
   TIME_UNITS hr
   CONSTRAINT_LIST
-    0.d0 top_layer
+    0.d0 boundary
   /
 END
-
-
 
 #=========================== flow conditions =============================
 
@@ -1102,6 +1163,19 @@ INITIAL_CONDITION     # initial condition
 END
 
 
+BOUNDARY_CONDITION
+  TRANSPORT_CONDITION boundary
+  FLOW_CONDITION initial
+  REGION top
+END
+
+skip
+BOUNDARY_CONDITION
+  TRANSPORT_CONDITION boundary
+  FLOW_CONDITION initial
+  REGION sec_layer
+END
+noskip
 
 skip
 SOURCE_SINK tide
@@ -1114,21 +1188,21 @@ noskip
 
 
 
-
+skip
 SOURCE_SINK O2_exchange             #O2 exchange between soil and atm, happening at the sediment-air/water interface
   FLOW_CONDITION O2_exchange
   TRANSPORT_CONDITION O2_exchange
   REGION top
 END
+noskip
 
-
-
+skip
 SOURCE_SINK O2_inj             #O2 injection by roots, but inject the O2 into the entire layer, with no heterogeneity
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_inj
   REGION sec_layer
 END
-
+noskip
 
 
 skip
