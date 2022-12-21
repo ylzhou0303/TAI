@@ -131,7 +131,7 @@ PASSIVE_GAS_SPECIES
     REACTION 2.d0 DOM1 -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+
     #it is the combination of aceticlastic and hydrogenotrophic methanogenesis, DOM1 is counted as the moles of carbon
     
-    RATE_CONSTANT 5.d-12 # Weston 2014, mol L-1 s-1 (mol m3 biomass)-1, corrected for the microbial abundance from 9.d-11 mol L-1 s-1
+    RATE_CONSTANT 9.d-12 # Weston 2014, mol L-1 s-1 (mol m3 biomass)-1, corrected for the microbial abundance from 9.d-11 mol L-1 s-1
     
     MONOD
       SPECIES_NAME DOM1
@@ -151,7 +151,7 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
     
-    RATE_CONSTANT 1.6d-11                  
+    RATE_CONSTANT 8.d-12                 
     
     
     MONOD
@@ -236,7 +236,7 @@ MICROBIAL_REACTION
     /      
   /
 
-
+skip
 # SO4-- recharge at the top layer, SO4-- being brought into the soil by seawater
 MICROBIAL_REACTION 
     REACTION Tracer -> SO4-- 
@@ -262,7 +262,7 @@ MICROBIAL_REACTION
       HALF_SATURATION_CONSTANT   0.1
     /    
   /
-
+noskip
 
 
 #### NOTE: End of auto-inserted reactions ####
@@ -374,6 +374,43 @@ CONSTRAINT sed_air_interface
   /  
 END
 
+CONSTRAINT bottom_boundary
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.e-2
+    H+                  5.9 P
+    O2(aq)              1.d-20 T        #bottom boundary, oxygen should be zero
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-15
+    Tracer              1.0e-15
+    Tracer1             1.0e-15
+    CH4(aq)             2.d-4
+    SO4--               5.d-3
+    H2S(aq)             3.d-4
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
+
 
 CONSTRAINT root           #constraint of the location of roots, used for the boundary condition
   IMMOBILE
@@ -391,7 +428,7 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                6.e-3
     H+                  5.9 P
-    O2(aq)              2.5d-5 T       #around the roots, oxygen is 10% of saturation
+    O2(aq)              1.1d-4 T       #around the roots, oxygen is 10% of saturation
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -497,8 +534,8 @@ GRID
     0.14d0
 
 
-    0.575d0\
-    0.25d0\
+    0.40d0\   #70cm deep soil cube
+    0.125d0\
     0.05d0\
     0.05d0\
     0.075d0
@@ -519,7 +556,7 @@ PROC 1 1 1
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 2.d-8  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
+  DIFFUSION_COEFFICIENT 5.d-9  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
 
 END
 
@@ -611,8 +648,8 @@ END
 #=========================== regions ==========================================
 REGION top
   COORDINATES
-    0.d0 0.d0 1.0d0
-    1.d0 1.d0 1.0d0
+    0.d0 0.d0 0.7d0
+    1.d0 1.d0 0.7d0
   /
   FACE TOP
 END
@@ -620,7 +657,7 @@ END
 REGION west
     COORDINATES
     0.d0   0.d0 0.d0
-    0.49d0 1.d0 1.0d0
+    0.49d0 1.d0 0.7d0
   /
   FACE TOP
 END
@@ -628,16 +665,18 @@ END
 
 REGION east
     COORDINATES
-    0.49d0   0.d0 0.d0
-    0.98d0   1.d0 1.0d0
+    0.49d0   0.d0   0.d0
+    0.98d0   1.d0   0.7d0
   /
   FACE TOP
 END
 
+
+
 REGION top_layer
   COORDINATES
-    0.d0 0.d0 0.925d0
-    1.d0 1.d0 1.0d0
+    0.d0 0.d0 0.625d0
+    1.d0 1.d0 0.7d0
   /
   FACE TOP
 END
@@ -645,8 +684,8 @@ END
 
 REGION sec_layer
   COORDINATES
-    0.d0 0.d0 0.875d0
-    1.d0 1.d0 0.925d0
+    0.d0 0.d0 0.575d0
+    1.d0 1.d0 0.625d0
   /
   FACE TOP
 END
@@ -663,7 +702,7 @@ END
 REGION all
   COORDINATES
     0.d0 0.d0 0.d0
-    1.d0 1.d0 1.d0
+    1.d0 1.d0 0.7d0
   /
   FACE TOP
 END
@@ -671,8 +710,8 @@ END
 
 REGION root1     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.77d0 0.91d0 0.9d0
-    0.77d0 0.91d0 0.9d0
+    0.77d0 0.91d0 0.6d0
+    0.77d0 0.91d0 0.6d0
   /
 
   FACE BOTTOM
@@ -680,8 +719,8 @@ END
 
 REGION root2     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.63d0 0.49d0 0.9d0
-    0.63d0 0.49d0 0.9d0
+    0.63d0 0.49d0 0.6d0
+    0.63d0 0.49d0 0.6d0
   /
 
   FACE TOP
@@ -689,8 +728,8 @@ END
 
 REGION root3     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.35d0 0.49d0 0.9d0
-    0.35d0 0.49d0 0.9d0
+    0.35d0 0.49d0 0.6d0
+    0.35d0 0.49d0 0.6d0
   /
 
   FACE TOP
@@ -698,8 +737,8 @@ END
 
 REGION root4     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.07d0 0.21d0 0.9d0
-    0.07d0 0.21d0 0.9d0
+    0.07d0 0.21d0 0.6d0
+    0.07d0 0.21d0 0.6d0
   /
 
   FACE TOP
@@ -708,8 +747,8 @@ END
 
 REGION root5     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.91d0 0.07d0 0.9d0
-    0.91d0 0.07d0 0.9d0
+    0.91d0 0.07d0 0.6d0
+    0.91d0 0.07d0 0.6d0
   /
 
   FACE TOP
@@ -718,8 +757,8 @@ END
 
 REGION root6     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.21d0 0.35d0 0.9d0
-    0.21d0 0.35d0 0.9d0
+    0.21d0 0.35d0 0.6d0
+    0.21d0 0.35d0 0.6d0
   /
 
   FACE TOP
@@ -728,8 +767,8 @@ END
 
 REGION root7     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.35d0 0.07d0 0.9d0
-    0.35d0 0.07d0 0.9d0
+    0.35d0 0.07d0 0.6d0
+    0.35d0 0.07d0 0.6d0
   /
 
   FACE TOP
@@ -738,8 +777,8 @@ END
 
 REGION root8     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.35d0 0.35d0 0.9d0
-    0.35d0 0.35d0 0.9d0
+    0.35d0 0.35d0 0.6d0
+    0.35d0 0.35d0 0.6d0
   /
 
   FACE TOP
@@ -748,8 +787,8 @@ END
 
 REGION root9     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.49d0 0.49d0 0.9d0
-    0.49d0 0.49d0 0.9d0
+    0.49d0 0.49d0 0.6d0
+    0.49d0 0.49d0 0.6d0
   /
 
   FACE TOP
@@ -759,8 +798,8 @@ END
 
 REGION root10     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.06d0 0.06d0 0.9d0
-    0.07d0 0.07d0 0.9d0
+    0.06d0 0.06d0 0.6d0
+    0.07d0 0.07d0 0.6d0
   /
 
   FACE TOP
@@ -769,8 +808,8 @@ END
 
 REGION root11     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.34d0 0.06d0 0.9d0
-    0.35d0 0.07d0 0.9d0
+    0.34d0 0.06d0 0.6d0
+    0.35d0 0.07d0 0.6d0
   /
 
   FACE TOP
@@ -779,8 +818,8 @@ END
 
 REGION root12     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.62d0 0.06d0 0.9d0
-    0.63d0 0.07d0 0.9d0
+    0.62d0 0.06d0 0.6d0
+    0.63d0 0.07d0 0.6d0
   /
 
   FACE TOP
@@ -789,8 +828,8 @@ END
 
 REGION root13     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.90d0 0.06d0 0.9d0
-    0.91d0 0.07d0 0.9d0
+    0.90d0 0.06d0 0.6d0
+    0.91d0 0.07d0 0.6d0
   /
 
   FACE TOP
@@ -800,8 +839,8 @@ END
 
 REGION root14     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.06d0 0.34d0 0.9d0
-    0.07d0 0.35d0 0.9d0
+    0.06d0 0.34d0 0.6d0
+    0.07d0 0.35d0 0.6d0
   /
 
   FACE TOP
@@ -810,8 +849,8 @@ END
 
 REGION root15     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.34d0 0.34d0 0.9d0
-    0.35d0 0.35d0 0.9d0
+    0.34d0 0.34d0 0.6d0
+    0.35d0 0.35d0 0.6d0
   /
 
   FACE TOP
@@ -820,8 +859,8 @@ END
 
 REGION root16     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.62d0 0.34d0 0.9d0
-    0.63d0 0.35d0 0.9d0
+    0.62d0 0.34d0 0.6d0
+    0.63d0 0.35d0 0.6d0
   /
 
   FACE TOP
@@ -830,8 +869,8 @@ END
 
 REGION root17     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.90d0 0.34d0 0.9d0
-    0.91d0 0.35d0 0.9d0
+    0.90d0 0.34d0 0.6d0
+    0.91d0 0.35d0 0.6d0
   /
 
   FACE TOP
@@ -840,8 +879,8 @@ END
 
 REGION root18     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.06d0 0.62d0 0.9d0
-    0.07d0 0.63d0 0.9d0
+    0.06d0 0.62d0 0.6d0
+    0.07d0 0.63d0 0.6d0
   /
 
   FACE TOP
@@ -850,8 +889,8 @@ END
 
 REGION root19     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.34d0 0.62d0 0.9d0
-    0.35d0 0.63d0 0.9d0
+    0.34d0 0.62d0 0.6d0
+    0.35d0 0.63d0 0.6d0
   /
 
   FACE TOP
@@ -861,8 +900,8 @@ END
 
 REGION root20     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.62d0 0.62d0 0.9d0
-    0.63d0 0.63d0 0.9d0
+    0.62d0 0.62d0 0.6d0
+    0.63d0 0.63d0 0.6d0
   /
 
   FACE TOP
@@ -870,8 +909,8 @@ END
 
 REGION root21     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.90d0 0.62d0 0.9d0
-    0.91d0 0.63d0 0.9d0
+    0.90d0 0.62d0 0.6d0
+    0.91d0 0.63d0 0.6d0
   /
 
   FACE TOP
@@ -880,8 +919,8 @@ END
 
 REGION root22     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.06d0 0.90d0 0.9d0
-    0.07d0 0.91d0 0.9d0
+    0.06d0 0.90d0 0.6d0
+    0.07d0 0.91d0 0.6d0
   /
 
   FACE TOP
@@ -889,8 +928,8 @@ END
 
 REGION root23     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.34d0 0.90d0 0.9d0
-    0.35d0 0.91d0 0.9d0
+    0.34d0 0.90d0 0.6d0
+    0.35d0 0.91d0 0.6d0
   /
 
   FACE TOP
@@ -898,8 +937,8 @@ END
 
 REGION root24     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.62d0 0.90d0 0.9d0
-    0.63d0 0.91d0 0.9d0
+    0.62d0 0.90d0 0.6d0
+    0.63d0 0.91d0 0.6d0
   /
 
   FACE TOP
@@ -908,15 +947,15 @@ END
 
 REGION root25     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.90d0 0.90d0 0.9d0
-    0.91d0 0.91d0 0.9d0
+    0.90d0 0.90d0 0.6d0
+    0.91d0 0.91d0 0.6d0
   /
 
   FACE TOP
 END
 
 REGION obs_pt
-  COORDINATE  0.5   0.5  1.d0
+  COORDINATE  0.5   0.5  0.25d0
   FACE TOP
 /
 
@@ -947,6 +986,17 @@ TRANSPORT_CONDITION sed_air_interface
    
   /
 END
+
+TRANSPORT_CONDITION bottom_boundary
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 bottom_boundary
+   
+  /
+END
+
+
 
 TRANSPORT_CONDITION root
   TYPE dirichlet
@@ -1006,7 +1056,7 @@ noskip
  /
 /
 
-skip
+
 FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
   TYPE
     RATE volumetric_rate
@@ -1021,7 +1071,7 @@ FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
   noskip
 /
 
-
+skip
 FLOW_CONDITION O2_inj
   TYPE
     RATE volumetric_rate
@@ -1047,12 +1097,20 @@ INITIAL_CONDITION     # initial condition
 END
 
 
-BOUNDARY_CONDITION
+BOUNDARY_CONDITION sed_air_interface
   TRANSPORT_CONDITION sed_air_interface
   FLOW_CONDITION initial
   REGION top
 END
 
+
+skip
+BOUNDARY_CONDITION
+  TRANSPORT_CONDITION bottom_boundary
+  FLOW_CONDITION initial
+  REGION bottom
+END
+noskip
 
 skip
 SOURCE_SINK tide
@@ -1064,7 +1122,6 @@ noskip
 
 
 
-
 # set up boundary conditions for areas around the roots to simulate root oxygen release
 BOUNDARY_CONDITION root1           
   FLOW_CONDITION initial
@@ -1072,7 +1129,7 @@ BOUNDARY_CONDITION root1
   REGION root1
 END
 
-
+skip
 BOUNDARY_CONDITION root2           
   FLOW_CONDITION initial
   TRANSPORT_CONDITION root
@@ -1125,7 +1182,7 @@ BOUNDARY_CONDITION root9
   REGION root9
 END
 
-
+noskip
 
 
 #=========================== stratigraphy couplers ============================
