@@ -354,7 +354,7 @@ CONSTRAINT sed_air_interface
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                6.e-3
     H+                  5.9 P
-    O2(aq)              1.d-4 T        #sed_air_interface, when fully inundated, set to be 40% saturated with O2
+    O2(aq)              2.5d-5 T        #sed_air_interface, when fully inundated, set to be 10% saturated with O2
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -428,7 +428,7 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                6.e-3
     H+                  5.9 P
-    O2(aq)              1.1d-4 T       #around the roots, oxygen is 10% of saturation
+    O2(aq)              1.d-5 T       #around the roots, oxygen is 10% of saturation
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -648,8 +648,8 @@ END
 #=========================== regions ==========================================
 REGION top
   COORDINATES
-    0.d0 0.d0 0.7d0
-    1.d0 1.d0 0.7d0
+    0.d0     0.d0 0.7d0
+    0.98d0 0.98d0 0.7d0
   /
   FACE TOP
 END
@@ -1129,7 +1129,7 @@ BOUNDARY_CONDITION root1
   REGION root1
 END
 
-skip
+
 BOUNDARY_CONDITION root2           
   FLOW_CONDITION initial
   TRANSPORT_CONDITION root
@@ -1182,7 +1182,7 @@ BOUNDARY_CONDITION root9
   REGION root9
 END
 
-noskip
+
 
 
 #=========================== stratigraphy couplers ============================
