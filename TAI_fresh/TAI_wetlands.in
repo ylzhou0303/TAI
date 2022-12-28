@@ -105,11 +105,11 @@ PASSIVE_GAS_SPECIES
   #DOM Aerobic RESPIRATION
  MICROBIAL_REACTION
     REACTION DOM1 + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 1.d-11   #unit: mol L-1 s-1 (mol m3 biomass)-1
+    RATE_CONSTANT 5.d-9   #unit: mol L-1 s-1 (mol m3 biomass)-1
 
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 2.5d-5   
+      HALF_SATURATION_CONSTANT 5.d-5   
     /
 
     
@@ -139,6 +139,7 @@ PASSIVE_GAS_SPECIES
       SPECIES_NAME DOM1
       HALF_SATURATION_CONSTANT 5.d-4
     /
+
    
 
     BIOMASS
@@ -153,7 +154,7 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
     
-    RATE_CONSTANT 1.6d-12                 
+    RATE_CONSTANT 1.6d-11       #10 times higher than the measured rate in Roslev 1998                 
     
     
     MONOD
@@ -186,12 +187,12 @@ PASSIVE_GAS_SPECIES
       HALF_SATURATION_CONSTANT 5.d-4    #based on the SO4-- concentration
     /
 
-    skip     #In Furukawa 2014, there was no Monod term for DOM
+    
     MONOD
       SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 3.d-3    
+      HALF_SATURATION_CONSTANT 5.d-4    
     /
-    noskip
+    
     
     BIOMASS
       SPECIES_NAME microbes4
@@ -206,7 +207,7 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION 1.d0 H2S(aq) + 2.d0 O2(aq) -> 1.d0 SO4-- + 2.d0 H+ 
     
-    RATE_CONSTANT 1.6d-11 #mol-m3 bulk/(L water-mol biomass-sec)
+    RATE_CONSTANT 1.6d-11 #mol-m3 bulk/(L water-mol biomass-sec)   #based on Roslev 1998 methane oxidation, but 10 times higher
     
     MONOD
       SPECIES_NAME O2(aq)
@@ -269,6 +270,7 @@ MICROBIAL_REACTION
     /    
   /
 noskip
+
 
 
 #### NOTE: End of auto-inserted reactions ####
@@ -554,7 +556,7 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 7 7 5
+  NXYZ 7 7 7
 
   
   DXYZ
@@ -578,12 +580,13 @@ GRID
     0.14d0
 
 
-    0.30d0\   #a total of 70cm deep soil cube
-    0.20d0\
+    0.25d0\   #a total of 70cm deep soil cube
     0.10d0\
-    0.05d0\
-    0.05d0
-    #0.001d0    #the top one is the boundary layer
+    0.10d0\
+    0.10d0\
+    0.075d0\
+    0.074d0\
+    0.001d0    #the top one is the boundary layer
   END
 
 
