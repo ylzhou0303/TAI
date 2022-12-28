@@ -100,7 +100,7 @@ PASSIVE_GAS_SPECIES
 
 
 
-skip
+
 #### NOTE: Beginning of auto-inserted reactions ####
   #DOM Aerobic RESPIRATION
  MICROBIAL_REACTION
@@ -269,7 +269,7 @@ MICROBIAL_REACTION
     /    
   /
 noskip
-noskip
+
 
 #### NOTE: End of auto-inserted reactions ####
 
@@ -361,7 +361,7 @@ CONSTRAINT sed_air_interface
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                6.e-3
     H+                  5.9 P
-    O2(aq)              2.5d-4 T        #sed_air_interface, when fully inundated, set to be 10% saturated with O2
+    O2(aq)              2.d-3 T        #sed_air_interface, when fully inundated, set to be 10% saturated with O2
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -380,6 +380,43 @@ CONSTRAINT sed_air_interface
     #### NOTE: End of auto-inserted mineral constraints ####
   /  
 END
+
+CONSTRAINT O2_diffusion
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
+    microbes1             100.d0
+    microbes2             100.d0
+    microbes3             100.d0
+    microbes4             100.d0
+    microbes5             100.d0
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.e-20
+    H+                  5.9 P
+    O2(aq)              4.d0 T        #sed_air_interface, when fully inundated, set to be 10% saturated with O2
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-15
+    Tracer              1.0e-15
+    Tracer1             1.0e-15
+    CH4(aq)             1.0e-20
+    SO4--               5.d-3
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
 
 CONSTRAINT bottom_boundary
   IMMOBILE
@@ -435,7 +472,7 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.e-20
     H+                  5.9 P
-    O2(aq)              8.d0 T          #this number times the flow rate would be about 20 mmol m-2 d-1, the O2 injection rate       
+    O2(aq)              1.d0 T          #this number times the flow rate would be about 20 mmol m-2 d-1, the O2 injection rate       
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -657,6 +694,14 @@ REGION top
   COORDINATES
     0.d0     0.d0 0.7d0
     0.98d0 0.98d0 0.7d0
+  /
+  FACE TOP
+END
+
+REGION test
+  COORDINATES
+    0.d0     0.d0 0.6d0
+    0.98d0 0.98d0 0.6d0
   /
   FACE TOP
 END
@@ -1025,6 +1070,13 @@ END
 
 
 
+TRANSPORT_CONDITION O2_diffusion
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 O2_diffusion
+  /
+END
 
 
 #=========================== flow conditions =============================
@@ -1048,17 +1100,19 @@ FLOW_CONDITION sed_air_interface
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.5d0   
+  GAS_SATURATION 0.d0   
   TEMPERATURE 25.d0
 /
+
+
 
 FLOW_CONDITION tide
   TYPE
     RATE volumetric_rate
   /
-  RATE 1.d-7  0  0 m^3/hr m^3/hr MW
+  RATE -0.0204d-4  0  0 m^3/hr m^3/hr MW
 
-skip 
+ skip
   RATE LIST
     EXTERNAL_FILE RateListTide_MI.txt
 
@@ -1069,10 +1123,10 @@ skip
    0.d0   -0.0001   0.d0    0.d0
    2.d0    0.0001    0.d0   0.d0
   10.d0   -0.0001        0      0
-
+ 
 
  /
- noskip  
+noskip 
 /
 
 
@@ -1085,31 +1139,26 @@ FLOW_CONDITION O2_inj
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   0.0204d-7   0.d0    0.d0   
+      0.d0   0.11111d-7   0.d0    0.d0   
       # 1.d-7 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
 /
 
 
+FLOW_CONDITION O2_diffusion
+  TYPE
+    RATE volumetric_rate
+  /
+  #RATE 0.0204d-7  0  0 m^3/hr m^3/hr MW
+
+  RATE LIST
+    EXTERNAL_FILE RateListO2_CB.txt
+  /
+  
+/
 
 #=========================== condition couplers ===============================
-INITIAL_CONDITION     # initial condition
-  TRANSPORT_CONDITION initial
-  FLOW_CONDITION initial
-  REGION all
-END
-
-
-BOUNDARY_CONDITION sed_air_interface
-  TRANSPORT_CONDITION sed_air_interface
-  FLOW_CONDITION initial
-  REGION top
-END
-
-
-
-
 skip
 SOURCE_SINK tide
   FLOW_CONDITION tide
@@ -1119,7 +1168,32 @@ END
 noskip
 
 
-skip
+INITIAL_CONDITION     # initial condition
+  TRANSPORT_CONDITION initial
+  FLOW_CONDITION initial
+  REGION all
+END
+
+
+BOUNDARY_CONDITION sed_air_interface
+  TRANSPORT_CONDITION sed_air_interface
+  FLOW_CONDITION sed_air_interface
+  REGION top
+END
+
+
+
+
+
+SOURCE_SINK O2_diffusion            #O2 diffusion through the sediment-air interface, to simulate the oxygen fluctuation due to water table change
+  FLOW_CONDITION O2_diffusion
+  TRANSPORT_CONDITION O2_diffusion
+  REGION top
+END
+
+
+
+
 # set up flow conditions for plant-mediated transport of oxygen
 SOURCE_SINK root1           
   FLOW_CONDITION O2_inj
@@ -1179,7 +1253,7 @@ SOURCE_SINK root9
   TRANSPORT_CONDITION root
   REGION root9
 END
-noskip
+
 
 
 #=========================== stratigraphy couplers ============================
