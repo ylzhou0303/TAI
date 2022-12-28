@@ -361,7 +361,7 @@ CONSTRAINT sed_air_interface
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                6.e-3
     H+                  5.9 P
-    O2(aq)              2.d-3 T        #sed_air_interface, when fully inundated, set to be 10% saturated with O2
+    O2(aq)              2.5d-4 T        #sed_air_interface, when fully inundated, set to be 10% saturated with O2
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -578,11 +578,12 @@ GRID
     0.14d0
 
 
-    0.40d0\   #70cm deep soil cube
-    0.125d0\
+    0.30d0\   #a total of 70cm deep soil cube
+    0.20d0\
+    0.10d0\
     0.05d0\
-    0.05d0\
-    0.075d0
+    0.05d0
+    #0.001d0    #the top one is the boundary layer
   END
 
 
@@ -1184,13 +1185,16 @@ END
 
 
 
+skip
+#O2 diffusion through the sediment-air interface, to simulate the oxygen fluctuation due to water table change,
+#I have a list of O2 input rate wich varies with the water table over time in the FLOW CONDITION
 
-SOURCE_SINK O2_diffusion            #O2 diffusion through the sediment-air interface, to simulate the oxygen fluctuation due to water table change
+SOURCE_SINK O2_diffusion            
   FLOW_CONDITION O2_diffusion
   TRANSPORT_CONDITION O2_diffusion
   REGION top
 END
-
+noskip
 
 
 
