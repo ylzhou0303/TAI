@@ -83,11 +83,7 @@ IMMOBILE_SPECIES
   #### NOTE: Beginning of auto-inserted immobile species ####
   cellulose
   HRimm
-  microbes1
-  microbes2
-  microbes3
-  microbes4
-  microbes5
+
 
   #### NOTE: End of auto-inserted immobile species ####
 /
@@ -104,8 +100,8 @@ PASSIVE_GAS_SPECIES
 #### NOTE: Beginning of auto-inserted reactions ####
   #DOM Aerobic RESPIRATION
  MICROBIAL_REACTION
-    REACTION DOM1 + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 5.d-9   #unit: mol L-1 s-1 (mol m3 biomass)-1
+    REACTION 1.0 DOM1 + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+   # 1 molecule of DOM1 here in this model contains 1 carbon atom
+    RATE_CONSTANT 1.d-8   #unit: mol L-1 s-1
 
     MONOD
       SPECIES_NAME O2(aq)
@@ -118,43 +114,69 @@ PASSIVE_GAS_SPECIES
       HALF_SATURATION_CONSTANT 5.d-4  
     /
     
-
+    skip
     BIOMASS
       SPECIES_NAME microbes1
       YIELD 0.01d0   #the portion of the energy transfered to microbes to support the growth of microbes
     /
+    noskip
   /
 
 
-
-
-#Methanogenesis DOM1
-  MICROBIAL_REACTION 
-    REACTION 2.d0 DOM1 -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+
-    #it is the combination of aceticlastic and hydrogenotrophic methanogenesis, DOM1 is counted as the moles of carbon
-    
-    RATE_CONSTANT 9.d-13 # Weston 2014, mol L-1 s-1 (mol m3 biomass)-1, corrected for the microbial abundance from 9.d-11 mol L-1 s-1
-    
+# DOM1 Fermentation, DOM1 produces acetate and hydrogen
+MICROBIAL_REACTION
+    REACTION    3.0 DOM1 + 1.0 H2O -> 1.0 CH3COO- + 1.0 H+ + 1.0 CO2(aq) + 2.0 H2(aq)
+    RATE_CONSTANT 6.d-8   #unit: mol L-1 s-1
+ 
     MONOD
       SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 5.d-4
+      HALF_SATURATION_CONSTANT 5.d-4  
     /
+      
+  /
 
-   
 
-    BIOMASS
-      SPECIES_NAME microbes2
-      YIELD 0.01d0
+#Acetoclastic Methanogenesis
+  MICROBIAL_REACTION 
+    REACTION 1.0 CH3COO- + 1.0 H+ -> 1.0 CH4(aq) + 1.0 CO2(aq) 
+    
+    RATE_CONSTANT 3.d-10 # Weston 2014, mol L-1 s-1, Oligahaline
+
+
+
+    MONOD
+      SPECIES_NAME CH3COO-
+      HALF_SATURATION_CONSTANT 1.d-5
     /
    
  /
  
 
+#hydrogenotrophic Methanogenesis
+  MICROBIAL_REACTION 
+    REACTION 4.0 H2(aq) + 1.0 CO2(aq) -> 1.0 CH4(aq) + 2.0 H2O 
+    
+    RATE_CONSTANT 5.d-11 # Weston 2014, mol L-1 s-1, Oligahaline
+
+
+
+    MONOD
+      SPECIES_NAME H2(aq)
+      HALF_SATURATION_CONSTANT 0.1
+    /
+    
+    MONOD
+      SPECIES_NAME CO2(aq)
+      HALF_SATURATION_CONSTANT 0.1
+    /
+ /
+ 
+
 #Methane oxidation - O2
   MICROBIAL_REACTION 
-    REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
+    REACTION 1.0 CH4(aq) + 2.0 O2(aq) -> 1.0 CO2(aq) + 2.0 H2O
     
-    RATE_CONSTANT 1.6d-11       #10 times higher than the measured rate in Roslev 1998                 
+    RATE_CONSTANT 1.6d-10       #from Roslev 1998                 
     
     
     MONOD
@@ -167,10 +189,6 @@ PASSIVE_GAS_SPECIES
       HALF_SATURATION_CONSTANT 6.d-5  
     /
 
-    BIOMASS
-      SPECIES_NAME microbes3
-      YIELD 0.01d0
-    /
   /
 
   
@@ -180,7 +198,7 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 HCO3- + 1.d0 H2S(aq) + 1.d-1 NH4+
    
-    RATE_CONSTANT 2.26d-11   #Weston 2014
+    RATE_CONSTANT 2.26d-9   #Weston 2014
    
     MONOD
       SPECIES_NAME SO4--
@@ -192,12 +210,7 @@ PASSIVE_GAS_SPECIES
       SPECIES_NAME DOM1
       HALF_SATURATION_CONSTANT 5.d-4    
     /
-    
-    
-    BIOMASS
-      SPECIES_NAME microbes4
-      YIELD 0.01d0
-    /
+  
   /
 
 
@@ -207,8 +220,8 @@ PASSIVE_GAS_SPECIES
   MICROBIAL_REACTION 
     REACTION 1.d0 H2S(aq) + 2.d0 O2(aq) -> 1.d0 SO4-- + 2.d0 H+ 
     
-    RATE_CONSTANT 1.6d-11 #mol-m3 bulk/(L water-mol biomass-sec)   #based on Roslev 1998 methane oxidation, but 10 times higher
-    
+    RATE_CONSTANT 1.6d-10 #mol L-1 s-1   #based on Roslev 1998 methane oxidation
+
     MONOD
       SPECIES_NAME O2(aq)
       HALF_SATURATION_CONSTANT 2.5d-5
@@ -219,16 +232,15 @@ PASSIVE_GAS_SPECIES
       HALF_SATURATION_CONSTANT 6.d-5 
     /
     
-    BIOMASS
-      SPECIES_NAME microbes5
-      YIELD 0.01d0
-    /
+  
   /
 
 
 
 
-# DOM recharge throughout the whole soil column
+# DOM recharge throughout the whole soil column, this is actually the hydrolysis of SOM to DOM
+# to avoid depletion of DOM
+
 MICROBIAL_REACTION 
     REACTION Tracer -> DOM1 
     
@@ -257,19 +269,6 @@ MICROBIAL_REACTION
     /      
   /
 
-skip
-# CH4 and H2S removal from the top
-MICROBIAL_REACTION 
-    REACTION CH4(aq) + H2S(aq) + Tracer -> Tracer1
-    
-    RATE_CONSTANT 5.d-11     # unit: mol L-1 s-1
-
-    MONOD
-      SPECIES_NAME  Tracer
-      HALF_SATURATION_CONSTANT   0.1
-    /    
-  /
-noskip
 
 
 
@@ -313,11 +312,11 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
-    microbes2             100.d0
-    microbes3             100.d0
-    microbes4             100.d0
-    microbes5             100.d0
+    # microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
+    # microbes2             100.d0
+    # microbes3             100.d0
+    # microbes4             100.d0
+    # microbes5             100.d0
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -352,11 +351,7 @@ CONSTRAINT sed_air_interface
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             100.d0
-    microbes2             100.d0
-    microbes3             100.d0
-    microbes4             100.d0
-    microbes5             100.d0
+    
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -370,7 +365,7 @@ CONSTRAINT sed_air_interface
     NH4+                1.0e-15
     Tracer              1.0e-15
     Tracer1             1.0e-15
-    CH4(aq)             1.0e-20
+    CH4(aq)             1.0e-15
     SO4--               5.d-3
     H2S(aq)             1.d-20
     #### NOTE: End of auto-inserted concentration constraints ####
@@ -388,18 +383,14 @@ CONSTRAINT O2_diffusion
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             100.d0
-    microbes2             100.d0
-    microbes3             100.d0
-    microbes4             100.d0
-    microbes5             100.d0
+    
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.e-20
     H+                  5.9 P
-    O2(aq)              4.d0 T        #sed_air_interface, when fully inundated, set to be 10% saturated with O2
+    O2(aq)              8.d0 T        
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -425,11 +416,7 @@ CONSTRAINT bottom_boundary
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             100.d0
-    microbes2             100.d0
-    microbes3             100.d0
-    microbes4             100.d0
-    microbes5             100.d0
+    
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -463,18 +450,14 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    microbes1             100.d0
-    microbes2             100.d0
-    microbes3             100.d0
-    microbes4             100.d0
-    microbes5             100.d0
+    
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.e-20
+    DOM1                8.e0         # roots can also excrete exudates of DOM
     H+                  5.9 P
-    O2(aq)              1.d0 T          #this number times the flow rate would be about 20 mmol m-2 d-1, the O2 injection rate       
+    O2(aq)              10.d0 T          #this number times the flow rate would be about 10 mmol m-2 d-1, the O2 injection rate       
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -500,11 +483,7 @@ CONSTRAINT tide
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e-20
     HRimm                1.0e-20
-    microbes1             100.d0
-    microbes2             100.d0
-    microbes3             100.d0
-    microbes4             100.d0
-    microbes5             100.d0
+    
     #### NOTE: End of auto-inserted immobile species ####
   /
   CONCENTRATIONS
@@ -702,14 +681,6 @@ REGION top
   FACE TOP
 END
 
-REGION test
-  COORDINATES
-    0.d0     0.d0 0.6d0
-    0.98d0 0.98d0 0.6d0
-  /
-  FACE TOP
-END
-
 REGION west
     COORDINATES
     0.d0   0.d0 0.d0
@@ -731,17 +702,17 @@ END
 
 REGION top_layer
   COORDINATES
-    0.d0 0.d0 0.625d0
-    1.d0 1.d0 0.7d0
+    0.d0 0.d0 0.626d0
+    1.d0 1.d0 0.699d0
   /
   FACE TOP
 END
 
 
-REGION sec_layer
+REGION roots_layer
   COORDINATES
-    0.d0 0.d0 0.575d0
-    1.d0 1.d0 0.625d0
+    0.d0 0.d0 0.6d0
+    1.d0 1.d0 0.6d0
   /
   FACE TOP
 END
@@ -1097,7 +1068,19 @@ FLOW_CONDITION initial
 /
 
 
-FLOW_CONDITION sed_air_interface
+FLOW_CONDITION sed_air_interface       #flow condition for the boundary
+  TYPE
+    GAS_PRESSURE dirichlet
+    GAS_SATURATION dirichlet
+    TEMPERATURE dirichlet
+  /
+  GAS_PRESSURE 1.d5
+  GAS_SATURATION 0.d0   
+  TEMPERATURE 25.d0
+/
+
+
+FLOW_CONDITION bottom_boundary
   TYPE
     GAS_PRESSURE dirichlet
     GAS_SATURATION dirichlet
@@ -1134,7 +1117,27 @@ noskip
 /
 
 
-FLOW_CONDITION O2_inj
+# inject oxygen evenly, not creating heterogeneity
+
+FLOW_CONDITION ROL_homo    #inject Oxygen via several hotspots, to create spatial heterogeneity
+  TYPE
+    RATE volumetric_rate
+   /
+  
+  RATE LIST
+    TIME_UNITS hr
+    DATA_UNITS m^3/hr   m^3/hr   MW
+      
+      0.d0   0.0204d-7   0.d0    0.d0   
+      # 1.d-7 divided by number of columns; 
+      
+  /
+/
+
+
+
+
+FLOW_CONDITION ROL_het    #inject Oxygen via several hotspots, to create spatial heterogeneity
   TYPE
     RATE volumetric_rate
    /
@@ -1164,6 +1167,11 @@ FLOW_CONDITION O2_diffusion
 
 #=========================== condition couplers ===============================
 skip
+# Tides
+# Add or remove  water mass from the sediment column
+# This process does not work if I have set up a boundary condition, as the boundary condition would force the water content
+# to stay constant, to match the boundary condition
+
 SOURCE_SINK tide
   FLOW_CONDITION tide
   TRANSPORT_CONDITION tide
@@ -1172,12 +1180,16 @@ END
 noskip
 
 
+# Initial condition
+
 INITIAL_CONDITION     # initial condition
   TRANSPORT_CONDITION initial
   FLOW_CONDITION initial
   REGION all
 END
 
+
+# Boundary condition at the sediment-air-interface
 
 BOUNDARY_CONDITION sed_air_interface
   TRANSPORT_CONDITION sed_air_interface
@@ -1189,74 +1201,87 @@ END
 
 
 skip
-#O2 diffusion through the sediment-air interface, to simulate the oxygen fluctuation due to water table change,
+#O2 diffusion from top 
+#This is to simulate the oxygen fluctuation due to water table change,
+# when water table is below sediment surface, increase the O2 diffusion rate as water table draws down
 #I have a list of O2 input rate wich varies with the water table over time in the FLOW CONDITION
 
 SOURCE_SINK O2_diffusion            
   FLOW_CONDITION O2_diffusion
   TRANSPORT_CONDITION O2_diffusion
-  REGION top
+  REGION top_layer
 END
 noskip
 
 
 
-# set up flow conditions for plant-mediated transport of oxygen
-SOURCE_SINK root1           
-  FLOW_CONDITION O2_inj
+skip
+# Homogeneous Root Oxygen Release: Inject Oxygen evenly, i.e. no heterogeneity
+
+SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous           
+  FLOW_CONDITION ROL_homo
+  TRANSPORT_CONDITION root
+  REGION roots_layer
+END
+noskip
+
+
+# Heterogeneous Root Oxygen Release, inject oxygen via certain hotspots to create heterogeneity
+SOURCE_SINK ROL_het1           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root1
 END
 
 
-SOURCE_SINK root2           
-  FLOW_CONDITION O2_inj
+SOURCE_SINK ROL_het2           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root2
 END
 
-SOURCE_SINK root3           
-  FLOW_CONDITION O2_inj
+SOURCE_SINK ROL_het3           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root3
 END
 
 
-SOURCE_SINK root4           
-  FLOW_CONDITION O2_inj
+SOURCE_SINK ROL_het4           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root4
 END
 
-SOURCE_SINK root5           
-  FLOW_CONDITION O2_inj
+SOURCE_SINK ROL_het5           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root5
 END
 
 
-SOURCE_SINK root6           
-  FLOW_CONDITION O2_inj
+SOURCE_SINK ROL_het6           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root6
 END
 
 
-SOURCE_SINK root7           
-  FLOW_CONDITION O2_inj
+SOURCE_SINK ROL_het7           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root7
 END
 
 
-SOURCE_SINK root8           
-  FLOW_CONDITION O2_inj
+SOURCE_SINK ROL_het8           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root8
 END
 
-SOURCE_SINK root9           
-  FLOW_CONDITION O2_inj
+SOURCE_SINK ROL_het9           
+  FLOW_CONDITION ROL_het
   TRANSPORT_CONDITION root
   REGION root9
 END
