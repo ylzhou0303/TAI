@@ -123,58 +123,13 @@ PASSIVE_GAS_SPECIES
   /
 
 
-# DOM1 Fermentation, DOM1 produces acetate and hydrogen
-MICROBIAL_REACTION
-    REACTION    3.0 DOM1 + 1.0 H2O -> 1.0 CH3COO- + 1.0 H+ + 1.0 CO2(aq) + 2.0 H2(aq)
-    RATE_CONSTANT 6.d-8   #unit: mol L-1 s-1
- 
-    MONOD
-      SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 5.d-4  
-    /
-      
-  /
+# DOM1 Methanogenesis
+ MICROBIAL_REACTION    1.0 DOM1 -> 0.5 CH4 + 0.5 HCO3-
 
-
-#Acetoclastic Methanogenesis
-  MICROBIAL_REACTION 
-    REACTION 1.0 CH3COO- + 1.0 H+ -> 1.0 CH4(aq) + 1.0 CO2(aq) 
-    
-    RATE_CONSTANT 3.d-10 # Weston 2014, mol L-1 s-1, Oligahaline
-
-
-
-    MONOD
-      SPECIES_NAME CH3COO-
-      HALF_SATURATION_CONSTANT 1.d-5
-    /
-   
- /
- 
-
-#hydrogenotrophic Methanogenesis
-  MICROBIAL_REACTION 
-    REACTION 4.0 H2(aq) + 1.0 CO2(aq) -> 1.0 CH4(aq) + 2.0 H2O 
-    
-    RATE_CONSTANT 5.d-11 # Weston 2014, mol L-1 s-1, Oligahaline
-
-
-
-    MONOD
-      SPECIES_NAME H2(aq)
-      HALF_SATURATION_CONSTANT 0.1
-    /
-    
-    MONOD
-      SPECIES_NAME CO2(aq)
-      HALF_SATURATION_CONSTANT 0.1
-    /
- /
- 
 
 #Methane oxidation - O2
   MICROBIAL_REACTION 
-    REACTION 1.0 CH4(aq) + 2.0 O2(aq) -> 1.0 CO2(aq) + 2.0 H2O
+    REACTION 1.0 CH4(aq) + 2.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O
     
     RATE_CONSTANT 1.6d-10       #from Roslev 1998                 
     
@@ -196,7 +151,7 @@ MICROBIAL_REACTION
 
 #Sulfate reduction DOM1
   MICROBIAL_REACTION 
-    REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 HCO3- + 1.d0 H2S(aq) + 1.d-1 NH4+
+    REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 CO2(aq) + 1.d0 H2S(aq) + 1.d-1 NH4+
    
     RATE_CONSTANT 2.26d-9   #Weston 2014
    
