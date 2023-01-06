@@ -509,28 +509,34 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 7 7 6
+  NXYZ 10 10 6
 
   
   DXYZ
     
-    0.14d0\ 
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0
+    0.01d0\ 
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0
 
 
 
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0
+    0.01d0\ 
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0
 
 
     0.25d0\   #a total of 70cm deep soil cube
@@ -650,11 +656,12 @@ END
 REGION top
   COORDINATES
     0.d0     0.d0 0.7d0
-    0.98d0 0.98d0 0.7d0
+    0.1d0 0.1d0 0.7d0
   /
   FACE TOP
 END
 
+skip
 REGION west
     COORDINATES
     0.d0   0.d0 0.d0
@@ -671,13 +678,13 @@ REGION east
   /
   FACE TOP
 END
-
+noskip
 
 
 REGION top_layer
   COORDINATES
     0.d0 0.d0 0.626d0
-    1.d0 1.d0 0.699d0
+    0.1d0 0.1d0 0.7d0
   /
   FACE TOP
 END
@@ -686,7 +693,7 @@ END
 REGION roots_layer
   COORDINATES
     0.d0 0.d0 0.6d0
-    1.d0 1.d0 0.6d0
+    0.1d0 0.1d0 0.6d0
   /
   FACE TOP
 END
@@ -694,7 +701,7 @@ END
 REGION bottom
   COORDINATES
     0.d0 0.d0 0.0d0
-    1.d0 1.d0 0.0d0
+    0.1d0 0.1d0 0.0d0
   /
   FACE BOTTOM
 END
@@ -703,7 +710,7 @@ END
 REGION all
   COORDINATES
     0.d0 0.d0 0.d0
-    1.d0 1.d0 0.7d0
+    0.1d0 0.1d0 0.7d0
   /
   FACE TOP
 END
@@ -711,8 +718,8 @@ END
 
 REGION root1     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.77d0 0.91d0 0.6d0
-    0.77d0 0.91d0 0.6d0
+    0.077d0 0.091d0 0.6d0
+    0.077d0 0.091d0 0.6d0
   /
 
   FACE BOTTOM
@@ -720,8 +727,8 @@ END
 
 REGION root2     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.63d0 0.49d0 0.6d0
-    0.63d0 0.49d0 0.6d0
+    0.063d0 0.049d0 0.6d0
+    0.063d0 0.049d0 0.6d0
   /
 
   FACE TOP
@@ -729,8 +736,8 @@ END
 
 REGION root3     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.35d0 0.49d0 0.6d0
-    0.35d0 0.49d0 0.6d0
+    0.035d0 0.049d0 0.6d0
+    0.035d0 0.049d0 0.6d0
   /
 
   FACE TOP
@@ -738,8 +745,8 @@ END
 
 REGION root4     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.07d0 0.21d0 0.6d0
-    0.07d0 0.21d0 0.6d0
+    0.007d0 0.021d0 0.6d0
+    0.007d0 0.021d0 0.6d0
   /
 
   FACE TOP
@@ -748,8 +755,8 @@ END
 
 REGION root5     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.91d0 0.07d0 0.6d0
-    0.91d0 0.07d0 0.6d0
+    0.091d0 0.007d0 0.6d0
+    0.091d0 0.007d0 0.6d0
   /
 
   FACE TOP
@@ -758,8 +765,8 @@ END
 
 REGION root6     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.21d0 0.35d0 0.6d0
-    0.21d0 0.35d0 0.6d0
+    0.021d0 0.035d0 0.6d0
+    0.021d0 0.035d0 0.6d0
   /
 
   FACE TOP
@@ -768,8 +775,8 @@ END
 
 REGION root7     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.35d0 0.07d0 0.6d0
-    0.35d0 0.07d0 0.6d0
+    0.035d0 0.007d0 0.6d0
+    0.035d0 0.007d0 0.6d0
   /
 
   FACE TOP
@@ -778,8 +785,8 @@ END
 
 REGION root8     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.35d0 0.35d0 0.6d0
-    0.35d0 0.35d0 0.6d0
+    0.035d0 0.035d0 0.6d0
+    0.035d0 0.035d0 0.6d0
   /
 
   FACE TOP
@@ -788,8 +795,8 @@ END
 
 REGION root9     #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
-    0.49d0 0.49d0 0.6d0
-    0.49d0 0.49d0 0.6d0
+    0.049d0 0.049d0 0.6d0
+    0.049d0 0.049d0 0.6d0
   /
 
   FACE TOP
@@ -797,166 +804,10 @@ END
 
 
 
-REGION root10     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.06d0 0.06d0 0.6d0
-    0.07d0 0.07d0 0.6d0
-  /
 
-  FACE TOP
-END
-
-
-REGION root11     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.34d0 0.06d0 0.6d0
-    0.35d0 0.07d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root12     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.62d0 0.06d0 0.6d0
-    0.63d0 0.07d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root13     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.90d0 0.06d0 0.6d0
-    0.91d0 0.07d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-
-REGION root14     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.06d0 0.34d0 0.6d0
-    0.07d0 0.35d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root15     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.34d0 0.34d0 0.6d0
-    0.35d0 0.35d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root16     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.62d0 0.34d0 0.6d0
-    0.63d0 0.35d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root17     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.90d0 0.34d0 0.6d0
-    0.91d0 0.35d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root18     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.06d0 0.62d0 0.6d0
-    0.07d0 0.63d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root19     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.34d0 0.62d0 0.6d0
-    0.35d0 0.63d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-
-REGION root20     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.62d0 0.62d0 0.6d0
-    0.63d0 0.63d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-REGION root21     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.90d0 0.62d0 0.6d0
-    0.91d0 0.63d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root22     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.06d0 0.90d0 0.6d0
-    0.07d0 0.91d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-REGION root23     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.34d0 0.90d0 0.6d0
-    0.35d0 0.91d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-REGION root24     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.62d0 0.90d0 0.6d0
-    0.63d0 0.91d0 0.6d0
-  /
-
-  FACE TOP
-END
-
-
-REGION root25     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.90d0 0.90d0 0.6d0
-    0.91d0 0.91d0 0.6d0
-  /
-
-  FACE TOP
-END
 
 REGION obs_pt
-  COORDINATE  0.5   0.5  0.25d0
+  COORDINATE  0.05   0.05  0.25d0
   FACE TOP
 /
 
@@ -1120,7 +971,7 @@ FLOW_CONDITION ROL_het    #inject Oxygen via several hotspots, to create spatial
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   0.11111d-7   0.d0    0.d0   
+      0.d0   0.11111d-9   0.d0    0.d0   
       # 1.d-7 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
