@@ -716,7 +716,7 @@ REGION all
 END
 
 
-REGION root1     #where the rhizomes are, where O2 is transported into the soil by roots
+      #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
     0.077d0 0.091d0 0.6d0
     0.077d0 0.091d0 0.6d0
