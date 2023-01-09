@@ -753,7 +753,7 @@ REGION root4     #where the rhizomes are, where O2 is transported into the soil 
 END
 
 
-REGION root5     #where the rhizomes are, where O2 is transported into the soil by roots
+REGION root5      #where the rhizomes are, where O2 is transported into the soil by roots
     COORDINATES
     0.091d0 0.007d0 0.6d0
     0.091d0 0.007d0 0.6d0
@@ -976,6 +976,7 @@ FLOW_CONDITION ROL_het    #inject Oxygen via several hotspots, to create spatial
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
 /
+
 
 
 FLOW_CONDITION O2_diffusion
