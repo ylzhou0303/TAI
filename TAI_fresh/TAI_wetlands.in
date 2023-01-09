@@ -959,9 +959,6 @@ FLOW_CONDITION ROL_homo    #inject Oxygen via several hotspots, to create spatia
   /
 /
 
-
-
-
 FLOW_CONDITION ROL_het    #inject Oxygen via several hotspots, to create spatial heterogeneity
   TYPE
     RATE volumetric_rate
