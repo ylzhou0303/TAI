@@ -1,3 +1,7 @@
+
+
+
+# This is PFLOTRAN inpu deck
 # Description: Simple microbial decomposition and dissolution to DOM network
 # Rate constants estimated to show different processes
 
@@ -968,7 +972,7 @@ FLOW_CONDITION ROL_het    #inject Oxygen via several hotspots, to create spatial
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   0.11111d-9   0.d0    0.d0   
+      0.d0   0.11111d-7   0.d0    0.d0   
       # 1.d-7 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
