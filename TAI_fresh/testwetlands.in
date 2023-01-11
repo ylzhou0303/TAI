@@ -145,7 +145,7 @@ skip
     /
    
  /
-noskip 
+
 
 #Methane oxidation - O2
   MICROBIAL_REACTION 
@@ -172,7 +172,7 @@ noskip
 
   
 
-skip
+
 #Sulfate reduction DOM1
   MICROBIAL_REACTION 
     REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 HCO3- + 1.d0 H2S(aq) + 1.d-1 NH4+
@@ -918,16 +918,16 @@ FLOW_CONDITION initial
   TEMPERATURE 25.d0
 /
 
-
+skip
 FLOW_CONDITION tide
   TYPE
     RATE volumetric_rate
   /
-#  RATE 0  0  0 m^3/hr m^3/hr MW
+  RATE 0  0  0 m^3/hr m^3/hr MW
 
  
   RATE LIST
-    EXTERNAL_FILE RateListTide_MI.txt
+  #  EXTERNAL_FILE RateListTide_MI.txt
 
 
 skip 
@@ -971,7 +971,7 @@ FLOW_CONDITION O2_inj
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
 /
-
+noskip
 
 
 #=========================== condition couplers ===============================
@@ -981,7 +981,7 @@ INITIAL_CONDITION     # initial condition
   REGION all
 END
 
-
+skip
 BOUNDARY_CONDITION
   TRANSPORT_CONDITION boundary
   FLOW_CONDITION initial
@@ -989,18 +989,18 @@ BOUNDARY_CONDITION
 END
 
 
-skip
+
 SOURCE_SINK tide
   FLOW_CONDITION tide
   TRANSPORT_CONDITION tide
   REGION top
 END
-noskip
 
 
 
 
-skip
+
+
 SOURCE_SINK O2_exchange             #O2 exchange between soil and atm, happening at the sediment-air/water interface
   FLOW_CONDITION O2_exchange
   TRANSPORT_CONDITION O2_exchange
@@ -1014,10 +1014,10 @@ SOURCE_SINK O2_inj             #O2 injection by roots, but inject the O2 into th
   TRANSPORT_CONDITION O2_inj
   REGION sec_layer
 END
-noskip
 
 
-skip
+
+
 # O2 injection by roots
 SOURCE_SINK O2_inj1            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
@@ -1078,9 +1078,7 @@ SOURCE_SINK O2_inj9            #typha plant-mediated O2 injection to soil
   TRANSPORT_CONDITION O2_inj
   REGION  O2_inj9
 END
-noskip
 
-skip
 SOURCE_SINK O2_inj10            #typha plant-mediated O2 injection to soil
   FLOW_CONDITION O2_inj
   TRANSPORT_CONDITION O2_inj
@@ -1181,8 +1179,8 @@ SOURCE_SINK O2_inj25            #typha plant-mediated O2 injection to soil
   TRANSPORT_CONDITION O2_inj
   REGION  O2_inj25
 END
-noskip
 
+noskip
 
 
 

@@ -141,7 +141,7 @@ MICROBIAL_REACTION
   MICROBIAL_REACTION 
     REACTION 1.0 CH4(aq) + 2.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
     
-    RATE_CONSTANT 5.d-9       #from Roslev 1998                 
+    RATE_CONSTANT 5.d-8       #from Roslev 1998                 
     
     
     MONOD
@@ -237,13 +237,13 @@ MICROBIAL_REACTION
   /
 
 
-skip
+
 # CH4 removal to simulate ebulltion, once CH4 is above a certain concentration, CH4 is removed
 # to reach the threshold concentration
 MICROBIAL_REACTION
   REACTION    CH4(aq)  -> Tracer1
 
-  RATE_CONSTANT   2.d-10
+  RATE_CONSTANT   1.5d-10
   
   MONOD
       SPECIES_NAME  CH4(aq)
@@ -253,7 +253,7 @@ MICROBIAL_REACTION
       #when CH4 concentration is below 6e-4 mol/L, the reaction stops
     / 
 END
-noskip
+
 
 #### NOTE: End of auto-inserted reactions ####
 
@@ -446,7 +446,7 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                4.d0         # roots can also excrete exudates of DOM
     H+                  5.9 P
-    O2(aq)              5.d0 T          #this number times the flow rate would be about 10 mmol m-2 d-1, the O2 injection rate       
+    O2(aq)              3.d0 T          #this number times the flow rate would be about 10 mmol m-2 d-1, the O2 injection rate       
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -670,6 +670,12 @@ TIME
 END
 
 #=========================== regions ==========================================
+REGION obs_pt
+  COORDINATE  0.05   0.05  0.25d0
+  FACE TOP
+/
+
+
 REGION top
   COORDINATES
     0.d0     0.d0 0.7d0
@@ -732,101 +738,170 @@ REGION all
   FACE TOP
 END
 
+
+
+
+
 REGION root1
-      #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.077d0 0.091d0 0.6d0
-    0.077d0 0.091d0 0.6d0
-  /
-
-  FACE BOTTOM
+	COORDINATES
+		0.015  0.065  0.6
+		0.015  0.065  0.6
+	/
+	FACE TOP
 END
 
-REGION root2     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.063d0 0.049d0 0.6d0
-    0.063d0 0.049d0 0.6d0
-  /
-
-  FACE TOP
+REGION root2
+	COORDINATES
+		0.045  0.025  0.6
+		0.045  0.025  0.6
+	/
+	FACE TOP
 END
 
-REGION root3     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.035d0 0.049d0 0.6d0
-    0.035d0 0.049d0 0.6d0
-  /
-
-  FACE TOP
+REGION root3
+	COORDINATES
+		0.025  0.075  0.6
+		0.025  0.075  0.6
+	/
+	FACE TOP
 END
 
-REGION root4     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.007d0 0.021d0 0.6d0
-    0.007d0 0.021d0 0.6d0
-  /
-
-  FACE TOP
+REGION root4
+	COORDINATES
+		0.065  0.085  0.6
+		0.065  0.085  0.6
+	/
+	FACE TOP
 END
 
-
-REGION root5      #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.091d0 0.007d0 0.6d0
-    0.091d0 0.007d0 0.6d0
-  /
-
-  FACE TOP
+REGION root5
+	COORDINATES
+		0.035  0.065  0.6
+		0.035  0.065  0.6
+	/
+	FACE TOP
 END
 
-
-REGION root6     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.021d0 0.035d0 0.6d0
-    0.021d0 0.035d0 0.6d0
-  /
-
-  FACE TOP
+REGION root6
+	COORDINATES
+		0.075  0.095  0.6
+		0.075  0.095  0.6
+	/
+	FACE TOP
 END
 
-
-REGION root7     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.035d0 0.007d0 0.6d0
-    0.035d0 0.007d0 0.6d0
-  /
-
-  FACE TOP
+REGION root7
+	COORDINATES
+		0.085  0.085  0.6
+		0.085  0.085  0.6
+	/
+	FACE TOP
 END
 
-
-REGION root8     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.035d0 0.035d0 0.6d0
-    0.035d0 0.035d0 0.6d0
-  /
-
-  FACE TOP
+REGION root8
+	COORDINATES
+		0.065  0.025  0.6
+		0.065  0.025  0.6
+	/
+	FACE TOP
 END
 
-
-REGION root9     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.049d0 0.049d0 0.6d0
-    0.049d0 0.049d0 0.6d0
-  /
-
-  FACE TOP
+REGION root9
+	COORDINATES
+		0.045  0.055  0.6
+		0.045  0.055  0.6
+	/
+	FACE TOP
 END
 
+REGION root10
+	COORDINATES
+		0.055  0.065  0.6
+		0.055  0.065  0.6
+	/
+	FACE TOP
+END
 
+REGION root11
+	COORDINATES
+		0.005  0.055  0.6
+		0.005  0.055  0.6
+	/
+	FACE TOP
+END
 
+REGION root12
+	COORDINATES
+		0.095  0.035  0.6
+		0.095  0.035  0.6
+	/
+	FACE TOP
+END
 
+REGION root13
+	COORDINATES
+		0.085  0.005  0.6
+		0.085  0.005  0.6
+	/
+	FACE TOP
+END
 
-REGION obs_pt
-  COORDINATE  0.05   0.05  0.25d0
-  FACE TOP
-/
+REGION root14
+	COORDINATES
+		0.025  0.055  0.6
+		0.025  0.055  0.6
+	/
+	FACE TOP
+END
+
+REGION root15
+	COORDINATES
+		0.045  0.075  0.6
+		0.045  0.075  0.6
+	/
+	FACE TOP
+END
+
+REGION root16
+	COORDINATES
+		0.065  0.095  0.6
+		0.065  0.095  0.6
+	/
+	FACE TOP
+END
+
+REGION root17
+	COORDINATES
+		0.035  0.075  0.6
+		0.035  0.075  0.6
+	/
+	FACE TOP
+END
+
+REGION root18
+	COORDINATES
+		0.035  0.095  0.6
+		0.035  0.095  0.6
+	/
+	FACE TOP
+END
+
+REGION root19
+	COORDINATES
+		0.085  0.095  0.6
+		0.085  0.095  0.6
+	/
+	FACE TOP
+END
+
+REGION root20
+	COORDINATES
+		0.095  0.065  0.6
+		0.095  0.065  0.6
+	/
+	FACE TOP
+END
+
 
 
 
@@ -985,7 +1060,7 @@ FLOW_CONDITION ROL_het    #inject Oxygen via several hotspots, to create spatial
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW
       
-      0.d0   0.11111d-8   0.d0    0.d0   
+      0.d0   0.05d-8   0.d0    0.d0   
       # 1.d-9 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
@@ -1126,7 +1201,75 @@ SOURCE_SINK ROL_het9
   REGION root9
 END
 
+SOURCE_SINK ROL_het10           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root10
+END
 
+SOURCE_SINK ROL_het11           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root11
+END
+
+
+SOURCE_SINK ROL_het12
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root12
+END
+
+
+SOURCE_SINK ROL_het13
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root13
+END
+
+SOURCE_SINK ROL_het14
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root14
+END
+
+
+SOURCE_SINK ROL_het15
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root15
+END
+
+
+SOURCE_SINK ROL_het16
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root16
+END
+
+SOURCE_SINK ROL_het17
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root17
+END
+
+SOURCE_SINK ROL_het18
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root18
+END
+
+SOURCE_SINK ROL_het19
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root19
+END
+
+SOURCE_SINK ROL_het20
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION root
+  REGION root20
+END
 #=========================== stratigraphy couplers ============================
 STRATA
   REGION all
