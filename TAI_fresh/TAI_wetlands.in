@@ -678,7 +678,7 @@ REGION obs_pt
 
 REGION top
   COORDINATES
-    0.d0     0.d0 0.7d0
+    0.d0  0.d0 0.7d0
     0.1d0 0.1d0 0.7d0
   /
   FACE TOP
@@ -1045,8 +1045,8 @@ FLOW_CONDITION ROL_homo    #inject Oxygen via several hotspots, to create spatia
     TIME_UNITS hr
     DATA_UNITS m^3/hr   m^3/hr   MW       #liquid gas energy
       
-      0.d0   0.0204d-7   0.d0    0.d0   
-      # 1.d-7 divided by number of columns; 
+      0.d0   0.01d-8   0.d0    0.d0   
+      # 1.d-8 divided by number of columns; 
       
   /
 /
@@ -1061,7 +1061,7 @@ FLOW_CONDITION ROL_het    #inject Oxygen via several hotspots, to create spatial
     DATA_UNITS m^3/hr   m^3/hr   MW
       
       0.d0   0.05d-8   0.d0    0.d0   
-      # 1.d-9 divided by number of roots; 
+      # 1.d-8 divided by number of roots; 
       #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
   /
 /
@@ -1130,7 +1130,7 @@ noskip
 
 
 
-skip
+
 # Homogeneous Root Oxygen Release: Inject Oxygen evenly, i.e. no heterogeneity
 
 SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous           
@@ -1138,9 +1138,9 @@ SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous
   TRANSPORT_CONDITION root
   REGION roots_layer
 END
-noskip
 
 
+skip
 # Heterogeneous Root Oxygen Release, inject oxygen via certain hotspots to create heterogeneity
 SOURCE_SINK ROL_het1           
   FLOW_CONDITION ROL_het
@@ -1270,6 +1270,9 @@ SOURCE_SINK ROL_het20
   TRANSPORT_CONDITION root
   REGION root20
 END
+noskip
+
+
 #=========================== stratigraphy couplers ============================
 STRATA
   REGION all
