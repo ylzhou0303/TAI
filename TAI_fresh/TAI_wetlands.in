@@ -133,6 +133,8 @@ MICROBIAL_REACTION
   MONOD
     SPECIES_NAME  DOM1
     HALF_SATURATION_CONSTANT 2.d-3
+
+
   /
 /
 
@@ -526,7 +528,7 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 10 10 6
+  NXYZ 10 10 9
 
   
   DXYZ
@@ -556,13 +558,15 @@ GRID
     0.01d0
 
 
-    0.25d0\   #a total of 70cm deep soil cube
-    0.10d0\
-    0.10d0\
-    0.10d0\
-    0.075d0\
-    0.075d0
-    #0.001d0    #the top one is the boundary layer
+    0.25\   #a total of 70cm deep soil cube
+    0.20\
+    0.10\
+    0.075\
+    0.05\
+    0.015\
+    0.005\
+    0.003\
+    0.002    #the top one is the boundary layer
   END
 
 
@@ -580,7 +584,7 @@ PROC 1 1 1
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 5.d-8  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
+  DIFFUSION_COEFFICIENT 5.d-9  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
 
 END
 
