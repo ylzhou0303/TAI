@@ -4,53 +4,53 @@
      Mean:   1.0000000000000E+00
         1:   1.0000000000000E+00
 -- CONCENTRATION: Total DOM1 --
-      Max:   1.0753057665053E-02
-      Min:   1.0850456317524E-03
-     Mean:   5.0375394629194E-03
-        1:   6.8554052385556E-03
+      Max:   5.9446884627560E-03
+      Min:   1.0591786925609E-03
+     Mean:   3.2406010702169E-03
+        1:   5.9446884627560E-03
 -- CONCENTRATION: Total O2(aq) --
-      Max:   2.1565050834303E-04
-      Min:   1.3191560012092E-16
-     Mean:   5.1037925454499E-05
-        1:   1.3200836964568E-16
+      Max:   2.3444828307757E-04
+      Min:   2.5623761536857E-40
+     Mean:   3.2530801420348E-05
+        1:   2.9823944814497E-25
 -- CONCENTRATION: Total Tracer --
-      Max:   9.9668330542847E-02
-      Min:   6.7302580502480E-02
-     Mean:   8.4105109785387E-02
-        1:   6.7302580502480E-02
+      Max:   9.9364039759465E-02
+      Min:   6.7290172853627E-02
+     Mean:   8.1189522146980E-02
+        1:   6.7290488520231E-02
 -- CONCENTRATION: Total CH4(aq) --
-      Max:   1.0459003363914E-03
-      Min:   1.4556535187774E-06
-     Mean:   3.2035228572112E-04
-        1:   1.0459003363914E-03
+      Max:   9.6594449312800E-04
+      Min:   2.8601929625257E-06
+     Mean:   3.6391296062062E-04
+        1:   9.6594449312800E-04
 -- CONCENTRATION: Total SO4-- --
-      Max:   5.2068583507686E-03
-      Min:   4.4780951331338E-03
-     Mean:   4.9157488948441E-03
-        1:   4.4780951331338E-03
+      Max:   6.9516014371168E-03
+      Min:   4.5983991821540E-03
+     Mean:   5.1820127373720E-03
+        1:   4.5983991821540E-03
 -- CONCENTRATION: Total H2S(aq) --
-      Max:   1.0244192892427E-02
-      Min:   8.3851692815182E-05
-     Mean:   4.7404742177970E-03
-        1:   1.0244192892427E-02
+      Max:   1.0125930722246E-02
+      Min:   1.4356146754015E-04
+     Mean:   5.3260811373051E-03
+        1:   1.0125930722246E-02
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Flow --
-   Time (seconds):   1.6236183643341E+00
+   Time (seconds):   1.6107306480408E+00
    Time Steps:           65
    Newton Iterations:           68
-   Linear Solver Iterations:         2940
+   Linear Solver Iterations:         2895
    Time Step Cuts:            0
    Solution 2-Norm:   3.0434261442308E+06
-   Residual 2-Norm:   8.5781796362921E-18
+   Residual 2-Norm:   7.2201693157362E-17
 -- SOLUTION: Transport --
-   Time (seconds):   3.4923957109451E+01
+   Time (seconds):   1.4608508110046E+01
    Time Steps:           65
    Newton Iterations:           71
-   Linear Solver Iterations:        23997
+   Linear Solver Iterations:         8243
    Time Step Cuts:            0
-   Solution 2-Norm:   3.0000000110899E+04
-   Residual 2-Norm:   2.7627859717173E-11
+   Solution 2-Norm:   3.0000000103516E+04
+   Residual 2-Norm:   2.7527494898311E-11

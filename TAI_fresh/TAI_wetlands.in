@@ -128,7 +128,7 @@ PASSIVE_GAS_SPECIES
 # DOM1 Methanogenesis
 MICROBIAL_REACTION    
   REACTION 2.0 DOM1 + 2.0 H2O -> 1.0 CH4(aq) + 1.0 HCO3- + 1.0 H+ 
-  RATE_CONSTANT 7.d-10   # unit: mol L-1 s-1, derived from Weston 2014
+  RATE_CONSTANT 1.d-9   # unit: mol L-1 s-1, derived from Weston 2014
 
   MONOD
     SPECIES_NAME  DOM1
@@ -177,9 +177,6 @@ MICROBIAL_REACTION
       SPECIES_NAME SO4--
       HALF_SATURATION_CONSTANT 5.d-3    #based on the SO4-- concentration
     /
-
-    
-  
   
   /
 
@@ -240,21 +237,23 @@ MICROBIAL_REACTION
 
 
 
-# CH4 removal to simulate ebulltion, once CH4 is above a certain concentration, CH4 is removed
+# CH4 removal to simulate ebullition, once CH4 is above a certain concentration, CH4 is removed
 # to reach the threshold concentration
 MICROBIAL_REACTION
   REACTION    CH4(aq)  -> Tracer1
 
-  RATE_CONSTANT   1.5d-10
+  RATE_CONSTANT   4.d-10          #this need to be changed depending on the methanogenesis rate, otherwise methane can still accumulate
   
   MONOD
       SPECIES_NAME  CH4(aq)
       HALF_SATURATION_CONSTANT   1.d-8
       THRESHOLD_CONCENTRATION    1.d-3       
-      #when CH4 concentration is above 6e-4 mol/L, the reaction proceeds
-      #when CH4 concentration is below 6e-4 mol/L, the reaction stops
+      #when CH4 concentration is above the threshold, the reaction proceeds
+      #when CH4 concentration is below the threshold, the reaction stops
     / 
 END
+
+
 
 
 #### NOTE: End of auto-inserted reactions ####
@@ -446,9 +445,9 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                4.d0         # roots can also excrete exudates of DOM
+    DOM1                1.d-20         
     H+                  5.9 P
-    O2(aq)              3.d0 T          #this number times the flow rate would be about 10 mmol m-2 d-1, the O2 injection rate       
+    O2(aq)              1.d0 T          #this number times the flow rate would be about 720 mmol m-2 d-1, the O2 injection rate       
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -584,7 +583,8 @@ PROC 1 1 1
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 5.d-9  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
+  DIFFUSION_COEFFICIENT 1.3d-9  #unit: m2/s   
+  #Here I use oxygen diffusion coefficient in water (20C) and accounted for the tortuosity effect following Boudrea 1996
 
 END
 
@@ -1142,6 +1142,8 @@ SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous
   TRANSPORT_CONDITION root
   REGION roots_layer
 END
+
+
 
 
 skip
