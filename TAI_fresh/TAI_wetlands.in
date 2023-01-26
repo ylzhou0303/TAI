@@ -133,8 +133,12 @@ MICROBIAL_REACTION
   MONOD
     SPECIES_NAME  DOM1
     HALF_SATURATION_CONSTANT 2.d-3
+  /
 
-
+  INHIBITION
+    SPECIES_NAME O2(aq)
+    TYPE MONOD
+    INHIBITION_CONSTANT 1.d-4
   /
 /
 
@@ -143,7 +147,7 @@ MICROBIAL_REACTION
   MICROBIAL_REACTION 
     REACTION 1.0 CH4(aq) + 2.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
     
-    RATE_CONSTANT 5.d-8       #from Roslev 1998                 
+    RATE_CONSTANT 5.d-9      #from Roslev 1998                 
     
     
     MONOD
@@ -1145,7 +1149,7 @@ SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous
 END
 noskip
 
-
+skip
 # Heterogeneous Root Oxygen Release, inject oxygen via certain hotspots to create heterogeneity
 SOURCE_SINK ROL_het1           
   FLOW_CONDITION ROL_het
@@ -1275,7 +1279,7 @@ SOURCE_SINK ROL_het20
   TRANSPORT_CONDITION root
   REGION root20
 END
-
+noskip
 
 
 #=========================== stratigraphy couplers ============================
