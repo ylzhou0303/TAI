@@ -36,9 +36,9 @@ PRIMARY_SPECIES
   NH4+
   Fe+++
   Fe++
-  Tracer
-  Tracer1         #Tracer1 to track the methane produced by methanogenesis
-  Tracer2         #Tracer2 to tack the methane that gets oxidized
+  Tracer        #for recharge of DOM and SO4--
+  Tracer1         #Tracer1 is for threshold_concentration based removal of methane, which produced Tracer1
+  Tracer2         #Tracer2 is to track the balance between methanogenesis and methane oxidaiton
   CH4(aq)
   SO4--
   H2S(aq)
@@ -127,7 +127,7 @@ PASSIVE_GAS_SPECIES
 
 # DOM1 Methanogenesis
 MICROBIAL_REACTION    
-  REACTION 2.0 DOM1 + 2.0 H2O -> 1.0 CH4(aq) + 1.0 HCO3- + 1.0 H+ 
+  REACTION 2.0 DOM1 + 2.0 H2O -> 1.0 CH4(aq) + 1.0 HCO3- + 1.0 H+ + Tracer2 
   RATE_CONSTANT 1.d-9   # unit: mol L-1 s-1, derived from Weston 2014
 
   MONOD
@@ -145,7 +145,7 @@ MICROBIAL_REACTION
 
 #Methane oxidation - O2
   MICROBIAL_REACTION 
-    REACTION 1.0 CH4(aq) + 2.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
+    REACTION 1.0 CH4(aq) + 2.0 O2(aq) + Tracer2 -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
     
     RATE_CONSTANT 5.d-9      #from Roslev 1998                 
     
@@ -278,7 +278,7 @@ END
       DOM1
       SO4--
       H2S(aq)
-      Tracer
+      Tracer2
 
      
     #FREE_ION
@@ -355,7 +355,7 @@ CONSTRAINT sed_air_interface
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
     NH4+                1.0e-15
-    Tracer              0.1
+    Tracer          0.1
     Tracer1             1.0e-20
     Tracer2             1.d-20
     CH4(aq)             1.0e-15
@@ -491,9 +491,9 @@ CONSTRAINT tide
     Fe+++               1.0e-20
     Fe++                1.0e-20
     NH4+                1.0e-20
-    Tracer              1.0e-20
-    Tracer1             1.0e-20
-    Tracer2             1.d-20
+    Tracer         1.0e-20
+    Tracer1          1.0e-20
+    Tracer2          1.d-20
     CH4(aq)             1.0e-20
     SO4--               1.d-20
     H2S(aq)             1.d-20
