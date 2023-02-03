@@ -135,13 +135,13 @@ MICROBIAL_REACTION
     HALF_SATURATION_CONSTANT 2.d-3
   /
 
-
+skip
   INHIBITION
     SPECIES_NAME O2(aq)
     TYPE MONOD
     INHIBITION_CONSTANT 1.d-4
   /
- 
+ noskip
 /
 
 
@@ -171,7 +171,7 @@ MICROBIAL_REACTION
   MICROBIAL_REACTION 
     REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 HCO3- + 2.0 H+ + 1.0d0 H2S(aq) + 1.d-1 NH4+
    
-    RATE_CONSTANT 1.d-8   #derived from Weston 2014
+    RATE_CONSTANT 5.d-9   #derived from Weston 2014
     
     MONOD
       SPECIES_NAME DOM1
@@ -196,7 +196,7 @@ MICROBIAL_REACTION
   MICROBIAL_REACTION 
     REACTION 1.d0 H2S(aq) + 2.d0 O2(aq) -> 1.d0 SO4-- + 2.d0 H+ 
     
-    RATE_CONSTANT 5.d-9 #mol L-1 s-1   #derived from Roslev 1998 methane oxidation
+    RATE_CONSTANT 1.d-7 #mol L-1 s-1   #10 times higher than CH4 oxidation derived from Roslev 1998 methane oxidation
 
     MONOD
       SPECIES_NAME O2(aq)
@@ -219,7 +219,7 @@ MICROBIAL_REACTION
 MICROBIAL_REACTION 
     REACTION Tracer -> DOM1 
     
-    RATE_CONSTANT 2.d-8     # unit: mol L-1 s-1
+    RATE_CONSTANT 1.d-8     # unit: mol L-1 s-1
     
     
     MONOD
@@ -235,7 +235,7 @@ MICROBIAL_REACTION
 MICROBIAL_REACTION 
     REACTION Tracer -> SO4-- 
     
-    RATE_CONSTANT 8.d-9     # unit: mol L-1 s-1
+    RATE_CONSTANT 4.d-9     # unit: mol L-1 s-1
     
     
     MONOD
@@ -454,7 +454,7 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.d-20         
     H+                  5.9 P
-    O2(aq)              7.d-1 T          #this number times the flow rate would be about 720 mmol m-2 d-1, the O2 injection rate       
+    O2(aq)              1.15d0 T          #this number times the flow rate would be about 720 mmol m-2 d-1, the O2 injection rate       
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -1073,7 +1073,7 @@ FLOW_CONDITION ROL_het    #inject Oxygen via several hotspots, to create spatial
       
       0.d0   0.05d-8   0.d0    0.d0   
       # 1.d-8 divided by number of roots; 
-      #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
+      
   /
 /
 
@@ -1115,6 +1115,8 @@ INITIAL_CONDITION     # initial condition
 END
 
 
+
+
 # Boundary condition at the sediment-air-interface
 
 BOUNDARY_CONDITION sed_air_interface
@@ -1141,7 +1143,7 @@ noskip
 
 
 
-
+skip
 # Homogeneous Root Oxygen Release: Inject Oxygen evenly, i.e. no heterogeneity
 
 SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous           
@@ -1149,10 +1151,10 @@ SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous
   TRANSPORT_CONDITION root
   REGION roots_layer
 END
+noskip
 
 
 
-skip
 # Heterogeneous Root Oxygen Release, inject oxygen via certain hotspots to create heterogeneity
 SOURCE_SINK ROL_het1           
   FLOW_CONDITION ROL_het
@@ -1282,7 +1284,7 @@ SOURCE_SINK ROL_het20
   TRANSPORT_CONDITION root
   REGION root20
 END
-noskip
+
 
 
 #=========================== stratigraphy couplers ============================

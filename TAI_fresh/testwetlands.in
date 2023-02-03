@@ -98,6 +98,16 @@ PASSIVE_GAS_SPECIES
   #### NOTE: End of auto-inserted gas species ####
 /
 
+
+
+
+ MICROBIAL_REACTION
+    REACTION 2 DOM1 -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+
+    RATE_CONSTANT 1.16d-8   #unit: mol L-1 s-1 (mol m3 biomass)-1
+
+/
+
+
 skip
 #### NOTE: Beginning of auto-inserted reactions ####
   #DOM Aerobic RESPIRATION
@@ -686,7 +696,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 30 day
+  FINAL_TIME 1 day
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
@@ -1185,17 +1195,7 @@ noskip
 
 
 #=========================== stratigraphy couplers ============================
-skip
-STRATA
-  REGION west
-  MATERIAL soil1
-END
 
-STRATA
-  REGION east
-  MATERIAL soil2
-END
-noskip
 
 
 STRATA
