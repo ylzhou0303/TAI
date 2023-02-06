@@ -103,7 +103,7 @@ PASSIVE_GAS_SPECIES
   #DOM Aerobic RESPIRATION
  MICROBIAL_REACTION
     REACTION 1.0 DOM1 + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+   # 1 molecule of DOM1 here in this model contains 1 carbon atom
-    RATE_CONSTANT 5.d-8   #unit: mol L-1 s-1
+    RATE_CONSTANT 2.d-8   #unit: mol L-1 s-1
 
     MONOD
       SPECIES_NAME O2(aq)
@@ -113,7 +113,7 @@ PASSIVE_GAS_SPECIES
     
     MONOD
       SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 2.d-3  
+      HALF_SATURATION_CONSTANT 5.d-3  
     /
     
     skip
@@ -132,7 +132,7 @@ MICROBIAL_REACTION
 
   MONOD
     SPECIES_NAME  DOM1
-    HALF_SATURATION_CONSTANT 2.d-3
+    HALF_SATURATION_CONSTANT 5.d-3
   /
 
 skip
@@ -149,7 +149,7 @@ skip
   MICROBIAL_REACTION 
     REACTION 1.0 CH4(aq) + 2.0 O2(aq) + Tracer2 -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
     
-    RATE_CONSTANT 5.d-9      #from Roslev 1998                 
+    RATE_CONSTANT 5.d-10                 
     
     
     MONOD
@@ -171,7 +171,7 @@ skip
   MICROBIAL_REACTION 
     REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 HCO3- + 2.0 H+ + 1.0d0 H2S(aq) + 1.d-1 NH4+
    
-    RATE_CONSTANT 5.d-9   #derived from Weston 2014
+    RATE_CONSTANT 5.d-9   
     
     MONOD
       SPECIES_NAME DOM1
@@ -196,7 +196,7 @@ skip
   MICROBIAL_REACTION 
     REACTION 1.d0 H2S(aq) + 2.d0 O2(aq) -> 1.d0 SO4-- + 2.d0 H+ 
     
-    RATE_CONSTANT 1.d-7 #mol L-1 s-1   #10 times higher than CH4 oxidation derived from Roslev 1998 methane oxidation
+    RATE_CONSTANT 1.d-7 #mol L-1 s-1   
 
     MONOD
       SPECIES_NAME O2(aq)
@@ -205,7 +205,7 @@ skip
 
     MONOD
       SPECIES_NAME H2S(aq)
-      HALF_SATURATION_CONSTANT 3.d-4 
+      HALF_SATURATION_CONSTANT 5.d-4 
     /
     
   
@@ -219,7 +219,7 @@ skip
 MICROBIAL_REACTION 
     REACTION Tracer -> DOM1 
     
-    RATE_CONSTANT 1.d-8     # unit: mol L-1 s-1
+    RATE_CONSTANT 1.3d-8     # unit: mol L-1 s-1
     
     
     MONOD
@@ -755,164 +755,163 @@ END
 
 REGION root1
 	COORDINATES
-		0.015  0.065  0.6
-		0.015  0.065  0.6
+		0.035  0.025  0.6
+		0.035  0.025  0.6
 	/
 	FACE TOP
 END
 
 REGION root2
 	COORDINATES
-		0.045  0.025  0.6
-		0.045  0.025  0.6
+		0.025  0.025  0.6
+		0.025  0.025  0.6
 	/
 	FACE TOP
 END
 
 REGION root3
 	COORDINATES
-		0.025  0.075  0.6
-		0.025  0.075  0.6
+		0.015  0.025  0.6
+		0.015  0.025  0.6
 	/
 	FACE TOP
 END
 
 REGION root4
 	COORDINATES
-		0.065  0.085  0.6
-		0.065  0.085  0.6
+		0.075  0.075  0.6
+		0.075  0.075  0.6
 	/
 	FACE TOP
 END
 
 REGION root5
 	COORDINATES
-		0.035  0.065  0.6
-		0.035  0.065  0.6
+		0.055  0.065  0.6
+		0.055  0.065  0.6
 	/
 	FACE TOP
 END
 
 REGION root6
 	COORDINATES
-		0.075  0.095  0.6
-		0.075  0.095  0.6
+		0.045  0.055  0.6
+		0.045  0.055  0.6
 	/
 	FACE TOP
 END
 
 REGION root7
 	COORDINATES
-		0.085  0.085  0.6
-		0.085  0.085  0.6
+		0.015  0.015  0.6
+		0.015  0.015  0.6
 	/
 	FACE TOP
 END
 
 REGION root8
 	COORDINATES
-		0.065  0.025  0.6
-		0.065  0.025  0.6
+		0.075  0.015  0.6
+		0.075  0.015  0.6
 	/
 	FACE TOP
 END
 
 REGION root9
 	COORDINATES
-		0.045  0.055  0.6
-		0.045  0.055  0.6
+		0.025  0.015  0.6
+		0.025  0.015  0.6
 	/
 	FACE TOP
 END
 
 REGION root10
 	COORDINATES
-		0.055  0.065  0.6
-		0.055  0.065  0.6
+		0.085  0.075  0.6
+		0.085  0.075  0.6
 	/
 	FACE TOP
 END
 
 REGION root11
 	COORDINATES
-		0.005  0.055  0.6
-		0.005  0.055  0.6
+		0.055  0.025  0.6
+		0.055  0.025  0.6
 	/
 	FACE TOP
 END
 
 REGION root12
 	COORDINATES
-		0.095  0.035  0.6
-		0.095  0.035  0.6
+		0.065  0.055  0.6
+		0.065  0.055  0.6
 	/
 	FACE TOP
 END
 
 REGION root13
 	COORDINATES
-		0.085  0.005  0.6
-		0.085  0.005  0.6
+		0.065  0.035  0.6
+		0.065  0.035  0.6
 	/
 	FACE TOP
 END
 
 REGION root14
 	COORDINATES
-		0.025  0.055  0.6
-		0.025  0.055  0.6
+		0.035  0.065  0.6
+		0.035  0.065  0.6
 	/
 	FACE TOP
 END
 
 REGION root15
 	COORDINATES
-		0.045  0.075  0.6
-		0.045  0.075  0.6
+		0.035  0.075  0.6
+		0.035  0.075  0.6
 	/
 	FACE TOP
 END
 
 REGION root16
 	COORDINATES
-		0.065  0.095  0.6
-		0.065  0.095  0.6
+		0.015  0.085  0.6
+		0.015  0.085  0.6
 	/
 	FACE TOP
 END
 
 REGION root17
 	COORDINATES
-		0.035  0.075  0.6
-		0.035  0.075  0.6
+		0.025  0.075  0.6
+		0.025  0.075  0.6
 	/
 	FACE TOP
 END
 
 REGION root18
 	COORDINATES
-		0.035  0.095  0.6
-		0.035  0.095  0.6
+		0.055  0.055  0.6
+		0.055  0.055  0.6
 	/
 	FACE TOP
 END
 
 REGION root19
 	COORDINATES
-		0.085  0.095  0.6
-		0.085  0.095  0.6
+		0.085  0.045  0.6
+		0.085  0.045  0.6
 	/
 	FACE TOP
 END
 
 REGION root20
 	COORDINATES
-		0.095  0.065  0.6
-		0.095  0.065  0.6
+		0.055  0.075  0.6
+		0.055  0.075  0.6
 	/
 	FACE TOP
 END
-
 
 
 
