@@ -102,9 +102,14 @@ PASSIVE_GAS_SPECIES
 
 
  MICROBIAL_REACTION
-    REACTION 2 DOM1 -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 1.16d-8   #unit: mol L-1 s-1 (mol m3 biomass)-1
-
+    REACTION CH4(aq) -> Tracer1
+    RATE_CONSTANT 1.d-8   #unit: mol L-1 s-1 (mol m3 biomass)-1
+    
+    MONOD
+      SPECIES_NAME CH4(aq)
+      HALF_SATURATION_CONSTANT  1.d-10
+      THRESHOLD_CONCENTRATION   1.d10
+    /
 /
 
 
@@ -277,36 +282,24 @@ noskip
 
 #### NOTE: End of auto-inserted reactions ####
 
-  TRUNCATE_CONCENTRATION 1.d-80
+TRUNCATE_CONCENTRATION 1.d-80
 
 
-  LOG_FORMULATION
-  DATABASE ./hanford.dat
+LOG_FORMULATION
+DATABASE ./hanford.dat
 
-  OUTPUT
-    !PH
-    TOTAL
-      O2(aq)
-      CH4(aq)
-      DOM1
-      SO4--
-      H2S(aq)
-      Tracer
-    #FREE_ION
-    #PRIMARY_SPECIES
-    #SECONDARY_SPECIES
-    #GASES
-    #MINERALS
-    #IMMOBILE
-      microbes1
-      microbes2
-      microbes3
-      microbes4
-      microbes5
- 
-
-  /
-END
+OUTPUT
+  !PH
+    
+  TOTAL
+  O2(aq)
+  CH4(aq)
+  DOM1
+  SO4--
+  H2S(aq)
+  Tracer1
+ /
+END  #end of the chemistry card
 
 #=========================== transport constraints ============================
 CONSTRAINT initial
@@ -333,7 +326,7 @@ CONSTRAINT initial
     NH4+                1.0e-6
     Tracer              0.1
     Tracer1             0.1
-    CH4(aq)             6.0e-4          #from measured data at typha
+    CH4(aq)             0.01          #from measured data at typha
     SO4--               5.d-3
     H2S(aq)             3.d-4
     #### NOTE: End of auto-inserted concentration constraints ####
@@ -673,7 +666,7 @@ END
 #=========================== output options ===================================
 OUTPUT
   SCREEN PERIODIC 100
-  PERIODIC TIME 24 hour          #the frequency of generating output
+  PERIODIC TIME  24 hour          #the frequency of generating output
   FORMAT HDF5                #hdf5 file can be read by VISITS
   FORMAT TECPLOT POINT       #text file, can be read in python and plot data
 
@@ -696,7 +689,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 1 day
+  FINAL_TIME 5 day
 
   INITIAL_TIMESTEP_SIZE 0.5d0 h
   MAXIMUM_TIMESTEP_SIZE 12.d0 h
