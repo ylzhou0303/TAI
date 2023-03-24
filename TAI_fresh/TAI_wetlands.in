@@ -38,7 +38,8 @@ PRIMARY_SPECIES
   Fe++
   Tracer        #for recharge of DOM and SO4--
   Tracer1         #Tracer1 is for threshold_concentration based removal of methane, which produced Tracer1
-  Tracer2         #Tracer2 is to track the balance between methanogenesis and methane oxidaiton
+  Tracer2         #Tracer2 is to keep track of CH4
+  Tracer3         #Tracer2 and Tracer3 are both to keep track of CH4, and used in the artificial CH4 ebullition reaction
   CH4(aq)
   SO4--
   H2S(aq)
@@ -127,7 +128,7 @@ PASSIVE_GAS_SPECIES
 
 # DOM1 Methanogenesis
 MICROBIAL_REACTION    
-  REACTION 2.0 DOM1 + 2.0 H2O -> 1.0 CH4(aq) + 1.0 HCO3- + 1.0 H+ + Tracer2 
+  REACTION 2.0 DOM1 + 2.0 H2O -> 1.0 CH4(aq) + 1.0 HCO3- + 1.0 H+ + 1.0 Tracer2 + 1.0 Tracer3
   RATE_CONSTANT 5.d-10   # unit: mol L-1 s-1, derived from Weston 2014
 
   MONOD
@@ -141,15 +142,15 @@ skip
     TYPE MONOD
     INHIBITION_CONSTANT 1.d-5
   /
-noskip 
+noskip
 /
 
 
 #Methane oxidation - O2
   MICROBIAL_REACTION 
-    REACTION 1.0 CH4(aq) + 2.0 O2(aq) + Tracer2 -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
+    REACTION 1.0 CH4(aq) + 2.0 O2(aq) + 1.0 Tracer2 + 1.0 Tracer3 -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
     
-    RATE_CONSTANT 4.d-9                 
+    RATE_CONSTANT 4.d-9         
     
     
     MONOD
@@ -246,18 +247,29 @@ MICROBIAL_REACTION
 
 
 
-# CH4 removal to simulate ebullition, once CH4 is above a certain concentration, CH4 is removed
-# to reach the threshold concentration
-MICROBIAL_REACTION
-  REACTION    CH4(aq)  -> Tracer1
+# CH4 removal to simulate ebullition
+# the threshold_concentration does not work
+# so I have set up three Monod terms to simulate an exponential increase in CH4 removal rate with CH4 concentration
 
-  RATE_CONSTANT  4.d-10          #this need to be changed depending on the methanogenesis rate, otherwise methane can still accumulate
+MICROBIAL_REACTION
+  REACTION    1.0 CH4(aq) + 1.0 Tracer2 + 1.0 Tracer3  -> 1.0 Tracer1
+
+  RATE_CONSTANT  4.d-7          #this need to be adjusted depending on the methanogenesis rate, otherwise methane can still accumulate
   
   MONOD
     SPECIES_NAME  CH4(aq)
-    HALF_SATURATION_CONSTANT   8.d-4   #when the methane concentration is 1000 uM, the Monod is about 1
+    HALF_SATURATION_CONSTANT   1.d-2   
+  /
 
-  / 
+  MONOD
+    SPECIES_NAME  Tracer2
+    HALF_SATURATION_CONSTANT   1.d-2   
+  /
+
+  MONOD
+    SPECIES_NAME  Tracer3
+    HALF_SATURATION_CONSTANT   1.d-2   
+  /   
 END
 
 
@@ -324,7 +336,8 @@ CONSTRAINT initial
     Tracer              0.1
     Tracer1             1.d-20
     Tracer2             1.d-20
-    CH4(aq)             1.0e-20         
+    Tracer3             1.d-20
+    CH4(aq)             1.d-20         
     SO4--               5.d-3
     H2S(aq)             1.d-20
     #### NOTE: End of auto-inserted concentration constraints ####
@@ -359,6 +372,7 @@ CONSTRAINT sed_air_interface
     Tracer              0.1
     Tracer1             1.0e-20
     Tracer2             1.d-20
+    Tracer3             1.d-20
     CH4(aq)             1.0e-15
     SO4--               5.d-3
     H2S(aq)             1.d-20
@@ -392,6 +406,7 @@ CONSTRAINT O2_diffusion
     Tracer              1.0e-15
     Tracer1             1.0e-20
     Tracer2             1.d-20
+    Tracer3             1.d-20
     CH4(aq)             1.0e-20
     SO4--               5.d-3
     H2S(aq)             1.d-20
@@ -426,6 +441,7 @@ CONSTRAINT bottom_boundary
     Tracer              1.0e-15
     Tracer1             1.0e-20
     Tracer2             1.d-20
+    Tracer3             1.d-20
     CH4(aq)             2.d-4
     SO4--               5.d-3
     H2S(aq)             3.d-4
@@ -453,7 +469,7 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.d-20         
     H+                  5.9 P
-    O2(aq)              1.3d0 T          #this number times the flow rate would be about 720 mmol m-2 d-1, the O2 injection rate       
+    O2(aq)              1.3d0 T         #when sulfur cycling is included, O2 conc. is 1.3 M; if there is no S cycling, O2 conc. is 0.3 M 
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10
@@ -461,6 +477,7 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     Tracer              1.0e-20
     Tracer1             1.0e-20
     Tracer2             1.d-20
+    Tracer3             1.d-20
     CH4(aq)             1.0e-20
     SO4--               1.d-20
     H2S(aq)             1.d-20
@@ -495,6 +512,7 @@ CONSTRAINT tide
     Tracer         1.0e-20
     Tracer1          1.0e-20
     Tracer2          1.d-20
+    Tracer3             1.d-20
     CH4(aq)             1.0e-20
     SO4--               1.d-20
     H2S(aq)             1.d-20
@@ -1099,7 +1117,6 @@ END
 noskip
 
 
-
 skip
 # Homogeneous Root Oxygen Release: Inject Oxygen evenly, i.e. no heterogeneity
 
@@ -1109,6 +1126,8 @@ SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous
   REGION roots_layer
 END
 noskip
+
+
 
 
 # Heterogeneous Root Oxygen Release, inject oxygen via certain hotspots to create heterogeneity

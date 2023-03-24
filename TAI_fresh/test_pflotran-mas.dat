@@ -1,2 +1,2 @@
- "Time [day]","dt_flow [day]","dt_tran [day]","Global Water Mass in Liquid Phas [kg]","Global Water Mass in Solid Phase [kg]","Global Air Mass in Liquid Phase [kg]","Global Water Mass in Gas Phase [kg]","Global Air Mass in Gas Phase [kg]","Global CH4(aq) [mol]"
-  2.50000000E+00  5.00000000E-01  5.00000000E-01  7.97718790E+02  1.45622492E-02  0.00000000E+00  0.00000000E+00  7.98269703E-02
+ "Time [s]","dt_flow [s]","dt_tran [s]","Global Water Mass in Liquid Phas [kg]","Global Water Mass in Solid Phase [kg]","Global Air Mass in Liquid Phase [kg]","Global Water Mass in Gas Phase [kg]","Global Air Mass in Gas Phase [kg]","Global CH4(aq) [mol]"
+  1.00000000E+01  1.00000000E+00  1.00000000E+00  7.97718790E+02  1.45622492E-02  0.00000000E+00  0.00000000E+00  7.95346229E-02

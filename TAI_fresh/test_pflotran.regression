@@ -4,28 +4,28 @@
      Mean:   1.0000000000000E+00
         1:   1.0000000000000E+00
 -- CONCENTRATION: Total CH4(aq) --
-      Max:   9.9567914970094E-05
-      Min:   9.9567914970094E-05
-     Mean:   9.9567914970094E-05
-        1:   9.9567914970094E-05
+      Max:   9.9418278585883E-05
+      Min:   9.9418278585883E-05
+     Mean:   9.9418278585883E-05
+        1:   9.9418278585883E-05
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Flow --
-   Time (seconds):   1.2252330780029E-03
-   Time Steps:           15
-   Newton Iterations:           15
+   Time (seconds):   9.9873542785645E-04
+   Time Steps:           10
+   Newton Iterations:           10
    Linear Solver Iterations:            0
    Time Step Cuts:            0
    Solution 2-Norm:   1.0000000312500E+05
    Residual 2-Norm:   0.0000000000000E+00
 -- SOLUTION: Transport --
-   Time (seconds):   1.3830661773682E-03
-   Time Steps:           15
-   Newton Iterations:           15
-   Linear Solver Iterations:           29
+   Time (seconds):   1.8010139465332E-03
+   Time Steps:           10
+   Newton Iterations:           20
+   Linear Solver Iterations:           40
    Time Step Cuts:            0
    Solution 2-Norm:   1.0000000100878E+03
-   Residual 2-Norm:   1.7297533542999E-13
+   Residual 2-Norm:   6.4371109295061E-15
