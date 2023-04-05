@@ -136,13 +136,13 @@ MICROBIAL_REACTION
     HALF_SATURATION_CONSTANT 2.d-3
   /
 
-skip
+
   INHIBITION
     SPECIES_NAME O2(aq)
     TYPE MONOD
-    INHIBITION_CONSTANT 1.d-5
+    INHIBITION_CONSTANT 2.5d-4    # Yuan et al. 2009, exposure to O2 for 24h decreased methane production rate by ~50%
   /
-noskip
+
 /
 
 
@@ -469,7 +469,7 @@ CONSTRAINT root           #constraint of the location of roots, used for the bou
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.d-20         
     H+                  5.9 P
-    O2(aq)              0.65d0 T         #when sulfur cycling is included, O2 conc. is 1.3 M; if there is no S cycling, O2 conc. is 0.3 M 
+    O2(aq)              1.3d0 T         #when sulfur cycling is included, O2 conc. is 1.3 M; if there is no S cycling, O2 conc. is 0.3 M 
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
     Fe++                0.37e-10

@@ -136,13 +136,13 @@ MICROBIAL_REACTION
     HALF_SATURATION_CONSTANT 2.d-3
   /
 
-skip
+
   INHIBITION
     SPECIES_NAME O2(aq)
     TYPE MONOD
-    INHIBITION_CONSTANT 1.d-5
+    INHIBITION_CONSTANT 5.d-5            # Yuan et al. 2009, exposure to O2 for 24h decreased methane production rate by ~50%
   /
-noskip
+
 /
 
 
@@ -183,11 +183,7 @@ noskip
     MONOD
       SPECIES_NAME SO4--
       HALF_SATURATION_CONSTANT 5.d-3    #based on the SO4-- concentration
-    /
-
-    
-  
-  
+    / 
   /
 
 
@@ -1129,7 +1125,7 @@ noskip
 
 
 
-
+skip
 # Heterogeneous Root Oxygen Release, inject oxygen via certain hotspots to create heterogeneity
 SOURCE_SINK ROL_het1           
   FLOW_CONDITION ROL_het
@@ -1228,7 +1224,7 @@ SOURCE_SINK ROL_het15
   TRANSPORT_CONDITION root
   REGION root15
 END
-
+noskip
 
 #=========================== stratigraphy couplers ============================
 STRATA
