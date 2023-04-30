@@ -103,181 +103,16 @@ PASSIVE_GAS_SPECIES
 
  MICROBIAL_REACTION
     REACTION CH4(aq) -> Tracer1
-    RATE_CONSTANT 1.d-8   #unit: mol L-1 s-1 (mol m3 biomass)-1
-    
-    MONOD
+    RATE_CONSTANT 1.d-8   #unit: mol L-1 s-1
+
+    INHIBITION
       SPECIES_NAME CH4(aq)
-      HALF_SATURATION_CONSTANT  1.d-10
-      THRESHOLD_CONCENTRATION   1.d10
-    /
+      TYPE THRESHOLD 1.d7   #the scaling factor = 1e4/threshold
+      INHIBITION_CONSTANT 1.d-3
+    / 
 /
 
 
-skip
-#### NOTE: Beginning of auto-inserted reactions ####
-  #DOM Aerobic RESPIRATION
- MICROBIAL_REACTION
-    REACTION DOM1 + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.d-1 NH4+
-    RATE_CONSTANT 1.d-11   #unit: mol L-1 s-1 (mol m3 biomass)-1
-
-    MONOD
-      SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 2.5d-5   
-    /
-
-    
-    MONOD
-      SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 5.d-4  
-    /
-    
-
-    BIOMASS
-      SPECIES_NAME microbes1
-      YIELD 0.01d0   #the portion of the energy transfered to microbes to support the growth of microbes
-    /
-  /
-
-
-
-
-#Methanogenesis DOM1
-  MICROBIAL_REACTION 
-    REACTION 2.d0 DOM1 -> 1.d0 CH4(aq) + 1.d0 HCO3- + 1.d0 H+ + 1.d-1 NH4+
-    #it is the combination of aceticlastic and hydrogenotrophic methanogenesis, DOM1 is counted as the moles of carbon
-    
-    RATE_CONSTANT 9.d-13 # Weston 2014, mol L-1 s-1 (mol m3 biomass)-1, corrected for the microbial abundance from 9.d-11 mol L-1 s-1
-    
-    MONOD
-      SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 5.d-4
-    /
-   
-
-    BIOMASS
-      SPECIES_NAME microbes2
-      YIELD 0.01d0
-    /
-   
- /
-
-
-#Methane oxidation - O2
-  MICROBIAL_REACTION 
-    REACTION CH4(aq) + O2(aq) -> HCO3- + H2O + H+ + Tracer
-    
-    RATE_CONSTANT 1.6d-11                  
-    
-    
-    MONOD
-      SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 2.5d-5  
-    /
-
-    MONOD
-      SPECIES_NAME CH4(aq)
-      HALF_SATURATION_CONSTANT 6.d-5  
-    /
-
-    BIOMASS
-      SPECIES_NAME microbes3
-      YIELD 0.01d0
-    /
-  /
-
-  
-
-
-#Sulfate reduction DOM1
-  MICROBIAL_REACTION 
-    REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 HCO3- + 1.d0 H2S(aq) + 1.d-1 NH4+
-   
-    RATE_CONSTANT 2.26d-11   #Weston 2014
-   
-    MONOD
-      SPECIES_NAME SO4--
-      HALF_SATURATION_CONSTANT 5.d-4    #based on the SO4-- concentration
-    /
-
-    skip     #In Furukawa 2014, there was no Monod term for DOM
-    MONOD
-      SPECIES_NAME DOM1
-      HALF_SATURATION_CONSTANT 3.d-3    
-    /
-    noskip
-    
-    BIOMASS
-      SPECIES_NAME microbes4
-      YIELD 0.01d0
-    /
-  /
-
-
-
-
-#Sulfide oxidation
-  MICROBIAL_REACTION 
-    REACTION 1.d0 H2S(aq) + 2.d0 O2(aq) -> 1.d0 SO4-- + 2.d0 H+ 
-    
-    RATE_CONSTANT 1.6d-11 #mol-m3 bulk/(L water-mol biomass-sec)
-    
-    MONOD
-      SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 2.5d-5
-    /
-
-    MONOD
-      SPECIES_NAME H2S(aq)
-      HALF_SATURATION_CONSTANT 6.d-5 
-    /
-    
-    BIOMASS
-      SPECIES_NAME microbes5
-      YIELD 0.01d0
-    /
-  /
-
-
-# DOM recharge at the top layer, DOM leaching from plant materials
-MICROBIAL_REACTION 
-    REACTION Tracer -> DOM1 
-    
-    RATE_CONSTANT 0.5d-8     # unit: mol L-1 s-1
-    
-    
-    MONOD
-      SPECIES_NAME  Tracer
-      HALF_SATURATION_CONSTANT   0.1
-    /      
-  /
-
-
-# SO4-- recharge at the top layer, SO4-- being brought into the soil by seawater
-MICROBIAL_REACTION 
-    REACTION Tracer -> SO4-- 
-    
-    RATE_CONSTANT 2.d-9     # unit: mol L-1 s-1
-    
-    
-    MONOD
-      SPECIES_NAME  Tracer
-      HALF_SATURATION_CONSTANT   0.1
-    /      
-  /
-
-
-# CH4 and H2S removal from the top
-MICROBIAL_REACTION 
-    REACTION CH4(aq) + H2S(aq) + Tracer -> Tracer1
-    
-    RATE_CONSTANT 5.d-11     # unit: mol L-1 s-1
-
-    MONOD
-      SPECIES_NAME  Tracer
-      HALF_SATURATION_CONSTANT   0.1
-    /    
-  /
-noskip
 
 
 #### NOTE: End of auto-inserted reactions ####
@@ -292,13 +127,13 @@ OUTPUT
   !PH
     
   TOTAL
-  O2(aq)
-  CH4(aq)
-  DOM1
-  SO4--
-  H2S(aq)
-  Tracer1
- /
+    #O2(aq)
+    CH4(aq)
+    #DOM1
+    #SO4--
+    #H2S(aq)
+    #Tracer1
+    /
 END  #end of the chemistry card
 
 #=========================== transport constraints ============================
@@ -326,7 +161,7 @@ CONSTRAINT initial
     NH4+                1.0e-6
     Tracer              0.1
     Tracer1             0.1
-    CH4(aq)             0.01          #from measured data at typha
+    CH4(aq)             2.d-3          
     SO4--               5.d-3
     H2S(aq)             3.d-4
     #### NOTE: End of auto-inserted concentration constraints ####
@@ -515,35 +350,14 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 7 7 5
+  NXYZ 1 1 1
 
   
   DXYZ
-    
-    0.14d0\ 
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0
+    1
+    1
+    1
 
-
-
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0\
-    0.14d0
-
-
-    0.575d0\
-    0.25d0\
-    0.05d0\
-    0.05d0\
-    0.075d0
   END
 
 
@@ -596,28 +410,6 @@ MATERIAL_PROPERTY soil1
 
 
 
-MATERIAL_PROPERTY soil2
-  ID 2
-  POROSITY 0.5d0
-  SOIL_COMPRESSIBILITY_FUNCTION DEFAULT     ! BRAGFLO compressed porosity has mathematical issue at high pressure
-  ! 1d-7~1d-8 equivalent to ice expansion of volume, upon 'default' or 'BRAGFLO'
-  ! beyond this range may cause tiny-time stepping
-  SOIL_COMPRESSIBILITY 1.d-07               ! 1d-7~1d-8 is a critical value for freezing expansion in soil;
-  SOIL_REFERENCE_PRESSURE 201325.d0
-  ROCK_DENSITY 2650.0d0
-  SPECIFIC_HEAT 830.0d0
-  THERMAL_CONDUCTIVITY_DRY 0.12037926674717922d0
-  THERMAL_CONDUCTIVITY_WET 1.6082691464310437d0
-  THERMAL_COND_EXPONENT 0.45d0
-  THERMAL_CONDUCTIVITY_FROZEN 2.29d+00
-  THERMAL_COND_EXPONENT_FROZEN 0.95d0
-  CHARACTERISTIC_CURVES sf02
-  PERMEABILITY
-    PERM_X 1.d-11
-    PERM_Y 1.d-11
-    PERM_Z 1.d-11
-  /
-/
 
 #=========================== characteristic curves ============================
 CHARACTERISTIC_CURVES sf01
@@ -641,25 +433,6 @@ CHARACTERISTIC_CURVES sf01
 END
 
 
-CHARACTERISTIC_CURVES sf02
-  SATURATION_FUNCTION VAN_GENUCHTEN
-    LIQUID_RESIDUAL_SATURATION 0.1d0
-    ALPHA 0.5
-    M 0.2d0
-    MAX_CAPILLARY_PRESSURE 1.d6
-  /
-  PERMEABILITY_FUNCTION MUALEM
-    PHASE LIQUID
-    LIQUID_RESIDUAL_SATURATION 0.d0
-    M 0.5d0
-  /
-  PERMEABILITY_FUNCTION MUALEM_VG_GAS
-    PHASE GAS
-    LIQUID_RESIDUAL_SATURATION 0.d0
-    GAS_RESIDUAL_SATURATION 1.d-40
-    M 0.5d0
-  /
-END
 
 
 
@@ -756,91 +529,6 @@ REGION all
 END
 
 
-REGION O2_inj1     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.77d0 0.91d0 0.9d0
-    0.77d0 0.91d0 0.9d0
-  /
-
-  FACE BOTTOM
-END
-
-REGION O2_inj2     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.63d0 0.49d0 0.9d0
-    0.63d0 0.49d0 0.9d0
-  /
-
-  FACE TOP
-END
-
-REGION O2_inj3     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.35d0 0.49d0 0.9d0
-    0.35d0 0.49d0 0.9d0
-  /
-
-  FACE TOP
-END
-
-REGION O2_inj4     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.07d0 0.21d0 0.9d0
-    0.07d0 0.21d0 0.9d0
-  /
-
-  FACE TOP
-END
-
-
-REGION O2_inj5     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.91d0 0.07d0 0.9d0
-    0.91d0 0.07d0 0.9d0
-  /
-
-  FACE TOP
-END
-
-
-REGION O2_inj6     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.21d0 0.35d0 0.9d0
-    0.21d0 0.35d0 0.9d0
-  /
-
-  FACE TOP
-END
-
-
-REGION O2_inj7     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.35d0 0.07d0 0.9d0
-    0.35d0 0.07d0 0.9d0
-  /
-
-  FACE TOP
-END
-
-
-REGION O2_inj8     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.35d0 0.35d0 0.9d0
-    0.35d0 0.35d0 0.9d0
-  /
-
-  FACE TOP
-END
-
-
-REGION O2_inj9     #where the rhizomes are, where O2 is transported into the soil by roots
-    COORDINATES
-    0.49d0 0.49d0 0.9d0
-    0.49d0 0.49d0 0.9d0
-  /
-
-  FACE TOP
-END
 
 
 REGION obs_pt
@@ -867,45 +555,6 @@ TRANSPORT_CONDITION initial
 END
 
 
-TRANSPORT_CONDITION boundary
-  TYPE dirichlet
-  TIME_UNITS hr
-  CONSTRAINT_LIST
-   0.d0 boundary
-   
-  /
-END
-
-
-
-
-TRANSPORT_CONDITION O2_inj
-  TYPE dirichlet
-  TIME_UNITS hr
-  CONSTRAINT_LIST
-   0.d0 O2_inj
-   
-  /
-END
-
-
-TRANSPORT_CONDITION tide
-  TYPE dirichlet
-  TIME_UNITS hr
-  CONSTRAINT_LIST
-   0.d0 tide
-  /
-END
-
-
-TRANSPORT_CONDITION top_layer
-  TYPE dirichlet
-  TIME_UNITS hr
-  CONSTRAINT_LIST
-    0.d0 top_layer
-  /
-END
-
 
 
 #=========================== flow conditions =============================
@@ -921,60 +570,6 @@ FLOW_CONDITION initial
   TEMPERATURE 25.d0
 /
 
-skip
-FLOW_CONDITION tide
-  TYPE
-    RATE volumetric_rate
-  /
-  RATE 0  0  0 m^3/hr m^3/hr MW
-
- 
-  RATE LIST
-  #  EXTERNAL_FILE RateListTide_MI.txt
-
-
-skip 
-  TIME_UNITS hr
-  DATA_UNITS m^3/hr   m^3/hr   MW
-   0.d0   -0.0001   0.d0    0.d0
-   2.d0    0.0001    0.d0   0.d0
-  10.d0   -0.0001        0      0
-noskip  
-
- /
-/
-
-
-FLOW_CONDITION O2_exchange   #O2 exchange with atmosphere
-  TYPE
-    RATE volumetric_rate
-  /
-  
-  RATE 0.0204d-07  0   0   m^3/hr   m^3/hr   MW    # 1.d-7 divided by number of columns in discretization
-
-  skip
-  RATE LIST
-    EXTERNAL_FILE RateListO2_CB.txt
-  /
-  noskip
-/
-
-
-FLOW_CONDITION O2_inj
-  TYPE
-    RATE volumetric_rate
-   /
-  
-  RATE LIST
-    TIME_UNITS hr
-    DATA_UNITS m^3/hr   m^3/hr   MW
-      
-      0.d0   0.0204d-7   0.d0    0.d0   
-      # 1.d-7 divided by number of roots; 
-      #if injection from top, i.e., no heterogeneity of O2, then divided by the number of columns
-  /
-/
-noskip
 
 
 #=========================== condition couplers ===============================
@@ -984,206 +579,6 @@ INITIAL_CONDITION     # initial condition
   REGION all
 END
 
-skip
-BOUNDARY_CONDITION
-  TRANSPORT_CONDITION boundary
-  FLOW_CONDITION initial
-  REGION top
-END
-
-
-
-SOURCE_SINK tide
-  FLOW_CONDITION tide
-  TRANSPORT_CONDITION tide
-  REGION top
-END
-
-
-
-
-
-
-SOURCE_SINK O2_exchange             #O2 exchange between soil and atm, happening at the sediment-air/water interface
-  FLOW_CONDITION O2_exchange
-  TRANSPORT_CONDITION O2_exchange
-  REGION top
-END
-
-
-
-SOURCE_SINK O2_inj             #O2 injection by roots, but inject the O2 into the entire layer, with no heterogeneity
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION sec_layer
-END
-
-
-
-
-# O2 injection by roots
-SOURCE_SINK O2_inj1            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION O2_inj1
-END
-
-
-SOURCE_SINK O2_inj2            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION O2_inj2
-END
-
-
-SOURCE_SINK O2_inj3            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj3
-END
-
-SOURCE_SINK O2_inj4            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj4
-END
-
-SOURCE_SINK O2_inj5            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj5
-END
-
-
-SOURCE_SINK O2_inj6            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj6
-END
-
-
-SOURCE_SINK O2_inj7            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj7
-END
-
-
-SOURCE_SINK O2_inj8            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj8
-END
-
-
-SOURCE_SINK O2_inj9            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj9
-END
-
-SOURCE_SINK O2_inj10            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj10
-END
-
-
-SOURCE_SINK O2_inj11            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj11
-END
-
-
-SOURCE_SINK O2_inj12            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj12
-END
-
-
-SOURCE_SINK O2_inj13            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj13
-END
-
-SOURCE_SINK O2_inj14            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj14
-END
-
-SOURCE_SINK O2_inj15            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj15
-END
-
-SOURCE_SINK O2_inj16            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj16
-END
-
-
-SOURCE_SINK O2_inj17            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj17
-END
-
-SOURCE_SINK O2_inj18            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj18
-END
-
-SOURCE_SINK O2_inj19            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj19
-END
-
-SOURCE_SINK O2_inj20            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj20
-END
-
-SOURCE_SINK O2_inj21            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj21
-END
-
-
-SOURCE_SINK O2_inj22            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj22
-END
-
-SOURCE_SINK O2_inj23            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj23
-END
-
-SOURCE_SINK O2_inj24            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj24
-END
-
-SOURCE_SINK O2_inj25            #typha plant-mediated O2 injection to soil
-  FLOW_CONDITION O2_inj
-  TRANSPORT_CONDITION O2_inj
-  REGION  O2_inj25
-END
-
-noskip
 
 
 
