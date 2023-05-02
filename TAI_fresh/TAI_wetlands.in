@@ -1,4 +1,4 @@
-# This is PFLOTRAN inpu deck
+# This is PFLOTRAN input deck
 # Description: Simple microbial decomposition and dissolution to DOM network
 # Rate constants estimated to show different processes
 
@@ -37,7 +37,7 @@ PRIMARY_SPECIES
   Fe+++
   Fe++
   Tracer        #for recharge of DOM and SO4--
-  Tracer1         #Tracer1 is for threshold_concentration based removal of methane, which produced Tracer1
+  Tracer1         #Tracer1 is for the reaction of ebullition of CH4, which produced Tracer1
   Tracer2         #Tracer2 is for plant-mediated CH4 removal, Tracer2 is made to have high concentration at the root layer
   CH4(aq)
   SO4--
@@ -116,12 +116,6 @@ PASSIVE_GAS_SPECIES
       HALF_SATURATION_CONSTANT 5.d-3  
     /
     
-    skip
-    BIOMASS
-      SPECIES_NAME microbes1
-      YIELD 0.01d0   #the portion of the energy transfered to microbes to support the growth of microbes
-    /
-    noskip
   /
 
 
@@ -242,7 +236,8 @@ MICROBIAL_REACTION
     /     
 /
 
-
+skip
+########################### SIMULATION OF FLUXES of CH4 #############################################
 
 # CH4 removal to simulate ebullition
 # use the threshold inhibition so that the reaction rate is near 0 when the concentration is below threshold
@@ -260,13 +255,13 @@ MICROBIAL_REACTION
 END
 
 
-# Plant mediated removal of CH4
+# Plant mediated transport of CH4
 # Use leaf-level measurement of CH4 flux from Villa et al 2020 to parameterize the model: 0.13e-6 mol m-2(leaf) s-1, Leaf Area Index = 2.78
 MICROBIAL_REACTION
   REACTION    CH4(aq) -> Tracer1
 
   #RATE_CONSTANT   7.d-9              # 7.d-9 for homogeneous mode of plant-mediated CH4 transport
-  RATE_CONSTANT    4.7d-8             # 4.7d-8 for heterogeneous mode, CH4 is removed from the root cells only, so the reaction rate is higher by 100/15 times
+  RATE_CONSTANT    4.8d-8             # 4.7d-8 for heterogeneous mode, CH4 is removed from the root cells only, so the reaction rate is higher by 100/15 times
 
   MONOD
     SPECIES_NAME  CH4(aq)              #The reaction rate depends on the CH4 concentration
@@ -300,6 +295,9 @@ MICROBIAL_REACTION
   /
 END
 
+################################# END OF SIMULATION OF CH4 FLUXES #################################################################
+noskip
+
 
 
 
@@ -331,11 +329,12 @@ END
     #MINERALS
     #IMMOBILE
       #microbes1
-    
- 
-
   /
-END
+END        # End of the Chemistry Card
+
+
+
+
 
 #=========================== transport constraints ============================
 CONSTRAINT initial
@@ -359,7 +358,7 @@ CONSTRAINT initial
     Tracer              0.5
     Tracer1             1.d-20
     Tracer2             1.d-20
-    CH4(aq)             5.d-4         
+    CH4(aq)             1.d-3         
     SO4--               5.d-3       #standard run: 5e-3 mol/L
     H2S(aq)             1.d-3       # standard run: 1e-3 mol/L
     #### NOTE: End of auto-inserted concentration constraints ####
@@ -383,7 +382,7 @@ CONSTRAINT sed_air_interface            #define the boundary condition of specie
   /
   CONCENTRATIONS
     #### NOTE: Beginning of auto-inserted concentration constraints ####
-    DOM1                1.e-3
+    DOM1                1.d-3
     H+                  5.9 P
     O2(aq)              2.5d-4 T        #at sed_air_interface, the O2 concentration is 100% saturation, in exchange and in equilibrium with atmosphere, unit: mol/L
     HCO3-               400e-6 G CO2(g)
@@ -408,14 +407,47 @@ END
 
 
 
-CONSTRAINT Tracer2_inj                  
-  #set up a constraint for the root layer, making it have a higher concentration of Tracer2, so to enable plant-mediated flux of CH4 to occur only in the root layer
-  # everything is the same as the initial constraint but the Tracer2 concentration is high
+CONSTRAINT Tracer2_inj       #constraint of the Tracer2 injection into root cells
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
     HRimm                1.0e-20
-    # microbes1             100.d0    # mol-C/m3  of microbial biomass, not mols of cell counts, ballpark range from Steinmuller et al. 2019
+ 
+    #### NOTE: End of auto-inserted immobile species ####
+  /
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-20 T
+    H+                  5.9 P 
+    O2(aq)              1.d-20 T           
+    HCO3-               400e-6 G CO2(g)
+    Fe+++               0.37e-3 M Fe(OH)3
+    Fe++                0.37e-10
+    NH4+                1.0e-6
+    Tracer              1.d-20
+    Tracer1             1.d-20
+    Tracer2             1.d0       #for plant-mediated transport of CH4, inject Tracer2 to the root cells
+    CH4(aq)             1.d-20         
+    SO4--               1.d-20       
+    H2S(aq)             1.d-20       
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+  MINERALS
+    #### NOTE: Beginning of auto-inserted mineral constraints ####
+    Fe(OH)3             1.d-5  1.e2 m^2/m^3
+    FeO                 0.0  1. m^2/m^3
+    #### NOTE: End of auto-inserted mineral constraints ####
+  /  
+END
+
+
+CONSTRAINT Tracer2_rootlayer            # ONLY USED FOR HOMOGENEOUS MODE OF PLANT-MEDIATED CH4 TRANSPORT
+#set up a constraint for the root layer, making it have a higher concentration of Tracer2, so to enable plant-mediated flux of CH4 to occur only in the root layer
+# everything is the same as the initial constraint but the Tracer2 concentration is high
+  IMMOBILE
+    #### NOTE: Beginning of auto-inserted immobile species ####
+    cellulose            1.0e+03
+    HRimm                1.0e-20
    
     #### NOTE: End of auto-inserted immobile species ####
   /
@@ -430,8 +462,8 @@ CONSTRAINT Tracer2_inj
     NH4+                1.0e-6
     Tracer              0.5
     Tracer1             1.d-20
-    Tracer2             1.d0       #for plant-mediated transport of CH4
-    CH4(aq)             5.d-4         
+    Tracer2             1.d0
+    CH4(aq)             1.d-3         
     SO4--               5.d-3       #standard run: 5e-3 mol/L
     H2S(aq)             1.d-3       # standard run: 1e-3 mol/L
     #### NOTE: End of auto-inserted concentration constraints ####
@@ -445,7 +477,10 @@ CONSTRAINT Tracer2_inj
 END
 
 
-CONSTRAINT O2_diffusion                     #define the species concentrations in the liquid flow for O2 diffusion (only used for simulation of upper soil exposed to air)
+
+
+
+CONSTRAINT O2_diffusion                     #define the species concentrations in the liquid flow for O2 diffusion from atmosphere to soil (only used for simulation of upper soil exposed to air)
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
@@ -480,7 +515,7 @@ END
 
 
 
-CONSTRAINT root           #define species concentrations of the liquid for O2 injection at the root cells
+CONSTRAINT root           #define species concentrations of the liquid for O2 injection into the root cells
   IMMOBILE
     #### NOTE: Beginning of auto-inserted immobile species ####
     cellulose            1.0e+03
@@ -500,7 +535,7 @@ CONSTRAINT root           #define species concentrations of the liquid for O2 in
     Tracer              1.0e-20
     Tracer1             1.0e-20
     Tracer2             1.d-20
-    CH4(aq)             1.0e-20
+    CH4(aq)             1.d-20
     SO4--               1.d-20
     H2S(aq)             1.d-20
     #### NOTE: End of auto-inserted concentration constraints ####
@@ -770,6 +805,7 @@ REGION roots_layer
   FACE TOP
 END
 
+
 REGION bottom
   COORDINATES
     0.d0 0.d0 0.0d0
@@ -960,6 +996,16 @@ TRANSPORT_CONDITION Tracer2_inj
 END
 
 
+TRANSPORT_CONDITION Tracer2_rootlayer
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+    0.d0 Tracer2_rootlayer
+  /
+END
+
+
+
 TRANSPORT_CONDITION tide
   TYPE dirichlet
   TIME_UNITS hr
@@ -1130,16 +1176,16 @@ END
 skip
 # HOMOGENEOUS mode of Plant-mediated CH4 transport 
 
-INITIAL_CONDITION     # initial condition for the root layer, for the homogeneous plant-mediated CH4 removal
-  TRANSPORT_CONDITION Tracer2_inj
-  FLOW_CONDITION ROL_het
+INITIAL_CONDITION     # set up an initial condition with high Tracer2 concentration for the root layer, so the reaction simulating plant-mediated CH4 transport can only proceed in the root layer
+  TRANSPORT_CONDITION Tracer2_rootlayer
+  FLOW_CONDITION initial
   REGION roots_layer
 END
 noskip
 
 
 
-
+skip
 ############################ Heterogeneous mode of plant-mediated transport of CH4, i.e., CH4 is removed from the root cells only ######################################
 ############################ Inject Tracer2 to the root cells to maintain the gradient of Tracer2##########################
 ############################ The root cells have high Tracer2 concentration to allow plant-mediated CH4 removal process to proceed ############## 
@@ -1251,13 +1297,13 @@ END
 
 
 ######################################## END OF SOURCE_SINK FOR INJECTION OF TRACER2 TO ROOT CELLS #########################
+noskip
 
 
+###################################### Begining of SOURCE_SINK for O2 injection into root cells ###########################
 
 
-
-
-
+skip
 # Homogeneous Root Oxygen Release: Inject Oxygen evenly, i.e. no heterogeneity
 
 SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous           
@@ -1265,11 +1311,11 @@ SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous
   TRANSPORT_CONDITION root
   REGION roots_layer
 END
+noskip
 
 
 
 
-skip
 # Heterogeneous Root Oxygen Release, inject oxygen via certain hotspots to create heterogeneity
 SOURCE_SINK ROL_het1           
   FLOW_CONDITION ROL_het
@@ -1368,7 +1414,7 @@ SOURCE_SINK ROL_het15
   TRANSPORT_CONDITION root
   REGION root15
 END
-noskip
+
 
 #=========================== stratigraphy couplers ============================
 STRATA
