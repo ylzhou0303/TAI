@@ -6,18 +6,18 @@ SIMULATION
   PROCESS_MODELS
     SUBSURFACE_FLOW flow
       MODE GENERAL
-      OPTIONS
-        #ARITHMETIC_GAS_DIFFUSIVE_DENSITY
-      /
     /
+
     SUBSURFACE_TRANSPORT transport
       MODE GIRT
-      #NUMERICAL_JACOBIAN
+      
     /
   /
 END
 
 SUBSURFACE
+
+
 
 #=========================== useful transport parameters =======================
 
@@ -42,6 +42,9 @@ PRIMARY_SPECIES
   H2S(aq)
   #### NOTE: End of auto-inserted primary species ####
 /
+
+
+
 DECOUPLED_EQUILIBRIUM_REACTIONS
   #### NOTE: Beginning of auto-inserted primary species ####
   DOM1
@@ -100,7 +103,7 @@ PASSIVE_GAS_SPECIES
 
 
 
-
+skip
  MICROBIAL_REACTION
     REACTION CH4(aq) -> Tracer1
     RATE_CONSTANT 1.d-8   #unit: mol L-1 s-1
@@ -111,8 +114,7 @@ PASSIVE_GAS_SPECIES
       INHIBITION_CONSTANT 1.d-3
     / 
 /
-
-
+noskip
 
 
 #### NOTE: End of auto-inserted reactions ####
@@ -127,7 +129,7 @@ OUTPUT
   !PH
     
   TOTAL
-    #O2(aq)
+    O2(aq)
     CH4(aq)
     #DOM1
     #SO4--
@@ -153,7 +155,7 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                6.0e-3 T
     H+                  5.9 P 
-    O2(aq)              2.d-6 T           
+    O2(aq)              1.d-20 T           
     #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
@@ -350,14 +352,21 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 1 1 1
+  NXYZ 1 1 7
 
-  
+
   DXYZ
     1
-    1
+
     1
 
+    0.2\
+    0.2\
+    0.2\
+    0.2\
+    0.1979\
+    0.002\
+    0.0001
   END
 
 
@@ -375,13 +384,12 @@ PROC 1 1 1
 #=========================== fluid properties =================================
 FLUID_PROPERTY
   PHASE LIQUID
-  DIFFUSION_COEFFICIENT 2.d-8  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
-
+  DIFFUSION_COEFFICIENT 1.3d-9  #unit: m2/s   #Here I use oxygen diffusion coefficient in water (20C)
 END
 
 FLUID_PROPERTY
   PHASE GAS
-  DIFFUSION_COEFFICIENT 2.d-5
+  DIFFUSION_COEFFICIENT 2.d-5  #unit: m2/s
 END
 
 #=========================== material properties ==============================
@@ -393,7 +401,8 @@ MATERIAL_PROPERTY soil1
   ! beyond this range may cause tiny-time stepping
   SOIL_COMPRESSIBILITY 1.d-07               ! 1d-7~1d-8 is a critical value for freezing expansion in soil;
   SOIL_REFERENCE_PRESSURE 201325.d0
-  ROCK_DENSITY 2650.0d0
+  TORTUOSITY 1.2          #calculated from porosity based on Boudreau 1996
+  ROCK_DENSITY 300.0d0    #Luk 2021
   SPECIFIC_HEAT 830.0d0
   THERMAL_CONDUCTIVITY_DRY 0.12037926674717922d0
   THERMAL_CONDUCTIVITY_WET 1.6082691464310437d0
@@ -401,10 +410,10 @@ MATERIAL_PROPERTY soil1
   THERMAL_CONDUCTIVITY_FROZEN 2.29d+00
   THERMAL_COND_EXPONENT_FROZEN 0.95d0
   CHARACTERISTIC_CURVES sf01
-  PERMEABILITY
-    PERM_X 1.d-11
-    PERM_Y 1.d-11
-    PERM_Z 1.d-11
+  PERMEABILITY        #unit: m2
+    PERM_X 1.d-15
+    PERM_Y 1.d-15
+    PERM_Z 1.d-15
   /
 /
 
@@ -415,7 +424,7 @@ MATERIAL_PROPERTY soil1
 CHARACTERISTIC_CURVES sf01
   SATURATION_FUNCTION VAN_GENUCHTEN
     LIQUID_RESIDUAL_SATURATION 0.d0
-    ALPHA 1.d-4
+    ALPHA 4.d-3
     M 0.5d0
     MAX_CAPILLARY_PRESSURE 1.d6
   /
@@ -477,6 +486,14 @@ REGION top
   FACE TOP
 END
 
+REGION top_layer
+  COORDINATES
+    0.d0 0.d0 0.9d0
+    1.d0 1.d0 0.9d0
+  /
+  FACE TOP
+END
+
 REGION west
     COORDINATES
     0.d0   0.d0 0.d0
@@ -494,22 +511,6 @@ REGION east
   FACE TOP
 END
 
-REGION top_layer
-  COORDINATES
-    0.d0 0.d0 0.925d0
-    1.d0 1.d0 1.0d0
-  /
-  FACE TOP
-END
-
-
-REGION sec_layer
-  COORDINATES
-    0.d0 0.d0 0.875d0
-    1.d0 1.d0 0.925d0
-  /
-  FACE TOP
-END
 
 REGION bottom
   COORDINATES
@@ -529,7 +530,13 @@ REGION all
 END
 
 
-
+REGION center
+  COORDINATES
+    0.5  0.5  0.5
+    0.5  0.5  0.5
+  /
+  FACE TOP
+/
 
 REGION obs_pt
   COORDINATE  0.5   0.5  1.d0
@@ -554,23 +561,68 @@ TRANSPORT_CONDITION initial
   /
 END
 
+TRANSPORT_CONDITION boundary
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+    0.d0 boundary
+  /
+END
+
+TRANSPORT_CONDITION evapo
+  TYPE dirichlet
+  TIME_UNITS hr
 
 
+
+
+
+  CONSTRAINT_LIST
+    0.d0 initial 
+  /
+END
 
 #=========================== flow conditions =============================
 
-FLOW_CONDITION initial
+FLOW_CONDITION top
   TYPE
     GAS_PRESSURE dirichlet
-    GAS_SATURATION dirichlet
+    LIQUID_SATURATION dirichlet
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.d0   
+  LIQUID_SATURATION .7d0   
   TEMPERATURE 25.d0
 /
 
 
+FLOW_CONDITION initial
+  TYPE
+    GAS_PRESSURE dirichlet
+    LIQUID_SATURATION dirichlet
+    TEMPERATURE dirichlet
+  /
+  GAS_PRESSURE 1.d5
+  LIQUID_SATURATION 1.d0   
+  TEMPERATURE 25.d0
+/
+
+
+
+
+FLOW_CONDITION lose_water
+  TYPE
+    RATE volumetric_rate
+  /
+
+  RATE LIST
+    TIME_UNITS hr
+    DATA_UNITS m^3/hr    m^3/hr    MW
+
+    0.d0       -1.d-3      0.d0        0.d0
+    #50.d0     1.d-3       0.d0        0.d0
+  /
+END
 
 #=========================== condition couplers ===============================
 INITIAL_CONDITION     # initial condition
@@ -580,6 +632,19 @@ INITIAL_CONDITION     # initial condition
 END
 
 
+BOUNDARY_CONDITION
+  TRANSPORT_CONDITION boundary
+  FLOW_CONDITION top
+  REGION top
+END
+
+
+
+SOURCE_SINK
+  TRANSPORT_CONDITION evapo
+  FLOW_CONDITION lose_water
+  REGION top_layer
+END
 
 
 #=========================== stratigraphy couplers ============================
