@@ -1,6 +1,6 @@
 # This is PFLOTRAN input deck
-# Description: Simple microbial decomposition and dissolution to DOM network
-# Rate constants estimated to show different processes
+# Description: Simulate heterogeneous root oxygen release and methane transport for a coastal wetland soil profile, with key redox reactions incorporated
+# Spin-up time for 30 days
 
 SIMULATION
   SIMULATION_TYPE SUBSURFACE
@@ -918,7 +918,7 @@ FLOW_CONDITION sed_air_interface       #flow condition for the boundary
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  GAS_SATURATION 0.d0   
+  GAS_SATURATION 0.3d0   
   TEMPERATURE 25.d0
 /
 
@@ -1000,14 +1000,14 @@ BOUNDARY_CONDITION sed_air_interface
   REGION top
 END
 
-
+skip
 SOURCE_SINK flooding     #flooding event
   
   TRANSPORT_CONDITION flooding
   FLOW_CONDITION flooding
   REGION lower_layers
 END
-
+noskip
 
 
 ###################################### For O2 injection ###########################
