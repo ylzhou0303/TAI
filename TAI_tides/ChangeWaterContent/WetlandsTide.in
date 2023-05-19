@@ -1,0 +1,1280 @@
+# This is PFLOTRAN input deck
+# Description: Simulation of heterogeneous root oxygen release, methane transport, and key microbial redox reactions for 
+# intertidal wetlands under tidal cycle
+
+SIMULATION
+  SIMULATION_TYPE SUBSURFACE
+  PROCESS_MODELS
+    SUBSURFACE_FLOW flow
+      MODE GENERAL
+    /
+
+    SUBSURFACE_TRANSPORT transport
+      MODE GIRT
+    /
+  /
+END
+
+SUBSURFACE
+
+#=========================== useful transport parameters =======================
+
+REFERENCE_LIQUID_DENSITY 1.d3
+
+
+#=========================== chemistry ========================================
+CHEMISTRY
+PRIMARY_SPECIES
+  #### NOTE: Beginning of auto-inserted primary species ####
+  DOM1
+  H+
+  O2(aq)
+  HCO3-
+  Tracer          #for recharge of DOM and SO4--
+  Tracer1         #Tracer1 is for the reaction of ebullition of CH4, which produced Tracer1
+  Tracer2         #Tracer2 is for plant-mediated CH4 removal, Tracer2 is made to have high concentration at the root layer
+  CH4(aq)
+  SO4--
+  H2S(aq)
+  #### NOTE: End of auto-inserted primary species ####
+/
+
+
+
+DECOUPLED_EQUILIBRIUM_REACTIONS
+  #### NOTE: Beginning of auto-inserted primary species ####
+  DOM1
+  H+
+  O2(aq)
+  HCO3-
+  Tracer
+  CH4(aq)
+  H2S(aq)
+  #### NOTE: End of auto-inserted primary species ####
+/
+SECONDARY_SPECIES
+  #### NOTE: Beginning of auto-inserted secondary species ####
+  CO2(aq)
+  OH-
+  #### NOTE: End of auto-inserted secondary species ####
+/
+
+
+PASSIVE_GAS_SPECIES
+  #### NOTE: Beginning of auto-inserted gas species ####
+  CO2(g)
+  O2(g)
+  #### NOTE: End of auto-inserted gas species ####
+/
+
+
+
+skip
+#### NOTE: Beginning of auto-inserted reactions ####
+  #DOM Aerobic RESPIRATION
+ MICROBIAL_REACTION
+    REACTION 1.0 DOM1 + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+    # 1 molecule of DOM1 here in this model contains 1 carbon atom
+    RATE_CONSTANT 2.d-8   #unit: mol L-1 s-1           # 2.d-8 for standard runs
+
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 1.d-4   
+    /
+
+    
+    MONOD
+      SPECIES_NAME DOM1
+      HALF_SATURATION_CONSTANT 5.d-3  
+    /
+    
+  /
+
+
+
+# DOM1 Methanogenesis
+MICROBIAL_REACTION    
+  REACTION 2.0 DOM1 + 2.0 H2O -> 1.0 CH4(aq) + 1.0 HCO3- + 1.0 H+
+  
+  RATE_CONSTANT 5.d-10   # unit: mol L-1 s-1, derived from Weston 2014    #5.d-10 for standard runs
+
+  MONOD
+    SPECIES_NAME  DOM1
+    HALF_SATURATION_CONSTANT 2.d-3
+  /
+
+
+  INHIBITION
+    SPECIES_NAME O2(aq)
+    TYPE MONOD
+    INHIBITION_CONSTANT 2.5d-4            # Yuan et al. 2009, exposure to O2 for 24h decreased methane production rate by ~50%
+  /
+
+/
+
+
+#Methane oxidation - O2
+MICROBIAL_REACTION 
+    REACTION 1.0 CH4(aq) + 2.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
+    
+    RATE_CONSTANT 4.d-9          #4.d-9 for standard runs
+    
+    
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 1.d-4  
+    /
+
+    MONOD
+      SPECIES_NAME CH4(aq)
+      HALF_SATURATION_CONSTANT 3.d-4
+    /
+/
+
+  
+
+
+#Sulfate reduction DOM1
+MICROBIAL_REACTION 
+    REACTION 2.d0 DOM1 + 1.d0 SO4-- -> 2.d0 HCO3- + 2.0 H+ + 1.0d0 H2S(aq)
+   
+    RATE_CONSTANT 5.d-9    #5.d-9 for standard runs
+    
+    MONOD
+      SPECIES_NAME DOM1
+      HALF_SATURATION_CONSTANT 2.d-3    
+    /
+
+
+    MONOD
+      SPECIES_NAME SO4--
+      HALF_SATURATION_CONSTANT 5.d-3    #based on the SO4-- concentration
+    / 
+  /
+
+
+
+
+#Sulfide oxidation
+MICROBIAL_REACTION 
+    REACTION 1.d0 H2S(aq) + 2.d0 O2(aq) -> 1.d0 SO4-- + 2.d0 H+ 
+    
+    RATE_CONSTANT 1.d-7 #mol L-1 s-1    #1.d-7 for standard runs
+
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 1.d-4
+    /
+
+    MONOD
+      SPECIES_NAME H2S(aq)
+      HALF_SATURATION_CONSTANT 5.d-4 
+    / 
+/
+
+
+
+# DOM recharge throughout the whole soil column, this is actually the hydrolysis of SOM to DOM
+# to avoid depletion of DOM
+
+MICROBIAL_REACTION 
+    REACTION Tracer -> DOM1 
+    
+    RATE_CONSTANT 5.d-9     # unit: mol L-1 s-1
+    
+    
+    MONOD
+      SPECIES_NAME  Tracer
+      HALF_SATURATION_CONSTANT   0.1
+    /
+
+  /
+
+
+
+
+# SO4-- recharge throughout the whole soil column, to avoid depletion of SO4--
+MICROBIAL_REACTION 
+    REACTION Tracer -> SO4-- 
+    
+    RATE_CONSTANT 2.2d-9     # unit: mol L-1 s-1
+    
+    
+    MONOD
+      SPECIES_NAME  Tracer
+      HALF_SATURATION_CONSTANT   0.1
+    /     
+/
+noskip
+########################### SIMULATION OF FLUXES of CH4 #############################################
+## EBULLITION,  extra CH4 is removed once its concentration exceeds the threshold
+# use the threshold inhibition so that the reaction rate is near 0 when the concentration of the inhibition species is below threshold
+
+MICROBIAL_REACTION
+  REACTION     CH4(aq) -> Tracer1
+
+  RATE_CONSTANT  5.d-10          #this need to be adjusted depending on the methanogenesis rate, otherwise methane can still accumulate
+  
+  INHIBITION
+    SPECIES_NAME CH4(aq)
+    TYPE THRESHOLD  7024445                   #the scaling factor, which = 1e4/threshold
+    INHIBITION_CONSTANT 0.0014236             #threshold concentration, calculated based on Jiaze's code
+  /
+END
+
+
+
+skip
+######### Plant-mediated transport of CH4 ######
+# Homogeneous Plant mediated transport of CH4
+# To simulate the removal of CH4 from the root layer, CH4 is consumed (to simulate the CH4 transport process) in each cell of the root layer
+# Use leaf-level measurements of CH4 flux from Villa et al 2020 to parameterize the model: 0.13e-6 mol m-2(leaf) s-1, Leaf Area Index = 2.78
+MICROBIAL_REACTION
+  REACTION    CH4(aq) -> Tracer1
+
+  RATE_CONSTANT   1.4d-8              # 1.4d-8 for homogeneous mode of plant-mediated CH4 transport
+  
+  MONOD
+    SPECIES_NAME  CH4(aq)              #The reaction rate depends on the CH4 concentration
+    HALF_SATURATION_CONSTANT  1.d-2
+  / 
+
+
+  INHIBITION
+    SPECIES_NAME  Tracer2                   
+    TYPE THRESHOLD       1.d11
+    INHIBITION_CONSTANT  1.d-7      #threshold concentration, only where Tracer2 is above 1.e-9 mol/L, which would be the roots layer, this reaction happens
+  /
+END
+
+
+# Removal of TRACER2 (for homogeneous plant-mediated CH4 tranport)
+# This reaction is to maintain the high concentration of Tracer2 in the root cells, and zero concentration in non-root cells
+# I inject Tracer2 to the root cells/root layer, Tracer2 would diffuse into neighboring cells, so I have to remove Tracer2 from the non-root cells as well
+
+MICROBIAL_REACTION
+  REACTION      Tracer2 -> Tracer1
+  
+  RATE_CONSTANT 5.d-9     
+  # it needs to be tried and tested, to make sure that Tracer2 is not accumulating fast at the injection point and then diffused out to other regions
+  # the Monod term makes the Tracer2 in other regions all gone, but remains a small portion in the root layer, so it always maintain a high Tracer2 in the root layer  
+  
+  
+  MONOD
+    SPECIES_NAME Tracer2
+    HALF_SATURATION_CONSTANT 2.d-8
+  /
+END
+
+##### End of homogeneous plant-mediated CH4 transport #############
+
+noskip
+
+
+
+#### Heterogeneous Plant mediated transport of CH4
+# To simualte the removal of CH4
+# Use leaf-level measurement of CH4 flux from Villa et al 2020 to parameterize the model: 0.13e-6 mol m-2(leaf) s-1, Leaf Area Index = 2.78
+
+###### Begining of heterogeneous plant-mediated CH4 transport ###############
+
+MICROBIAL_REACTION
+  REACTION    CH4(aq) -> Tracer1
+
+ 
+  RATE_CONSTANT    9.3d-8             # 9.64d-8 for heterogeneous mode, CH4 is removed from the root cells only, so the reaction rate is higher by 100/15 times
+
+  MONOD
+    SPECIES_NAME  CH4(aq)              #The reaction rate, i.e., the flux, depends on the CH4 concentration
+    HALF_SATURATION_CONSTANT  1.d-2
+  / 
+
+
+  INHIBITION
+    SPECIES_NAME  Tracer2                   
+    TYPE THRESHOLD       1.d9
+    INHIBITION_CONSTANT  1.d-4      
+    #threshold concentration, only where Tracer2 is above 1.e-4 mol/L, which would be the roots layer, this reaction happens
+    # use 1.d-5 as the threshold concentration when using a high diffusion coefficient, e.g., 1.3d-8, because at high diffusion coefficient, more Tracer2 is diffused out of the root cells, so need a lower threshold to make sure reaction proceed within the root cells
+  /
+END
+
+
+#### Removal of Tracer2 (for heterogeneous mode), to maintain a high Tracer2 concentration in the root cells
+
+MICROBIAL_REACTION
+  REACTION      Tracer2 -> Tracer1
+  
+  RATE_CONSTANT 2.d-8     
+  
+  
+  MONOD
+    SPECIES_NAME Tracer2
+    HALF_SATURATION_CONSTANT 2.d-8
+  /
+END
+
+
+########## End of heterogeneous plant-mediated CH4 transport ###########
+
+
+################################# END OF SIMULATION OF CH4 FLUXES #################################################################
+
+
+
+
+#### NOTE: End of auto-inserted reactions ####
+
+  TRUNCATE_CONCENTRATION 1.d-80
+
+
+  LOG_FORMULATION
+  DATABASE ./hanford.dat
+
+  OUTPUT
+    !PH
+    
+    TOTAL
+      O2(aq)
+      CH4(aq)
+      DOM1
+      SO4--
+      H2S(aq)
+      Tracer2
+  /
+END        
+
+# End of the Chemistry Card
+
+
+
+
+
+#=========================== transport constraints ============================
+CONSTRAINT initial
+
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                6.0e-3 T
+    H+                  5.9 P 
+    O2(aq)              1.d-20 T           
+    HCO3-               400e-6 G CO2(g)
+    Tracer              0.5
+    Tracer1             1.d-20
+    Tracer2             1.d-20
+    CH4(aq)             1.d-3         
+    SO4--               5.d-3       #standard run: 5e-3 mol/L
+    H2S(aq)             1.d-3       # standard run: 1e-3 mol/L
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+   
+END
+
+
+
+
+
+CONSTRAINT sed_air_interface            #define the boundary condition of species concentration at the sediment air interface
+
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.d-3
+    H+                  5.9 P
+    O2(aq)              2.5d-4 T        #at sed_air_interface, the O2 concentration is 100% saturation, in exchange and in equilibrium with atmosphere, unit: mol/L
+    HCO3-               400e-6 G CO2(g)
+    Tracer              0.1
+    Tracer1             1.0e-20
+    Tracer2             1.d-20
+    CH4(aq)             1.0e-20
+    SO4--               5.d-3      #standard runs: 5e-3 mol/L
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+
+END
+
+
+
+CONSTRAINT Tracer2_inj       #constraint of the Tracer2 injection into root cells or the root layer, to create high Tracer2 concentration in those regions
+  
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-20 T
+    H+                  5.9 P 
+    O2(aq)              1.d-20 T           
+    HCO3-               400e-6 G CO2(g)
+    Tracer              1.d-20
+    Tracer1             1.d-20
+    Tracer2             1.d0       #for plant-mediated transport of CH4, inject Tracer2 to the root cells
+    CH4(aq)             1.d-20         
+    SO4--               1.d-20       
+    H2S(aq)             1.d-20       
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+
+END
+
+
+
+CONSTRAINT O2_diffusion                     #define the species concentrations in the liquid flow for O2 diffusion from atmosphere to soil (only used for simulation of upper soil exposed to air)
+
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.e-20
+    H+                  5.9 P
+    O2(aq)              8.d0 T        
+    HCO3-               400e-6 G CO2(g)
+    Tracer              1.0e-15
+    Tracer1             1.0e-20
+    Tracer2             1.d-20
+    CH4(aq)             1.0e-20
+    SO4--               5.d-3
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+ 
+END
+
+
+
+CONSTRAINT O2_inj           #define species concentrations of the liquid for O2 injection into the root cells
+
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.d-20         
+    H+                  5.9 P
+    O2(aq)              1.3d0 T         # set up a high O2 concentration in the liquid being injected, so enough O2 is injected within small amount of liquid, standard run: 1.3 M
+    HCO3-               400e-6 G CO2(g)
+    Tracer              1.0e-20
+    Tracer1             1.0e-20
+    Tracer2             1.d-20
+    CH4(aq)             1.d-20
+    SO4--               1.d-20
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+
+END
+
+
+CONSTRAINT tide           #species concentrations of the tidal water (only used for simulation of water table fluctuation)
+  
+  CONCENTRATIONS
+    #### NOTE: Beginning of auto-inserted concentration constraints ####
+    DOM1                1.0e-20
+    H+                  1.0e-20
+    O2(aq)              0.5d-4 T  #add 20% saturated oxygenated water, as seawater
+    HCO3-               1.0e-20
+    Tracer              1.0e-20
+    Tracer1             1.0e-20
+    Tracer2             1.d-20
+    CH4(aq)             1.0e-20
+    SO4--               1.d-2   #seawater
+    H2S(aq)             1.d-20
+    #### NOTE: End of auto-inserted concentration constraints ####
+  /
+
+END
+
+
+
+#=========================== solver options ===================================
+NUMERICAL_METHODS TRANSPORT
+  LINEAR_SOLVER
+    SOLVER DIRECT
+    !SOLVER ITERATIVE     ! default: ITERATIVE or KRYLOV: KSP_TYPE of BCGS and PC_TYPE of BJACOBI, if not modified below
+    PC_TYPE JACOBI       ! default (iterative): BJACOBI. 
+    KSP_TYPE fgmres      ! default: BCGS. NOT much difference 
+  /
+
+  NEWTON_SOLVER TRANSPORT
+    NUMERICAL_JACOBIAN
+    ATOL 1.d-20
+    RTOL 1.d-15
+    STOL 1.d-10
+    ITOL 1.d-10
+  /
+END
+
+#=========================== discretization ===================================
+GRID
+  TYPE structured
+  ORIGIN 0.d0 0.d0 0.d0
+  NXYZ 10 10 9
+
+  
+  DXYZ
+    
+    0.01d0\ 
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0
+
+
+
+    0.01d0\ 
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0\
+    0.01d0
+
+
+    0.25\   #a total of 70cm deep soil cube
+    0.20\
+    0.10\
+    0.075\
+    0.05\
+    0.015\
+    0.005\
+    0.003\
+    0.002    #the top one is the boundary layer
+  END
+
+
+skip
+  BOUNDS 
+    0.d0 0.d0 0.d0
+    1.d0 1.d0 1.d0   # 1m deep
+  /
+noskip
+END
+
+
+PROC 1 1 1
+
+#=========================== fluid properties =================================
+FLUID_PROPERTY
+  PHASE LIQUID
+  DIFFUSION_COEFFICIENT 1.3d-9  #unit: m2/s   
+  #Here I use oxygen diffusion coefficient in water (20C) and accounted for the tortuosity effect following Boudrea 1996, standard runs: 1.3e-9
+
+END
+
+FLUID_PROPERTY
+  PHASE GAS
+  DIFFUSION_COEFFICIENT 2.d-5
+END
+
+#=========================== material properties ==============================
+MATERIAL_PROPERTY soil1
+  ID 1
+  POROSITY 0.8d0
+  SOIL_COMPRESSIBILITY_FUNCTION DEFAULT     ! BRAGFLO compressed porosity has mathematical issue at high pressure
+  ! 1d-7~1d-8 equivalent to ice expansion of volume, upon 'default' or 'BRAGFLO'
+  ! beyond this range may cause tiny-time stepping
+  SOIL_COMPRESSIBILITY 1.d-07               ! 1d-7~1d-8 is a critical value for freezing expansion in soil;
+  SOIL_REFERENCE_PRESSURE 201325.d0
+  TORTUOSITY 1.2         #calculated from porosity following Boudreau 1996
+  ROCK_DENSITY 300.0d0    #Luk 2021
+  SPECIFIC_HEAT 830.0d0
+  THERMAL_CONDUCTIVITY_DRY 0.12037926674717922d0
+  THERMAL_CONDUCTIVITY_WET 1.6082691464310437d0
+  THERMAL_COND_EXPONENT 0.45d0
+  THERMAL_CONDUCTIVITY_FROZEN 2.29d+00
+  THERMAL_COND_EXPONENT_FROZEN 0.95d0
+  CHARACTERISTIC_CURVES sf01
+  PERMEABILITY      #unit: m2, this is to determine how fast water can pass through the soil, Ursino et al. 2004
+    PERM_X 5.d-15
+    PERM_Y 5.d-15
+    PERM_Z 5.d-15
+  /
+/
+
+
+#=========================== characteristic curves ============================
+CHARACTERISTIC_CURVES sf01
+  SATURATION_FUNCTION VAN_GENUCHTEN
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    ALPHA 4.d-3
+    M 0.5d0
+    MAX_CAPILLARY_PRESSURE 1.d6
+  /
+  PERMEABILITY_FUNCTION MUALEM
+    PHASE LIQUID
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    M 0.5d0
+  /
+  PERMEABILITY_FUNCTION MUALEM_VG_GAS
+    PHASE GAS
+    LIQUID_RESIDUAL_SATURATION 0.d0
+    GAS_RESIDUAL_SATURATION 1.d-40
+    M 0.5d0
+  /
+END
+
+
+
+
+#=========================== regions ==========================================
+REGION obs_pt
+  COORDINATE  0.05   0.05  0.25d0
+  FACE TOP
+/
+
+
+REGION top
+  COORDINATES
+    0.d0  0.d0 0.7d0
+    0.1d0 0.1d0 0.7d0
+  /
+  FACE TOP
+END
+
+
+
+REGION tide_exchange  # the region for tidal water in and out
+  COORDINATES
+    0.d0 0.d0 0.626d0
+    0.1d0 0.1d0 0.695d0
+  /
+  FACE TOP
+END
+
+REGION bottom_layer
+  COORDINATES
+    0.d0 0.d0 0.d0
+    0.1d0 0.1d0 0.1d0
+  /
+  FACE TOP
+END
+
+REGION roots_layer
+  COORDINATES
+    0.d0 0.d0 0.6d0
+    0.1d0 0.1d0 0.6d0
+  /
+  FACE TOP
+END
+
+
+REGION lower_layers  #the non-surface layers below 0.025m, which are the layers with thickness > 0.05m 
+  COORDINATES
+    0.d0 0.d0 0.d0
+    0.1d0 0.1d0 0.674d0
+  /
+  FACE BOTTOM
+END
+
+
+REGION all
+  COORDINATES
+    0.d0 0.d0 0.d0
+    0.1d0 0.1d0 0.7d0
+  /
+  FACE TOP
+END
+
+
+
+
+
+REGION root1
+	COORDINATES
+		0.015  0.065  0.6
+		0.015  0.065  0.6
+	/
+	FACE TOP
+END
+
+REGION root2
+	COORDINATES
+		0.035  0.015  0.6
+		0.035  0.015  0.6
+	/
+	FACE TOP
+END
+
+REGION root3
+	COORDINATES
+		0.025  0.085  0.6
+		0.025  0.085  0.6
+	/
+	FACE TOP
+END
+
+REGION root4
+	COORDINATES
+		0.075  0.015  0.6
+		0.075  0.015  0.6
+	/
+	FACE TOP
+END
+
+REGION root5
+	COORDINATES
+		0.015  0.085  0.6
+		0.015  0.085  0.6
+	/
+	FACE TOP
+END
+
+REGION root6
+	COORDINATES
+		0.025  0.075  0.6
+		0.025  0.075  0.6
+	/
+	FACE TOP
+END
+
+REGION root7
+	COORDINATES
+		0.055  0.075  0.6
+		0.055  0.075  0.6
+	/
+	FACE TOP
+END
+
+REGION root8
+	COORDINATES
+		0.025  0.055  0.6
+		0.025  0.055  0.6
+	/
+	FACE TOP
+END
+
+REGION root9
+	COORDINATES
+		0.085  0.055  0.6
+		0.085  0.055  0.6
+	/
+	FACE TOP
+END
+
+REGION root10
+	COORDINATES
+		0.055  0.065  0.6
+		0.055  0.065  0.6
+	/
+	FACE TOP
+END
+
+REGION root11
+	COORDINATES
+		0.065  0.025  0.6
+		0.065  0.025  0.6
+	/
+	FACE TOP
+END
+
+REGION root12
+	COORDINATES
+		0.085  0.025  0.6
+		0.085  0.025  0.6
+	/
+	FACE TOP
+END
+
+REGION root13
+	COORDINATES
+		0.075  0.025  0.6
+		0.075  0.025  0.6
+	/
+	FACE TOP
+END
+
+REGION root14
+	COORDINATES
+		0.065  0.045  0.6
+		0.065  0.045  0.6
+	/
+	FACE TOP
+END
+
+REGION root15
+	COORDINATES
+		0.075  0.055  0.6
+		0.075  0.055  0.6
+	/
+	FACE TOP
+END
+
+
+#=========================== observation points ===============================
+OBSERVATION
+  REGION obs_pt
+  AT_COORDINATE    # if not "AT_COORDINATE", then observation data sampled from the center of the cell (by default)
+END
+
+
+#=========================== transport conditions =============================
+TRANSPORT_CONDITION initial
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+    0.d0 initial
+  /
+END
+
+
+TRANSPORT_CONDITION sed_air_interface
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+   0.d0 sed_air_interface
+   
+  /
+END
+
+
+TRANSPORT_CONDITION O2_inj
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+    0.d0 O2_inj
+  /
+END
+
+
+TRANSPORT_CONDITION Tracer2_inj
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+    0.d0 Tracer2_inj
+  /
+END
+
+
+TRANSPORT_CONDITION tide
+  TYPE dirichlet
+  TIME_UNITS hr
+  CONSTRAINT_LIST
+    0.d0 tide
+  /
+END
+
+#=========================== flow conditions =============================
+
+FLOW_CONDITION initial
+  TYPE
+    GAS_PRESSURE dirichlet
+    LIQUID_SATURATION dirichlet
+    TEMPERATURE dirichlet
+  /
+  GAS_PRESSURE 1.d5
+  LIQUID_SATURATION 1.d0   
+  TEMPERATURE 25.d0
+/
+
+
+FLOW_CONDITION sed_air_interface       #flow condition for the boundary
+  TYPE
+    GAS_PRESSURE dirichlet
+    LIQUID_SATURATION dirichlet
+    TEMPERATURE dirichlet
+  /
+  GAS_PRESSURE 1.d5
+  LIQUID_SATURATION 0.7d0   
+  TEMPERATURE 25.d0
+/
+
+
+FLOW_CONDITION tide
+  TYPE 
+    RATE scaled_volumetric_rate volume
+  /
+  
+  RATE LIST
+    TIME_UNITS hr
+    DATA_UNITS m^3/hr    m^3/hr    MW
+    # Time(hr)   Liquid    Gas         Energy
+    0.d0          0.d0     0.d0         0.d0
+    EXTERNAL_FILE RateListTide_CB.txt
+
+  skip
+    0.d0          0.d0       0.d0        0.d0
+    720.d0       -1.d-6      0.d0        0.d0
+  noskip
+  /
+END
+
+
+
+   ################# for O2 and Tracer2 injection ###########################
+
+# Homogeneous O2 injection, inject O2 equally into each cell
+
+FLOW_CONDITION ROL_homo
+  TYPE
+    RATE volumetric_rate
+   /
+  
+  RATE LIST
+    TIME_UNITS hr
+    DATA_UNITS m^3/hr   m^3/hr   MW       #liquid, gas, energy
+      
+      0.d0   0.01d-8   0.d0    0.d0      #Time, liquid flow rate, gas flow rate, energy flow rate
+      # 1.d-8 divided by number of columns of the simulation domain, 100 columns in the current model settings 
+      
+  /
+/
+
+
+
+# inject Oxygen via several hotspots, to create spatial heterogeneity
+
+FLOW_CONDITION ROL_het    
+  TYPE
+    RATE volumetric_rate
+   /
+  
+  RATE LIST
+    TIME_UNITS hr
+    DATA_UNITS m^3/hr   m^3/hr   MW
+      
+      0.d0   0.0666667d-8   0.d0    0.d0        #The numbers are time, liquid flow rate, gas flow rate, energy flow rate
+      # 1.d-8 divided by number of roots, 15 roots for standard runs       
+  /
+/
+
+
+################ END OF FLOW CONDIITON FOR O2 INJECTION ####################
+
+
+
+
+
+#=========================== condition couplers ===============================
+# Initial condition
+INITIAL_CONDITION     # initial condition for the entire soil column
+  TRANSPORT_CONDITION initial
+  FLOW_CONDITION initial
+  REGION all
+END
+
+
+
+# Boundary condition at the sediment-air-interface
+
+BOUNDARY_CONDITION sed_air_interface
+  TRANSPORT_CONDITION sed_air_interface
+  FLOW_CONDITION sed_air_interface
+  REGION top
+END
+
+
+
+
+SOURCE_SINK tide     # tidal cycle  
+  TRANSPORT_CONDITION tide
+  FLOW_CONDITION tide
+  REGION top
+END
+
+
+
+###################################### For O2 injection ###########################
+skip
+# Homogeneous Root Oxygen Release: Inject Oxygen evenly, i.e. no heterogeneity
+
+SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous           
+  FLOW_CONDITION ROL_homo
+  TRANSPORT_CONDITION O2_inj
+  REGION roots_layer
+END
+noskip
+
+
+
+skip
+###### Heterogeneous Root Oxygen Release, inject oxygen via certain hotspots to create heterogeneity
+########### Note: Begining of heterogeneous O2 injection mode  ##############
+
+SOURCE_SINK ROL_het1           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root1
+END
+
+
+SOURCE_SINK ROL_het2           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root2
+END
+
+SOURCE_SINK ROL_het3           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root3
+END
+
+
+SOURCE_SINK ROL_het4           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root4
+END
+
+SOURCE_SINK ROL_het5           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root5
+END
+
+
+SOURCE_SINK ROL_het6           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root6
+END
+
+
+SOURCE_SINK ROL_het7           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root7
+END
+
+
+SOURCE_SINK ROL_het8           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root8
+END
+
+SOURCE_SINK ROL_het9           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root9
+END
+
+SOURCE_SINK ROL_het10           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root10
+END
+
+SOURCE_SINK ROL_het11           
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root11
+END
+
+
+SOURCE_SINK ROL_het12
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root12
+END
+
+
+SOURCE_SINK ROL_het13
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root13
+END
+
+SOURCE_SINK ROL_het14
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root14
+END
+
+
+SOURCE_SINK ROL_het15
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION O2_inj
+  REGION root15
+END
+
+########## Note: End of heterogeneous O2 injection mode  ##################
+noskip
+
+
+
+######################### For Plant-mediated CH4 transport ################################
+
+
+skip
+# HOMOGENEOUS mode of Plant-mediated CH4 transport
+# Inject Tracer2 to the root layer homogeenously, i.e., to each root cells
+
+SOURCE_SINK Tracer2_inj_homo    # Inject Tracer2 homogeenously into the root layer
+  TRANSPORT_CONDITION Tracer2_inj
+  FLOW_CONDITION ROL_homo
+  REGION roots_layer
+END
+noskip
+
+
+
+skip
+# Heterogeneous mode of plant-mediated transport of CH4, i.e., CH4 is removed from individual root cells only
+# Inject Tracer2 to the root cells to maintain the gradient of Tracer2_inj
+
+# Note: begining of the Tracer2 injection
+
+SOURCE_SINK  Tracer2_inj1        
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root1
+END
+
+SOURCE_SINK  Tracer2_inj2         
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root2
+END
+
+
+SOURCE_SINK  Tracer2_inj3         
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root3
+END
+
+
+SOURCE_SINK  Tracer2_inj4         
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root4
+END
+
+
+SOURCE_SINK  Tracer2_inj5
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root5
+END
+
+
+SOURCE_SINK  Tracer2_inj6
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root6
+END
+
+
+SOURCE_SINK  Tracer2_inj7
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root7
+END
+
+
+SOURCE_SINK  Tracer2_inj8
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root8
+END
+
+
+SOURCE_SINK  Tracer2_inj9
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root9
+END
+
+
+SOURCE_SINK  Tracer2_inj10
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root10
+END
+
+
+
+SOURCE_SINK  Tracer2_inj11
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root11
+END
+
+
+SOURCE_SINK  Tracer2_inj12
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root12
+END
+
+
+SOURCE_SINK  Tracer2_inj13
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root13
+END
+
+
+SOURCE_SINK  Tracer2_inj14
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root14
+END
+
+
+SOURCE_SINK  Tracer2_inj15
+  FLOW_CONDITION ROL_het
+  TRANSPORT_CONDITION Tracer2_inj
+  REGION root15
+END
+
+# Note: end of the Tracer2 injection
+
+
+######################################## END OF SOURCE_SINK FOR INJECTION OF TRACER2 and O2 TO ROOT CELLS #########################
+noskip
+
+
+
+
+#=========================== stratigraphy couplers ============================
+STRATA
+  REGION all
+  MATERIAL soil1
+END
+
+
+
+
+#=========================== regression =======================================
+REGRESSION
+  CELL_IDS
+    1
+  /
+END
+
+
+
+#=========================== output options ===================================
+OUTPUT
+  SCREEN PERIODIC 100
+  PERIODIC TIME 1 hour          #the frequency of generating output
+  FORMAT HDF5                #hdf5 file can be read by VISITS
+  FORMAT TECPLOT POINT       #text file, can be read in python and plot data
+
+
+  OBSERVATION_FILE      #generate results only for the observation points
+    PERIODIC TIME  12 hour
+  END
+
+  VARIABLES
+    LIQUID_SATURATION    
+  END
+  
+ MASS_BALANCE_FILE
+    PERIODIC TIME 1 hr
+  /
+END
+
+#=========================== times ============================================
+TIME
+  FINAL_TIME 44 day
+
+  INITIAL_TIMESTEP_SIZE 0.5d0 h
+  MAXIMUM_TIMESTEP_SIZE 12.d0 h
+END
+
+
+END_SUBSURFACE
+
+

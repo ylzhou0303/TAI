@@ -464,9 +464,8 @@ OUTPUT
   END
   
  MASS_BALANCE_FILE
-    PERIODIC TIMESTEP 10
+    PERIODIC TIME 1 day
   /
-
 END
 
 #=========================== times ============================================
@@ -591,7 +590,7 @@ FLOW_CONDITION top
     TEMPERATURE dirichlet
   /
   GAS_PRESSURE 1.d5
-  LIQUID_SATURATION .7d0   
+  LIQUID_SATURATION 1.d0   
   TEMPERATURE 25.d0
 /
 
@@ -631,6 +630,12 @@ INITIAL_CONDITION     # initial condition
   REGION all
 END
 
+INITIAL_CONDITION     # initial condition
+  TRANSPORT_CONDITION boundary
+  FLOW_CONDITION top
+  REGION top
+END
+
 
 BOUNDARY_CONDITION
   TRANSPORT_CONDITION boundary
@@ -638,13 +643,6 @@ BOUNDARY_CONDITION
   REGION top
 END
 
-
-
-SOURCE_SINK
-  TRANSPORT_CONDITION evapo
-  FLOW_CONDITION lose_water
-  REGION top_layer
-END
 
 
 #=========================== stratigraphy couplers ============================
