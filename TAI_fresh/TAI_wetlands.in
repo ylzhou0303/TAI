@@ -95,7 +95,7 @@ PASSIVE_GAS_SPECIES
   #### NOTE: End of auto-inserted gas species ####
 /
 
-
+skip
 # 3. Microbial Reactions
 #### NOTE: Beginning of auto-inserted reactions ####
 # 3.1   #DOM Aerobic RESPIRATION
@@ -210,13 +210,11 @@ MICROBIAL_REACTION
     
     RATE_CONSTANT 5.d-9     # unit: mol L-1 s-1
     
-    
     MONOD
       SPECIES_NAME  Tracer
       HALF_SATURATION_CONSTANT   0.1
     /
-
-  /
+/
 
 
 
@@ -235,7 +233,8 @@ MICROBIAL_REACTION
 /
 
 
-# 3.8.1  O2 removal above O2 saturation threshold, to avoid oversaturation of O2
+# 3.8  O2 removal above O2 saturation threshold
+# to avoid oversaturation of O2 (such as during sensitivity analysis with higher O2 injection rate)
 MICROBIAL_REACTION
   REACTION O2(aq) -> Tracer1
 
@@ -248,7 +247,7 @@ MICROBIAL_REACTION
     INHIBITION_CONSTANT 2.5d-4         #threshold concentration
   /
 END
-
+noskip
 
 
 
@@ -451,6 +450,7 @@ END
 
 
 # 5.3 Constraint for the injection flow of the liquid containing Tracer2, for CH4 transport
+
 CONSTRAINT Tracer2_inj       #constraint of the Tracer2 injection into root cells or the root layer, to create high Tracer2 concentration in those regions
   
   CONCENTRATIONS
@@ -484,7 +484,7 @@ CONSTRAINT O2_diffusion                     #define the species concentrations i
     Tracer1             1.0e-20
     Tracer2             1.d-20
     CH4(aq)             1.0e-20
-    SO4--               5.d-3
+    SO4--               1.d-20
     H2S(aq)             1.d-20
     #### NOTE: End of auto-inserted concentration constraints ####
   /
@@ -499,7 +499,7 @@ CONSTRAINT O2_inj           #define species concentrations of the liquid for O2 
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.d-20         
     H+                  5.9 P
-    O2(aq)              2.6d0 T         # set up a high O2 concentration in the liquid being injected, so enough O2 is injected within small amount of liquid, standard run: 1.3 M, it equals to an areal rate of 31.2 mmol m-2 d-1
+    O2(aq)              1.3d0 T         # set up a high O2 concentration in the liquid being injected, so enough O2 is injected within small amount of liquid, standard run: 1.3 M, it equals to an areal rate of 31.2 mmol m-2 d-1
     HCO3-               400e-6 G CO2(g)
     Tracer              1.0e-20
     Tracer1             1.0e-20
@@ -540,7 +540,7 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 10 10 12
+  NXYZ 10 10 9
 
   
   DXYZ
@@ -573,13 +573,13 @@ GRID
     0.25\   #a total of 70cm deep soil cube
     0.20\
     0.10\
-    #0.075\
-    0.03\
-    0.03\
-    0.03\
-    #0.05\
-    0.02\
-    0.015\
+    0.075\
+    #0.03\
+    #0.03\
+    #0.03\
+    0.05\
+    #0.02\
+    #0.015\
     0.015\
     0.005\
     0.003\
@@ -1040,8 +1040,8 @@ SOURCE_SINK ROL_homo    #Root Oxygen Release, homogeneous
   TRANSPORT_CONDITION O2_inj
   REGION roots_layer
 END
-
 noskip
+
 
 
 
@@ -1151,11 +1151,11 @@ END
 
 
 
-
-## 14.4 Plant-mediated CH4 transport ################################
-
-
 skip
+## 14.4 Flow conditions for Tracer2 injection
+# for the purpose of implementing plant-mediated CH4 transport ################################
+
+
 # 14.4.1 HOMOGENEOUS mode of Plant-mediated CH4 transport
 # Inject Tracer2 to the root layer homogeneously, i.e., to each root cells equally
 
@@ -1164,11 +1164,9 @@ SOURCE_SINK Tracer2_inj_homo    # Inject Tracer2 homogeenously into the root lay
   FLOW_CONDITION ROL_homo
   REGION roots_layer
 END
-noskip
 
 
 
-skip
 # 14.4.2 Heterogeneous injection of Tracer2
 # Heterogeneous mode of plant-mediated transport of CH4, i.e., CH4 is removed from individual root cells only
 # Inject Tracer2 to the root cells to maintain the gradient of Tracer2_inj
@@ -1280,10 +1278,10 @@ SOURCE_SINK  Tracer2_inj15
 END
 
 # Note: end of the Tracer2 injection
-
+noskip
 
 ######################################## END OF SOURCE_SINK FOR INJECTION OF TRACER2 and O2 TO ROOT CELLS #########################
-noskip
+
 
 
 
@@ -1331,8 +1329,8 @@ END
 TIME
   FINAL_TIME 30 day
 
-  INITIAL_TIMESTEP_SIZE 0.5d0 h
-  MAXIMUM_TIMESTEP_SIZE 12.d0 h
+  INITIAL_TIMESTEP_SIZE 0.1d0 h
+  MAXIMUM_TIMESTEP_SIZE 1.d0 h
 END
 
 

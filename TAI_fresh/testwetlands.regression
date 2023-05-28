@@ -4,33 +4,33 @@
      Mean:   1.0000000000000E+00
         1:   1.0000000000000E+00
 -- CONCENTRATION: Total O2(aq) --
-      Max:   2.4988034936227E-04
-      Min:   1.4635333783919E-14
-     Mean:   7.2219611817205E-05
-        1:   1.4635333783919E-14
+      Max:   7.0398528372214E-01
+      Min:   7.0398528372214E-01
+     Mean:   7.0398528372214E-01
+        1:   7.0398528372214E-01
 -- CONCENTRATION: Total CH4(aq) --
-      Max:   2.0000078620857E-03
-      Min:   9.5736037644992E-07
-     Mean:   1.4222938577861E-03
-        1:   2.0000078620857E-03
+      Max:   7.0398528372214E-01
+      Min:   7.0398528372214E-01
+     Mean:   7.0398528372214E-01
+        1:   7.0398528372214E-01
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Flow --
-   Time (seconds):   3.4320354461670E-03
+   Time (seconds):   1.3856887817383E-03
    Time Steps:           15
-   Newton Iterations:           23
-   Linear Solver Iterations:           23
+   Newton Iterations:           15
+   Linear Solver Iterations:            0
    Time Step Cuts:            0
-   Solution 2-Norm:   2.7395545081227E+05
-   Residual 2-Norm:   1.7361783408156E-14
+   Solution 2-Norm:   1.0000000312500E+05
+   Residual 2-Norm:   0.0000000000000E+00
 -- SOLUTION: Transport --
-   Time (seconds):   2.4334430694580E-02
+   Time (seconds):   5.7079792022705E-03
    Time Steps:           20
-   Newton Iterations:           63
-   Linear Solver Iterations:          238
+   Newton Iterations:           79
+   Linear Solver Iterations:          124
    Time Step Cuts:            0
-   Solution 2-Norm:   2.7110883607124E+03
-   Residual 2-Norm:   4.5227424816412E-13
+   Solution 2-Norm:   1.0246956109441E+03
+   Residual 2-Norm:   4.4078200169062E-14
