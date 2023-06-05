@@ -1,36 +1,36 @@
 -- SATURATION: Liquid Saturation --
       Max:   1.0000000000000E+00
-      Min:   1.0000000000000E+00
-     Mean:   1.0000000000000E+00
+      Min:   9.9998293067891E-01
+     Mean:   9.9999810340877E-01
         1:   1.0000000000000E+00
 -- CONCENTRATION: Total O2(aq) --
-      Max:   7.0398528372214E-01
-      Min:   7.0398528372214E-01
-     Mean:   7.0398528372214E-01
-        1:   7.0398528372214E-01
+      Max:   6.8637884897611E-05
+      Min:   6.8637165734198E-05
+     Mean:   6.8637515743859E-05
+        1:   6.8637884897611E-05
 -- CONCENTRATION: Total CH4(aq) --
-      Max:   7.0398528372214E-01
-      Min:   7.0398528372214E-01
-     Mean:   7.0398528372214E-01
-        1:   7.0398528372214E-01
+      Max:   8.6862297641253E-04
+      Min:   8.6861917745162E-04
+     Mean:   8.6862106871084E-04
+        1:   8.6862297641253E-04
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Flow --
-   Time (seconds):   1.3856887817383E-03
-   Time Steps:           15
-   Newton Iterations:           15
-   Linear Solver Iterations:            0
+   Time (seconds):   6.1385631561279E-03
+   Time Steps:           18
+   Newton Iterations:           49
+   Linear Solver Iterations:           49
    Time Step Cuts:            0
-   Solution 2-Norm:   1.0000000312500E+05
-   Residual 2-Norm:   0.0000000000000E+00
+   Solution 2-Norm:   3.1285613121060E+05
+   Residual 2-Norm:   7.7846498212515E-16
 -- SOLUTION: Transport --
-   Time (seconds):   5.7079792022705E-03
-   Time Steps:           20
-   Newton Iterations:           79
-   Linear Solver Iterations:          124
+   Time (seconds):   1.8471479415894E-02
+   Time Steps:           18
+   Newton Iterations:           38
+   Linear Solver Iterations:          234
    Time Step Cuts:            0
-   Solution 2-Norm:   1.0246956109441E+03
-   Residual 2-Norm:   4.4078200169062E-14
+   Solution 2-Norm:   3.0740852446009E+03
+   Residual 2-Norm:   3.4386400386812E-11

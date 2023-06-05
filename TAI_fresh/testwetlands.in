@@ -117,12 +117,24 @@ skip
 noskip
 
 
-  GENERAL_REACTION
-    REACTION CH4(aq) + O2(aq) -> Tracer1
+# 3.3 Methane oxidation - O2
+  MICROBIAL_REACTION 
+    REACTION 1.0 CH4(aq) + 1.0 O2(aq) -> 1.0 HCO3- + 1.0 H+ + 1.0 H2O 
     
-    FORWARD_RATE  1.d-6
-    BACKWARD_RATE 0.d0
-  END
+    RATE_CONSTANT 5.d-10          #4.d-9 for standard runs
+    
+    
+    MONOD
+      SPECIES_NAME O2(aq)
+      HALF_SATURATION_CONSTANT 8.d-6 
+    /
+
+    MONOD
+      SPECIES_NAME CH4(aq)
+      HALF_SATURATION_CONSTANT 5.d-4
+    /
+/
+
 
 #### NOTE: End of auto-inserted reactions ####
 
@@ -162,7 +174,7 @@ CONSTRAINT initial
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                6.0e-3 T
     H+                  5.9 P 
-    O2(aq)              1.d0 T           
+    O2(aq)              2.d-4 T           
     #the initial concentration of O2 for the soil porewater; it should not be higher than 2e-4, otherwise it cause problems 
     HCO3-               400e-6 G CO2(g)
     Fe+++               0.37e-3 M Fe(OH)3
@@ -170,7 +182,7 @@ CONSTRAINT initial
     NH4+                1.0e-6
     Tracer              0.1
     Tracer1             1.d-20
-    CH4(aq)             1.d0         
+    CH4(aq)             1.d-3         
     SO4--               5.d-3
     H2S(aq)             3.d-4
     #### NOTE: End of auto-inserted concentration constraints ####
@@ -359,7 +371,7 @@ END
 GRID
   TYPE structured
   ORIGIN 0.d0 0.d0 0.d0
-  NXYZ 1 1 1
+  NXYZ 1 1 9
 
 skip
   DXYZ
@@ -367,13 +379,15 @@ skip
 
     1
 
-    0.2\
-    0.2\
-    0.2\
-    0.2\
-    0.1979\
-    0.002\
-    0.0001
+    0.25\   #a total of 70cm deep soil cube
+    0.20\
+    0.10\
+    0.075\
+    0.05\
+    0.015\
+    0.005\
+    0.003\
+    0.002    #the top one is the boundary layer
   END
 noskip
 
