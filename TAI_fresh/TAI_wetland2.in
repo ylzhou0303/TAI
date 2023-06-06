@@ -108,7 +108,7 @@ PASSIVE_GAS_SPECIES
 
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 8.d-6      
+      HALF_SATURATION_CONSTANT 3.75d-5      
     /
 
     
@@ -149,7 +149,7 @@ MICROBIAL_REACTION
     
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 8.d-6 
+      HALF_SATURATION_CONSTANT 3.75d-5 
     /
 
     MONOD
@@ -192,7 +192,7 @@ MICROBIAL_REACTION
 
     MONOD
       SPECIES_NAME O2(aq)
-      HALF_SATURATION_CONSTANT 8.d-6
+      HALF_SATURATION_CONSTANT 3.75d-5
     /
 
     MONOD
@@ -530,7 +530,7 @@ CONSTRAINT O2_inj           #define species concentrations of the liquid for O2 
     #### NOTE: Beginning of auto-inserted concentration constraints ####
     DOM1                1.d-20         
     H+                  5.9 P
-    O2(aq)              3.1d0 T         # set up a high O2 concentration in the liquid being injected, so enough O2 is injected within small amount of liquid, standard run: 1.3 M, it equals to an areal rate of 31.2 mmol m-2 d-1
+    O2(aq)              3.d0 T         # set up a high O2 concentration in the liquid being injected, so enough O2 is injected within small amount of liquid, standard run: 1.3 M, it equals to an areal rate of 31.2 mmol m-2 d-1
     HCO3-               400e-6 G CO2(g)
     Tracer              1.0e-20
     Tracer1             1.0e-20
@@ -841,45 +841,7 @@ REGION root15
 	FACE TOP
 END
 
-REGION root16
-	COORDINATES
-		0.015  0.025  0.6
-		0.015  0.025  0.6
-	/
-	FACE TOP
-END
 
-REGION root17
-	COORDINATES
-		0.085  0.035  0.6
-		0.085  0.035  0.6
-	/
-	FACE TOP
-END
-
-REGION root18
-	COORDINATES
-		0.025  0.015  0.6
-		0.025  0.015  0.6
-	/
-	FACE TOP
-END
-
-REGION root19
-	COORDINATES
-		0.015  0.015  0.6
-		0.015  0.015  0.6
-	/
-	FACE TOP
-END
-
-REGION root20
-	COORDINATES
-		0.085  0.075  0.6
-		0.085  0.075  0.6
-	/
-	FACE TOP
-END
 
 #=========================== observation points ===============================
 OBSERVATION
@@ -1000,7 +962,7 @@ FLOW_CONDITION ROL_het
       0.d0    0.d-8     0.d0    0.d0
       12.d0   0.01d-8   0.d0    0.d0
       24.d0   0.03d-8   0.d0    0.d0        #The numbers are time, liquid flow rate, gas flow rate, energy flow rate
-      48.d0   0.05d-8   0.d0   0.d0
+      48.d0   0.067d-8   0.d0   0.d0
       # 1.d-8 divided by number of roots, 20 roots for standard runs       
   /
 /
@@ -1036,7 +998,7 @@ END
 
 
 ############### 13.4 Root O2 injection and Tracer2 injection ###########################
-skip
+
 
 ########## 13.4.0 No oxygen release mode, but have homogeneous CH4 removal, so have homogeneous injection of Tracer2
 
@@ -1047,9 +1009,9 @@ SOURCE_SINK Tracer2_inj_homo    # Inject Tracer2 homogeenously into the root lay
 END
 
 ################ END OF NO OXYGEN MODE ######################
-noskip
 
 
+skip
 ############### 13.4.1 Homogeneous injections   #####################
 # 13.4.1.1 Inject Oxygen evenly, i.e. no heterogeneity
 
@@ -1072,8 +1034,7 @@ END
 
 
 ############### END OF HOMOGENEOUS MODE #####################
-
-
+noskip
 
 skip
 ############ 13.4.2 Heterogeneous Injections ###################
@@ -1172,35 +1133,7 @@ SOURCE_SINK ROL_het15
 	REGION root15
 END
 
-SOURCE_SINK ROL_het16
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION O2_inj
-	REGION root16
-END
 
-SOURCE_SINK ROL_het17
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION O2_inj
-	REGION root17
-END
-
-SOURCE_SINK ROL_het18
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION O2_inj
-	REGION root18
-END
-
-SOURCE_SINK ROL_het19
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION O2_inj
-	REGION root19
-END
-
-SOURCE_SINK ROL_het20
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION O2_inj
-	REGION root20
-END
 
 
 ########## Note: End of heterogeneous O2 injection mode  ##################
@@ -1304,35 +1237,6 @@ SOURCE_SINK Tracer3_inj15
 	REGION root15
 END
 
-SOURCE_SINK Tracer3_inj16
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION Tracer3_inj
-	REGION root16
-END
-
-SOURCE_SINK Tracer3_inj17
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION Tracer3_inj
-	REGION root17
-END
-
-SOURCE_SINK Tracer3_inj18
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION Tracer3_inj
-	REGION root18
-END
-
-SOURCE_SINK Tracer3_inj19
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION Tracer3_inj
-	REGION root19
-END
-
-SOURCE_SINK Tracer3_inj20
-	FLOW_CONDITION ROL_het
-	TRANSPORT_CONDITION Tracer3_inj
-	REGION root20
-END
 
 #################### Note: end of the Tracer3 injection ##########################
 
@@ -1384,7 +1288,7 @@ END
 
 #=========================== times ============================================
 TIME
-  FINAL_TIME 15 day
+  FINAL_TIME 10 day
 
   INITIAL_TIMESTEP_SIZE 1 min
   MAXIMUM_TIMESTEP_SIZE 1 hr
