@@ -329,7 +329,7 @@ MICROBIAL_REACTION
   REACTION    CH4(aq) -> Tracer1
 
  
-  RATE_CONSTANT    1.06d-7             # 1.06d-7 for heterogeneous mode, CH4 is removed from the root cells only, so the reaction rate is higher by 100/15 times
+  RATE_CONSTANT    5.3d-8
 
   MONOD
     SPECIES_NAME  CH4(aq)              #The reaction rate, i.e., the flux, depends on the CH4 concentration
@@ -339,9 +339,10 @@ MICROBIAL_REACTION
 
   INHIBITION
     SPECIES_NAME  Tracer3                   
-    TYPE THRESHOLD       1.d11
-    INHIBITION_CONSTANT  1.d-7      
-    #threshold concentration, only where Tracer3 is above 1.e-7 mol/L, which would be the roots layer, this reaction happens
+    TYPE THRESHOLD       1.d12
+    INHIBITION_CONSTANT  1.d-8   
+    #threshold concentration, only where Tracer3 is above 1.e-8 mol/L, which would be the roots layer, this reaction happens
+    #threshold concentration changes with number of root cells, different from the standard run
     # You can find out the threshold concentration by looking at what the Tracer3 concentration is for the root cells
     
   /
@@ -716,125 +717,245 @@ END
 
 REGION root1
 	COORDINATES
-		0.075  0.035  0.6
-		0.075  0.035  0.6
+		0.085  0.075  0.6
+		0.085  0.075  0.6
 	/
 	FACE TOP
 END
 
 REGION root2
 	COORDINATES
-		0.035  0.025  0.6
-		0.035  0.025  0.6
+		0.055  0.065  0.6
+		0.055  0.065  0.6
 	/
 	FACE TOP
 END
 
 REGION root3
 	COORDINATES
-		0.075  0.055  0.6
-		0.075  0.055  0.6
+		0.095  0.095  0.6
+		0.095  0.095  0.6
 	/
 	FACE TOP
 END
 
 REGION root4
 	COORDINATES
-		0.025  0.065  0.6
-		0.025  0.065  0.6
+		0.095  0.045  0.6
+		0.095  0.045  0.6
 	/
 	FACE TOP
 END
 
 REGION root5
 	COORDINATES
-		0.015  0.055  0.6
-		0.015  0.055  0.6
+		0.005  0.015  0.6
+		0.005  0.015  0.6
 	/
 	FACE TOP
 END
 
 REGION root6
 	COORDINATES
-		0.035  0.075  0.6
-		0.035  0.075  0.6
+		0.015  0.005  0.6
+		0.015  0.005  0.6
 	/
 	FACE TOP
 END
 
 REGION root7
 	COORDINATES
-		0.025  0.085  0.6
-		0.025  0.085  0.6
+		0.055  0.095  0.6
+		0.055  0.095  0.6
 	/
 	FACE TOP
 END
 
 REGION root8
 	COORDINATES
-		0.085  0.025  0.6
-		0.085  0.025  0.6
+		0.005  0.065  0.6
+		0.005  0.065  0.6
 	/
 	FACE TOP
 END
 
 REGION root9
 	COORDINATES
-		0.025  0.045  0.6
-		0.025  0.045  0.6
+		0.065  0.055  0.6
+		0.065  0.055  0.6
 	/
 	FACE TOP
 END
 
 REGION root10
 	COORDINATES
-		0.065  0.065  0.6
-		0.065  0.065  0.6
+		0.065  0.075  0.6
+		0.065  0.075  0.6
 	/
 	FACE TOP
 END
 
 REGION root11
 	COORDINATES
-		0.055  0.015  0.6
-		0.055  0.015  0.6
+		0.065  0.035  0.6
+		0.065  0.035  0.6
 	/
 	FACE TOP
 END
 
 REGION root12
 	COORDINATES
-		0.065  0.075  0.6
-		0.065  0.075  0.6
+		0.045  0.095  0.6
+		0.045  0.095  0.6
 	/
 	FACE TOP
 END
 
 REGION root13
 	COORDINATES
-		0.035  0.055  0.6
-		0.035  0.055  0.6
+		0.015  0.025  0.6
+		0.015  0.025  0.6
 	/
 	FACE TOP
 END
 
 REGION root14
 	COORDINATES
-		0.015  0.085  0.6
-		0.015  0.085  0.6
+		0.005  0.035  0.6
+		0.005  0.035  0.6
 	/
 	FACE TOP
 END
 
 REGION root15
 	COORDINATES
-		0.055  0.035  0.6
-		0.055  0.035  0.6
+		0.025  0.015  0.6
+		0.025  0.015  0.6
+	/
+	FACE TOP
+END
+
+REGION root16
+	COORDINATES
+		0.015  0.085  0.6
+		0.015  0.085  0.6
+	/
+	FACE TOP
+END
+
+REGION root17
+	COORDINATES
+		0.055  0.025  0.6
+		0.055  0.025  0.6
+	/
+	FACE TOP
+END
+
+REGION root18
+	COORDINATES
+		0.055  0.055  0.6
+		0.055  0.055  0.6
+	/
+	FACE TOP
+END
+
+REGION root19
+	COORDINATES
+		0.035  0.055  0.6
+		0.035  0.055  0.6
+	/
+	FACE TOP
+END
+
+REGION root20
+	COORDINATES
+		0.055  0.045  0.6
+		0.055  0.045  0.6
+	/
+	FACE TOP
+END
+
+REGION root21
+	COORDINATES
+		0.095  0.055  0.6
+		0.095  0.055  0.6
+	/
+	FACE TOP
+END
+
+REGION root22
+	COORDINATES
+		0.045  0.075  0.6
+		0.045  0.075  0.6
+	/
+	FACE TOP
+END
+
+REGION root23
+	COORDINATES
+		0.065  0.065  0.6
+		0.065  0.065  0.6
+	/
+	FACE TOP
+END
+
+REGION root24
+	COORDINATES
+		0.045  0.005  0.6
+		0.045  0.005  0.6
+	/
+	FACE TOP
+END
+
+REGION root25
+	COORDINATES
+		0.065  0.005  0.6
+		0.065  0.005  0.6
+	/
+	FACE TOP
+END
+
+REGION root26
+	COORDINATES
+		0.035  0.095  0.6
+		0.035  0.095  0.6
+	/
+	FACE TOP
+END
+
+REGION root27
+	COORDINATES
+		0.045  0.065  0.6
+		0.045  0.065  0.6
+	/
+	FACE TOP
+END
+
+REGION root28
+	COORDINATES
+		0.015  0.095  0.6
+		0.015  0.095  0.6
 	/
 	FACE TOP
 END
 
 
+
+REGION root29
+	COORDINATES
+		0.045  0.045  0.6
+		0.045  0.045  0.6
+	/
+	FACE TOP
+END
+
+REGION root30
+	COORDINATES
+		0.075  0.075  0.6
+		0.075  0.075  0.6
+	/
+	FACE TOP
+END
 
 #=========================== observation points ===============================
 OBSERVATION
@@ -953,9 +1074,9 @@ FLOW_CONDITION ROL_het
     DATA_UNITS m^3/hr   m^3/hr   MW
       
       0.d0    0.d-8     0.d0    0.d0
-      12.d0   0.01d-8   0.d0    0.d0
-      24.d0   0.03d-8   0.d0    0.d0        #The numbers are time, liquid flow rate, gas flow rate, energy flow rate
-      48.d0   0.067d-8   0.d0   0.d0
+      12.d0   0.005d-8   0.d0    0.d0
+      24.d0   0.015d-8   0.d0    0.d0        #The numbers are time, liquid flow rate, gas flow rate, energy flow rate
+      48.d0   0.033d-8   0.d0   0.d0
       # 1.d-8 divided by number of roots, 15 roots for standard runs       
   /
 /
@@ -1037,6 +1158,7 @@ noskip
 ############ 13.4.2 Heterogeneous Injections ###################
 # 13.4.2.1 Inject oxygen via certain hotspots to create heterogeneity
 ########### Note: Begining of heterogeneous O2 injection mode  ##############
+
 
 
 
@@ -1130,6 +1252,95 @@ SOURCE_SINK ROL_het15
 	REGION root15
 END
 
+SOURCE_SINK ROL_het16
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root16
+END
+
+SOURCE_SINK ROL_het17
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root17
+END
+
+SOURCE_SINK ROL_het18
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root18
+END
+
+SOURCE_SINK ROL_het19
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root19
+END
+
+SOURCE_SINK ROL_het20
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root20
+END
+
+SOURCE_SINK ROL_het21
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root21
+END
+
+SOURCE_SINK ROL_het22
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root22
+END
+
+SOURCE_SINK ROL_het23
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root23
+END
+
+SOURCE_SINK ROL_het24
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root24
+END
+
+SOURCE_SINK ROL_het25
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root25
+END
+
+SOURCE_SINK ROL_het26
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root26
+END
+
+SOURCE_SINK ROL_het27
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root27
+END
+
+SOURCE_SINK ROL_het28
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root28
+END
+
+SOURCE_SINK ROL_het29
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root29
+END
+
+SOURCE_SINK ROL_het30
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION O2_inj
+	REGION root30
+END
 
 
 
@@ -1142,6 +1353,8 @@ END
 # Inject Tracer3 to the root cells to maintain the high concentration of Tracer3_inj within root cells
 
 # Note: begining of the heterogeneous Tracer2 injection
+
+
 
 
 SOURCE_SINK Tracer3_inj1
@@ -1233,6 +1446,98 @@ SOURCE_SINK Tracer3_inj15
 	TRANSPORT_CONDITION Tracer3_inj
 	REGION root15
 END
+
+SOURCE_SINK Tracer3_inj16
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root16
+END
+
+SOURCE_SINK Tracer3_inj17
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root17
+END
+
+SOURCE_SINK Tracer3_inj18
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root18
+END
+
+SOURCE_SINK Tracer3_inj19
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root19
+END
+
+SOURCE_SINK Tracer3_inj20
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root20
+END
+
+SOURCE_SINK Tracer3_inj21
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root21
+END
+
+SOURCE_SINK Tracer3_inj22
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root22
+END
+
+SOURCE_SINK Tracer3_inj23
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root23
+END
+
+SOURCE_SINK Tracer3_inj24
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root24
+END
+
+SOURCE_SINK Tracer3_inj25
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root25
+END
+
+SOURCE_SINK Tracer3_inj26
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root26
+END
+
+SOURCE_SINK Tracer3_inj27
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root27
+END
+
+SOURCE_SINK Tracer3_inj28
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root28
+END
+
+SOURCE_SINK Tracer3_inj29
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root29
+END
+
+SOURCE_SINK Tracer3_inj30
+	FLOW_CONDITION ROL_het
+	TRANSPORT_CONDITION Tracer3_inj
+	REGION root30
+END
+
+
 
 
 #################### Note: end of the Tracer3 injection ##########################

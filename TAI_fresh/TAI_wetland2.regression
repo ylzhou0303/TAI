@@ -4,58 +4,73 @@
      Mean:   1.0000000000000E+00
         1:   1.0000000000000E+00
 -- CONCENTRATION: Total DOM1 --
-      Max:   7.5380771613839E-03
-      Min:   1.1606048499759E-03
-     Mean:   5.0339798151083E-03
-        1:   7.5380771497234E-03
+      Max:   7.6130081670875E-03
+      Min:   1.1573490690338E-03
+     Mean:   4.9290803405756E-03
+        1:   7.6130080919031E-03
 -- CONCENTRATION: Total O2(aq) --
-      Max:   1.0518535269649E-04
-      Min:   9.9715989122139E-81
-     Mean:   1.1947188498321E-05
-        1:   9.9716236022930E-81
+      Max:   6.3871169010344E-05
+      Min:   9.9716139713009E-81
+     Mean:   4.7550608606066E-06
+        1:   5.1699933326945E-59
+-- CONCENTRATION: Total Tracer1 --
+      Max:   1.0635863606445E-03
+      Min:   4.2258014524430E-07
+     Mean:   9.9125404878703E-05
+        1:   4.2265102961702E-07
 -- CONCENTRATION: Total Tracer2 --
-      Max:   2.4921770861548E-07
-      Min:   1.3492035694781E-27
-     Mean:   2.7690909084464E-08
-        1:   1.3492035694781E-27
+      Max:   2.1473880470861E-23
+      Min:   2.1186795222469E-66
+     Mean:   2.3873973675791E-24
+        1:   2.1186795222469E-66
 -- CONCENTRATION: Total Tracer3 --
-      Max:   5.3806060517096E-24
-      Min:   3.9050568608664E-51
-     Mean:   5.9793607605528E-25
-        1:   3.9050568608664E-51
+      Max:   3.3539262937051E-04
+      Min:   1.9080002650221E-48
+     Mean:   4.5761334854148E-06
+        1:   1.9080002650221E-48
+-- CONCENTRATION: Total Tracer5 --
+      Max:   2.2959624001144E-05
+      Min:   1.0497998930114E-12
+     Mean:   8.1021866862724E-07
+        1:   1.6029860556086E-12
+-- CONCENTRATION: Total Tracer6 --
+      Max:   2.0118172661630E-04
+      Min:   9.4203549856160E-08
+     Mean:   6.7717897122164E-05
+        1:   2.0118165834282E-04
 -- CONCENTRATION: Total CH4(aq) --
-      Max:   1.4195969827976E-03
-      Min:   2.5864709918043E-05
-     Mean:   7.5610107921577E-04
-        1:   1.4195969827949E-03
+      Max:   1.4198960897486E-03
+      Min:   2.8770108431360E-05
+     Mean:   7.9048658634160E-04
+        1:   1.4198960896191E-03
 -- CONCENTRATION: Total SO4-- --
-      Max:   5.3083696753349E-03
-      Min:   4.9973817781876E-03
-     Mean:   5.1048730430838E-03
-        1:   4.9973873690878E-03
+      Max:   6.8967914332671E-03
+      Min:   1.7123208781391E-03
+     Mean:   3.5169517355542E-03
+        1:   1.7123212035119E-03
 -- CONCENTRATION: Total H2S(aq) --
-      Max:   4.4681824811825E-03
-      Min:   5.6133200169944E-05
-     Mean:   2.6934311735620E-03
-        1:   4.4681824438827E-03
+      Max:   5.3012658454519E-03
+      Min:   1.2087740909937E-05
+     Mean:   2.6562176300236E-03
+        1:   5.3012655095543E-03
 -- DISCRETE: Material ID --
       Max:         1
       Min:         1
      Mean:   1.0000000000000E+00
         1:         1
 -- SOLUTION: Flow --
-   Time (seconds):   5.0484261512756E+00
+   Time (seconds):   4.9270539283752E+00
    Time Steps:          245
-   Newton Iterations:          267
-   Linear Solver Iterations:         7133
+   Newton Iterations:          270
+   Linear Solver Iterations:         7158
    Time Step Cuts:            0
-   Solution 2-Norm:   3.0443094133581E+06
-   Residual 2-Norm:   1.0020299597780E-17
+   Solution 2-Norm:   3.0452017570508E+06
+   Residual 2-Norm:   9.8448554749571E-18
 -- SOLUTION: Transport --
-   Time (seconds):   1.3506855726242E+01
+   Time (seconds):   2.6774004936218E+01
    Time Steps:          245
-   Newton Iterations:          256
-   Linear Solver Iterations:         5815
+   Newton Iterations:          264
+   Linear Solver Iterations:        12574
    Time Step Cuts:            0
-   Solution 2-Norm:   1.0987797315716E+01
-   Residual 2-Norm:   7.7905053517061E-12
+   Solution 2-Norm:   1.1062428992126E+01
+   Residual 2-Norm:   8.6405207215336E-12
